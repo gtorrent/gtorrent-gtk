@@ -9,6 +9,5 @@ protected:
 
 public:
 	GuiBase();
-	virtual void update() = 0;
 };
 
