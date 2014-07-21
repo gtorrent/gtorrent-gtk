@@ -11,15 +11,15 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 
-        this->set_model(m_liststore);
-        this->setupColumns();
+	this->set_model(m_liststore);
+	this->setupColumns();
 }
 
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	if(event->button == 3)
 	{
-		               m_rcMenu	= Gtk::manage(new Gtk::Menu());
+		m_rcMenu	= Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
 		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
@@ -63,13 +63,13 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 	if(event->button == 3)
 	{
 		m_rcMenu = Gtk::manage(new Gtk::Menu());
-                for(auto c : get_columns())
-                {
-                        Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
-                        rcmItem1->set_active(c->get_visible());
-                        rcmItem1->signal_button_press_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onClick), c));
-                        m_rcMenu->add(*rcmItem1);
-                }
+		for(auto c : get_columns())
+		{
+			Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
+			rcmItem1->set_active(c->get_visible());
+			rcmItem1->signal_button_press_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onClick), c));
+			m_rcMenu->add(*rcmItem1);
+		}
 
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
@@ -82,40 +82,47 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 // TODO REFACTOR THE LIVING HELL OUT OF THIS ABOMINATION -- nyanpasu
 void GtkTorrentTreeView::setupColumns()
 {
-	unsigned int cid = 0;
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	this->append_column("Queue", m_cols.m_col_queue);
-	this->append_column("Age", m_cols.m_col_age);
-	this->append_column("ETA", m_cols.m_col_eta);
-	this->append_column("Name", m_cols.m_col_name);
-	this->append_column("Seed", m_cols.m_col_seeders);
-	this->append_column("Leech", m_cols.m_col_leechers);
-	this->append_column("Upload Speed", m_cols.m_col_ul_speed);
-	this->append_column("Download Speed", m_cols.m_col_dl_speed);
-	this->append_column("Uploaded", m_cols.m_col_ul_total);
-	this->append_column("Downloaded", m_cols.m_col_dl_total);
-	this->append_column("Size", m_cols.m_col_size);
-	this->append_column("Remains", m_cols.m_col_remaining);
-	this->append_column("Ratio", m_cols.m_col_dl_ratio);
-
+	vector<pair<int, int>> columns; //First element id second element size
+	columns.push_back(make_pair(this->append_column("#", m_cols.m_col_queue), 30));
+	columns.push_back(make_pair(this->append_column("Status", m_cols.m_col_name), 200));
+	columns.push_back(make_pair(this->append_column("Name", m_cols.m_col_name), 200));
+	columns.push_back(make_pair(this->append_column("Size", m_cols.m_col_size), 80));
+	columns.push_back(make_pair(this->append_column("Down", m_cols.m_col_dl_speed), 60));
+	columns.push_back(make_pair(this->append_column("Up", m_cols.m_col_ul_speed), 60));
+	columns.push_back(make_pair(this->append_column("Ratio", m_cols.m_col_dl_ratio), 60));
+	columns.push_back(make_pair(this->append_column("Downloaded", m_cols.m_col_dl_total), 80));
+	get_column(columns.back().first - 1)->set_visible(false);
+	columns.push_back(make_pair(this->append_column("Uploaded", m_cols.m_col_ul_total), 80));
+	get_column(columns.back().first - 1)->set_visible(false);
+	columns.push_back(make_pair(this->append_column("Seed", m_cols.m_col_seeders), 60));
+	columns.push_back(make_pair(this->append_column("Leech", m_cols.m_col_leechers), 60));
+	columns.push_back(make_pair(this->append_column("Age", m_cols.m_col_age), 50));
+	columns.push_back(make_pair(this->append_column("ETA", m_cols.m_col_eta), 80));
 	cell = Gtk::manage(new Gtk::CellRendererProgress());
-	cid = this->append_column("Progress", *cell);
-	col = this->get_column(cid - 1);
+	columns.push_back(make_pair(this->append_column("Progress", *cell), 160));
+	col = this->get_column(columns.back().first - 1);
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
 
-	for (auto & c : this->get_columns())
+
+
+	columns.push_back(make_pair(this->append_column("Remains", m_cols.m_col_remaining), 80));
+	get_column(columns.back().first - 1)->set_visible(false);
+
+	for (pair<int, int> colpair : columns)
 	{
-		Gtk::Button *butt = c->get_button();
+		Gtk::Button *butt = get_column(colpair.first - 1)->get_button();
 		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentColumns_onClick));
-		c->set_sizing(Gtk::TreeViewColumnSizing::TREE_VIEW_COLUMN_FIXED);
-		c->set_alignment(0.5f);
-		c->set_clickable();
-		c->set_resizable();
-		c->set_reorderable();
-                c->set_fixed_width(96);
+		get_column(colpair.first - 1)->set_sizing(Gtk::TreeViewColumnSizing::TREE_VIEW_COLUMN_FIXED);
+		get_column(colpair.first - 1)->set_alignment(0.5f);
+		get_column(colpair.first - 1)->set_clickable();
+		get_column(colpair.first - 1)->set_resizable();
+		get_column(colpair.first - 1)->set_reorderable();
+		get_column(colpair.first - 1)->set_fixed_width(colpair.second);
+
 	}
 }
 
@@ -129,6 +136,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<Torrent> &t)
 	row[m_cols.m_col_age]       = t->getTextActiveTime();
 	row[m_cols.m_col_eta]       = t->getTextEta();
 	row[m_cols.m_col_name]      = t->getHandle().name();
+	row[m_cols.m_col_status]		= t->getTextState();
 	row[m_cols.m_col_seeders]   = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]  = t->getTotalLeechers();
 	row[m_cols.m_col_ul_total]  = t->getTextTotalUploaded();
@@ -147,6 +155,7 @@ void GtkTorrentTreeView::updateCells()
 
 		c[m_cols.m_col_age]      = t->getTextActiveTime();
 		c[m_cols.m_col_eta]      = t->getTextEta();
+		c[m_cols.m_col_status]	 = t->getTextState();
 		c[m_cols.m_col_percent]  = t->getTotalProgress();
 		c[m_cols.m_col_seeders]  = t->getTotalSeeders();
 		c[m_cols.m_col_leechers] = t->getTotalLeechers();

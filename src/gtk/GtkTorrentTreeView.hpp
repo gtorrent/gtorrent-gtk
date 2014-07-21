@@ -15,6 +15,7 @@ public:
 	{
 		add(m_col_name);
 		add(m_col_queue);
+		add(m_col_status);
 		add(m_col_age);
 		add(m_col_eta);
 		add(m_col_seeders);
@@ -31,6 +32,7 @@ public:
 	}
 
 	Gtk::TreeModelColumn<unsigned int>  m_col_queue;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_status;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
