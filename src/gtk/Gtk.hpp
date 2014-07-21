@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gui/core/Base.hpp>
+#include <core/Base.hpp>
 #include "GtkMainWindow.hpp"
 #include <gtkmm/settings.h>
 #include <gtkmm/main.h>
@@ -18,4 +18,3 @@ public:
 
 	void update();
 };
-

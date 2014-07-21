@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/Core.hpp"
+#include "../gtorrent-core/src/Core.hpp"
 
 class GuiBase
 {
@@ -11,4 +11,3 @@ public:
 	GuiBase();
 	virtual void update() = 0;
 };
-
