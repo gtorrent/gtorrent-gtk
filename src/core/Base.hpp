@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/Core.hpp"
+#include <gtorrent/Core.hpp>
 
 class GuiBase
 {
