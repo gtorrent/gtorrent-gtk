@@ -5,6 +5,8 @@
 #include <Application.hpp>
 #include <gtkmm/stock.h>
 #include <glibmm.h>
+#include <giomm.h>
+#include <boost/algorithm/string.hpp>
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
@@ -68,6 +70,16 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*btn_properties);
 	header->add(*separator2);
 
+	// Let's add some DnD goodness
+	vector<Gtk::TargetEntry> listTargets;
+	listTargets.push_back(Gtk::TargetEntry("STRING"));
+	listTargets.push_back(Gtk::TargetEntry("text/plain"));
+	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
+	listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
+
+	m_treeview->drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
+	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
+
 	this->set_titlebar(*header);
 	//status = Gtk::manage(new Gtk::StatusBar());
 	//this->set_decorated(FALSE);
@@ -79,6 +91,20 @@ GtkMainWindow::GtkMainWindow() :
 	//this.get_window().set_decorations(Gdk.WMDecoration.BORDER);
 	//this->set_decorations(FALSE);
 	//this->set_decorated(FALSE);
+}
+
+void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+	string sel_data = selection_data.get_data_as_string();
+	string fn = Glib::filename_from_uri(sel_data);
+	boost::algorithm::trim(fn);
+	bool want_uncertain = true;
+	string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
+	if(content_type == "application/x-bittorrent")
+	{
+		shared_ptr<Torrent> t = m_core->addTorrent(fn);
+		m_treeview->addCell(t);
+	}
 }
 
 bool GtkMainWindow::onSecTick()

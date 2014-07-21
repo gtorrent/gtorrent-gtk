@@ -26,6 +26,7 @@ private:
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
 	void onPropertiesBtnClicked();
+	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
 	GtkMainWindow();
