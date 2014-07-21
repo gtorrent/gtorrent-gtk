@@ -5,7 +5,7 @@
 #include <gtkmm/statusbar.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
-#include <core/Core.hpp>
+#include <../gtorrent-core/src/Core.hpp>
 #include <gtkmm/main.h>
 
 class GtkMainWindow : public Gtk::Window

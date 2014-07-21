@@ -1,6 +1,6 @@
 #include "GtkAddMagnetLinkWindow.hpp"
 #include <gtkmm/button.h>
-#include <core/Core.hpp>
+#include <../gtorrent-core/src/Core.hpp>
 
 GtkAddMagnetLinkWindow::GtkAddMagnetLinkWindow()
 {
