@@ -6,11 +6,11 @@ if (COMMAND cmake_policy)
  cmake_policy (SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
 
-PROJECT (gtorrent)
+PROJECT (gtorrent-gtk)
 
 SET (GTORRENT_VERSION_MAJOR 0)
 SET (GTORRENT_VERSION_MINOR 0)
-SET (GTORRENT_VERSION_PATCH 1)
+SET (GTORRENT_VERSION_PATCH 2)
 
 ############################################################
 
@@ -19,7 +19,7 @@ SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERS
 configure_file(src/utils/Version.hpp.in Version.hpp @ONLY)
 
 # Set compiler flags
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include ~/gee/gtorrent-gtk/src/all.h -Wall")
 
 # Fuck libboost for not providing boost.pc or fucking something
 SET (Boost_USE_STATIC_LIBS ON) 
@@ -30,67 +30,69 @@ FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
 # Find libraries the proper way
 INCLUDE (FindPkgConfig)
 PKG_SEARCH_MODULE(LIBTORRENT REQUIRED libtorrent-rasterbar)
+PKG_SEARCH_MODULE(LIBGTKMM REQUIRED gtkmm-3.0)
+PKG_SEARCH_MODULE(LIBGLIBMM REQUIRED glibmm-2.4)
 
 INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} )
 
 LINK_DIRECTORIES (
     ${Boost_LIBRARY_DIRS}
     ${LIBTORRENT_LIBRARY_DIRS}
+    ${LIBGTKMM_LIBRARY_DIRS}
+    ${LIBGLIBMM_LIBRARY_DIRS}
 	${CMAKE_SOURCE_DIRECTORY}
 )
 
 # Create static libbrary
 
-ADD_LIBRARY ( ${PROJECT_NAME}
-    src/Core.cpp
-    src/Torrent.cpp
-    src/Log.cpp
+ADD_EXECUTABLE ( ${PROJECT_NAME}
+        src/Application.cpp
+        src/core/Base.cpp
+        src/gtk/Gtk.cpp
+        src/gtk/GtkAddMagnetLinkWindow.cpp
+        src/gtk/GtkMainWindow.cpp
+        src/gtk/GtkTorrentTreeView.cpp
+		src/main.cpp
 )
 
-# Create test executable
-ADD_EXECUTABLE ( gTest
-    EXCLUDE_FROM_ALL
-	test/main.cpp
+ADD_LIBRARY ( gtorrent
+		gtorrent-core/src
+		gtorrent-core/src/Core.cpp
+		gtorrent-core/src/Log.cpp
+		gtorrent-core/src/Torrent.cpp
+		gtorrent-core/src/utils
 )
 
-# Make sure libgtorrent.a is built before gTest.exe
-ADD_DEPENDENCIES(gTest gtorrent)
-
-# Add and move test torrents
-add_custom_target(copytorrents
-    COMMENT "Copying torrents"
-)
-FILE(GLOB Torrents ${PROJECT_SOURCE_DIR}/test/*.torrent)
-FOREACH(Torrent ${Torrents})
-    ADD_CUSTOM_COMMAND(TARGET copytorrents 
-        COMMAND ${CMAKE_COMMAND} -E copy ${Torrent} ${CMAKE_BINARY_DIR}/${Torrent_NAME}
-        COMMENT "Copying ${Torrent}"
-    )
-ENDFOREACH()
-ADD_DEPENDENCIES(gTest copytorrents)
+ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
 ADD_DEFINITIONS (
     ${LIBTORRENT_CFLAGS}
 )
 
 INCLUDE_DIRECTORIES (
-    include
-    include/gtorrent
+    gtorrent-core/include
+    gtorrent-core/include/gtorrent
+	src
 	include
     ${Boost_INCLUDE_DIRS}
     ${LIBTORRENT_INCLUDE_DIRS}
+    ${LIBGTKMM_INCLUDE_DIRS}
+    ${LIBGLIBMM_INCLUDE_DIRS}
 )
 
-TARGET_LINK_LIBRARIES ( ${PROJECT_NAME}
+TARGET_LINK_LIBRARIES ( gtorrent
     ${CMAKE_SOURCE_DIRECTORY}/libs/libtorrent.a
     ${Boost_LIBRARIES}
     ${LIBTORRENT_LIBRARIES}
+
 )      
 
-TARGET_LINK_LIBRARIES ( gTest
+TARGET_LINK_LIBRARIES ( gtorrent-gtk
     ${CMAKE_BINARY_DIR}/libgtorrent.a
     ${Boost_LIBRARIES}
     ${LIBTORRENT_LIBRARIES}
+    ${LIBGTKMM_LIBRARIES}
+    ${LIBGLIBMM_LIBRARIES}
 )      
 
 

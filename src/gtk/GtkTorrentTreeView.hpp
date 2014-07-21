@@ -4,7 +4,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
-#include <core/Torrent.hpp>
+#include <gtorrent/Torrent.hpp>
 
 // Gtk Torrent Columns Section
 
