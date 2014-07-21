@@ -2,9 +2,10 @@
 
 GuiGtk::GuiGtk(int argc, char **argv)
 {
-	m_gtkmain = new Gtk::Main(0, 0, false);
-
+	Gtk::Main kit(argc, argv);
 	mainWindow = new GtkMainWindow();
+
+	Gtk::Main::run();
 }
 
 GuiGtk::~GuiGtk()
@@ -17,12 +18,4 @@ GuiGtk::~GuiGtk()
 	// This is called after Core::shutdown
 
 	delete mainWindow;
-}
-
-void GuiGtk::update()
-{
-	while (m_gtkmain->events_pending())
-	{
-		m_gtkmain->iteration();
-	}
 }
