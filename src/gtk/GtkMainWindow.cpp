@@ -169,6 +169,7 @@ void GtkMainWindow::onPropertiesBtnClicked()
 
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
+	Gtk::Main::quit();
 	m_core->shutdown();
 	return false;
 }
