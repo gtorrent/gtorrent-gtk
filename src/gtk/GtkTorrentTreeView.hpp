@@ -78,7 +78,7 @@ private:
 public:
 	GtkTorrentTreeView();
 
-	void addCell(shared_ptr<Torrent> &t);
+	void addCell(shared_ptr<gt::Torrent> &t);
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
 };

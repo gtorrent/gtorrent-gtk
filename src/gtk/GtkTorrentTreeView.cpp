@@ -119,7 +119,7 @@ void GtkTorrentTreeView::setupColumns()
 	}
 }
 
-void GtkTorrentTreeView::addCell(shared_ptr<Torrent> &t)
+void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 {
 	if (t == NULL)
 		return;
@@ -143,7 +143,7 @@ void GtkTorrentTreeView::updateCells()
 	unsigned int i = 0;
 	for (auto & c : m_liststore->children())
 	{
-		shared_ptr<Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
+		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 
 		c[m_cols.m_col_age]      = t->getTextActiveTime();
 		c[m_cols.m_col_eta]      = t->getTextEta();
@@ -179,7 +179,7 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
-	vector<shared_ptr<Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 		t[i]->setPaused(isPaused);// the pause button switches the status
 
