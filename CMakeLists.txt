@@ -6,7 +6,7 @@ if (COMMAND cmake_policy)
  cmake_policy (SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
 
-PROJECT (gtorrent)
+PROJECT (gtorrent-gtk)
 
 SET (GTORRENT_VERSION_MAJOR 0)
 SET (GTORRENT_VERSION_MINOR 0)
@@ -43,11 +43,14 @@ PKG_SEARCH_MODULE(LIBGLIBMM REQUIRED glibmm-2.4)
 INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} )
 
 LINK_DIRECTORIES (
-        ${Boost_LIBRARY_DIRS}
-        ${LIBTORRENT_LIBRARY_DIRS}
-        ${LIBGTKMM_LIBRARY_DIRS}
-        ${LIBGLIBMM_LIBRARY_DIRS}
+    ${Boost_LIBRARY_DIRS}
+    ${LIBTORRENT_LIBRARY_DIRS}
+    ${LIBGTKMM_LIBRARY_DIRS}
+    ${LIBGLIBMM_LIBRARY_DIRS}
+	${CMAKE_SOURCE_DIRECTORY}
 )
+
+# Create static libbrary
 
 ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/Application.cpp
@@ -56,11 +59,18 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/gtk/GtkAddMagnetLinkWindow.cpp
         src/gtk/GtkMainWindow.cpp
         src/gtk/GtkTorrentTreeView.cpp
-        gtorrent-core/src/Core.cpp
-        gtorrent-core/src/Torrent.cpp
-        gtorrent-core/src/Log.cpp
-        src/main.cpp
+		src/main.cpp
 )
+
+ADD_LIBRARY ( gtorrent
+		gtorrent-core/src
+		gtorrent-core/src/Core.cpp
+		gtorrent-core/src/Log.cpp
+		gtorrent-core/src/Torrent.cpp
+		gtorrent-core/src/utils
+)
+
+ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
 ADD_DEFINITIONS (
         ${LIBTORRENT_CFLAGS}
@@ -82,6 +92,30 @@ TARGET_LINK_LIBRARIES ( ${PROJECT_NAME}
         ${LIBTORRENT_LIBRARIES}
         ${LIBGTKMM_LIBRARIES}
         ${LIBGLIBMM_LIBRARIES}
+)
+    gtorrent-core/include
+    gtorrent-core/include/gtorrent
+	src
+	include
+    ${Boost_INCLUDE_DIRS}
+    ${LIBTORRENT_INCLUDE_DIRS}
+    ${LIBGTKMM_INCLUDE_DIRS}
+    ${LIBGLIBMM_INCLUDE_DIRS}
+)
+
+TARGET_LINK_LIBRARIES ( gtorrent
+    ${CMAKE_SOURCE_DIRECTORY}/libs/libtorrent.a
+    ${Boost_LIBRARIES}
+    ${LIBTORRENT_LIBRARIES}
+
+)
+
+TARGET_LINK_LIBRARIES ( gtorrent-gtk
+    ${CMAKE_BINARY_DIR}/libgtorrent.a
+    ${Boost_LIBRARIES}
+    ${LIBTORRENT_LIBRARIES}
+    ${LIBGTKMM_LIBRARIES}
+    ${LIBGLIBMM_LIBRARIES}
 )
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${PREFIX}/bin/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
