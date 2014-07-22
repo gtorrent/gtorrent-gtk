@@ -63,9 +63,9 @@ private:
 	vector<unsigned> selectedIndices();
 
 	/* Event handlers for clicks on the controls */
-	bool       torrentView_onClick(GdkEventButton *event);
-	bool    torrentColumns_onClick(GdkEventButton *event);
-	bool ColumnContextMenu_onClick(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
+	bool         torrentView_onClick(GdkEventButton *event);
+	bool      torrentColumns_onClick(GdkEventButton *event);
+	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
 	/* Event handlers for the torrent view context menu */
 	void     stopView_onClick();

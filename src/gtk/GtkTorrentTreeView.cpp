@@ -52,9 +52,10 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	return false;
 }
 
-bool GtkTorrentTreeView::ColumnContextMenu_onClick(GdkEventButton *event, Gtk::TreeViewColumn *tvc)
+bool GtkTorrentTreeView::ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc)
 {
 	tvc->set_visible(!tvc->get_visible());
+	m_rcMenu->hide();
 	return true;
 }
 
@@ -67,7 +68,7 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
                 {
                         Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
                         rcmItem1->set_active(c->get_visible());
-                        rcmItem1->signal_button_press_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onClick), c));
+                        rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
                         m_rcMenu->add(*rcmItem1);
                 }
 
