@@ -13,15 +13,11 @@ private:
 	Gtk::TextView *m_textview;
 
 	// Signal Responders
-
 	void onAddBtnClicked();
 	void onClipboardReady(const Glib::ustring &text);
-
 public:
 	GtkAddMagnetLinkWindow();
-
+	
 	// Getters
-
 	string getMagnetURL();
 };
-

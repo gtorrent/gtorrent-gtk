@@ -18,14 +18,12 @@ private:
 	// Gtk::Statusbar *status;
 
 	// Signal Responders
-
 	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
 	void onPauseBtnClicked();
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
-	void onPropertiesBtnClicked();
 
 public:
 	GtkMainWindow();

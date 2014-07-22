@@ -13,8 +13,6 @@ private:
 public:
 	GuiGtk(int argc, char **argv);
 	~GuiGtk();
-
 	// Public Members & Functions
-
 	void update();
 };

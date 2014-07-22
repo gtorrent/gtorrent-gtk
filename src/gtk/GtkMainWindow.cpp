@@ -9,37 +9,32 @@
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
-	//TODO:This needs to be refactored
 	this->set_position(Gtk::WIN_POS_CENTER);
 	this->set_default_size(800, 500);
 	m_treeview = Gtk::manage(new GtkTorrentTreeView());
 	this->add(*m_treeview);
-
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
 	header->set_show_close_button(true);
 
-	Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
-	Gtk::VSeparator *separator0 = Gtk::manage(new Gtk::VSeparator());
+	//Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::Button *btn_up          = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_down        = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
-	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
 
 	btn_add_link->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
 	btn_pause->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
 	btn_resume->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
 
-	btn_connect->set_image_from_icon_name     ("gtk-directory");
+	//btn_connect->set_image_from_icon_name     ("gtk-directory");
 	btn_add_torrent->set_image_from_icon_name ("gtk-add");
 	btn_add_link->set_image_from_icon_name    ("edit-paste");
 	btn_up->set_image_from_icon_name          ("gtk-go-up");
@@ -47,20 +42,16 @@ GtkMainWindow::GtkMainWindow() :
 	btn_resume->set_image_from_icon_name      ("media-playback-start");
 	btn_pause->set_image_from_icon_name       ("media-playback-pause");
 	btn_remove->set_image_from_icon_name      ("gtk-cancel");
-	btn_properties->set_image_from_icon_name  ("gtk-properties");
 
-	header->add(*btn_connect);
-	header->add(*separator0);
-	header->add(*btn_properties);
-	header->add(*separator1);
+	//header->add(*btn_connect);
 	header->add(*btn_add_torrent);
 	header->add(*btn_add_link);
-	header->add(*separator2);
-	header->add(*btn_remove);
-	header->add(*btn_resume);
-	header->add(*btn_pause);
 	header->add(*btn_up);
 	header->add(*btn_down);
+	header->add(*btn_resume);
+	header->add(*btn_pause);
+	header->add(*separator);
+	header->add(*btn_remove);
 
 	this->set_titlebar(*header);
 	this->show_all();
@@ -136,20 +127,6 @@ void GtkMainWindow::onRemoveBtnClicked()
 
 	//remove the torrent from treeview
 	//torrent.remove();
-}
-
-void GtkMainWindow::onPropertiesBtnClicked()
-{
-	/*GtkPropertiesWindow d;
-	d.set_transient_for(*this);
-	int r = d.run();
-
-	switch (r)
-	{
-	case Gtk::RESPONSE_OK:
-		//TODO: Store slected settings to .config file
-		break;
-	}*/
 }
 
 bool GtkMainWindow::onDestroy(GdkEventAny *event)

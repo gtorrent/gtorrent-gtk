@@ -133,12 +133,12 @@ void GtkTorrentTreeView::addCell(shared_ptr<Torrent> &t)
 
 	Gtk::TreeModel::Row row     = *(m_liststore->append());
 
-	row[m_cols.m_col_age]       = t->getTextActiveTime();
-	row[m_cols.m_col_eta]       = t->getTextEta();
-	row[m_cols.m_col_name]      = t->getHandle().name();
+	row[m_cols.m_col_age]       = t->getTimeString(m_handle.status().active_time);
+	row[m_cols.m_col_eta]       = t->getTimeString((getDownloadRate() <= 0) ? -1 : (getWanted() / getDownloadRate()));
+	row[m_cols.m_col_name]      = t->m_handle.name();
 	row[m_cols.m_col_status]		= t->getTextState();
-	row[m_cols.m_col_seeders]   = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]  = t->getTotalLeechers();
+	row[m_cols.m_col_seeders]   = t->m_handle.status().num_seeds;
+	row[m_cols.m_col_leechers]  = t->m_handle.status().num_peers - m_handle.status().num_seeds;
 	row[m_cols.m_col_ul_total]  = t->getTextTotalUploaded();
 	row[m_cols.m_col_dl_total]  = t->getTextTotalDownloaded();
 	row[m_cols.m_col_size]      = t->getTextSize();
@@ -153,12 +153,12 @@ void GtkTorrentTreeView::updateCells()
 	{
 		shared_ptr<Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 
-		c[m_cols.m_col_age]      = t->getTextActiveTime();
-		c[m_cols.m_col_eta]      = t->getTextEta();
+		c[m_cols.m_col_age]      = t->getTimeString(m_handle.status().active_time);
+		c[m_cols.m_col_eta]      = t->getTimeString((getDownloadRate() <= 0) ? -1 : (getWanted() / getDownloadRate()));
 		c[m_cols.m_col_status]	 = t->getTextState();
 		c[m_cols.m_col_percent]  = t->getTotalProgress();
-		c[m_cols.m_col_seeders]  = t->getTotalSeeders();
-		c[m_cols.m_col_leechers] = t->getTotalLeechers();
+		c[m_cols.m_col_seeders]  = t->m_handle.status().num_seeds;
+		c[m_cols.m_col_leechers] = t->m_handle.status().num_peers - m_handle.status().num_seeds;
 		c[m_cols.m_col_ul_speed] = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed] = t->getTextDownloadRate();
 		c[m_cols.m_col_ul_total] = t->getTextTotalUploaded();
