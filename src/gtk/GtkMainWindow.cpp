@@ -5,6 +5,7 @@
 #include <Application.hpp>
 #include <gtkmm/stock.h>
 #include <glibmm.h>
+#include <gtkmm/image.h>
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
@@ -14,6 +15,8 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_default_size(800, 500);
 	m_treeview = Gtk::manage(new GtkTorrentTreeView());
 	this->add(*m_treeview);
+
+	this->set_icon_from_file("gtorrent.png");
 
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
