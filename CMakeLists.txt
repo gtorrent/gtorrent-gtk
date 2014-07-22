@@ -18,8 +18,15 @@ SET (GTORRENT_VERSION_PATCH 2)
 SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
 configure_file(src/utils/Version.hpp.in Version.hpp @ONLY)
 
+OPTION(WIN_DEBUG "Disable -mwindows for debugging purposes" OFF)
+IF (WIN32 AND (NOT WIN_DEBUG))
+    SET (WIN32_CXXFLAGS "-mwindows" ) #Prevents process from automatically spawning a console window.
+ELSE ()
+    SET (WIN32_CXXFLAGS "")
+ENDIF ()
+
 # Set compiler flags
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall ${WIN32_CXXFLAGS}")
 
 # Fuck libboost for not providing boost.pc or fucking something
 SET (Boost_USE_STATIC_LIBS ON) 
@@ -67,6 +74,8 @@ ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
 ADD_DEFINITIONS (
     ${LIBTORRENT_CFLAGS}
+    ${LIBGLIBMM_CFLAGS}
+    ${LIBGTKMM_CFLAGS}
 )
 
 INCLUDE_DIRECTORIES (
