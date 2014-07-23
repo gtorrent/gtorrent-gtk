@@ -98,10 +98,12 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 	boost::algorithm::trim(fn);
 	bool want_uncertain = true;
 	string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
-	if(content_type == "application/x-bittorrent")
+	if(content_type == "application/x-bittorrent" || content_type == ".torrent")
 	{
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
-		m_treeview->addCell(t);
+		if (t)//Checks if t is not null
+			m_treeview->addCell(t);
+		//TODO Add error dialogue if torrent add is unsuccessful
 	}
 }
 
@@ -133,7 +135,7 @@ void GtkMainWindow::onAddBtnClicked()
 	case Gtk::RESPONSE_OK:
 		for (auto & f : fc.get_filenames())
 		{
-			shared_ptr<gt::Torrent> t = m_core->addTorrent(f.c_str());
+			shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
 				m_treeview->addCell(t);
 			//TODO Add error dialogue if torrent add is unsuccessful
