@@ -28,17 +28,19 @@ public:
 		add(m_col_size);
 		add(m_col_remaining);
 		add(m_col_dl_ratio);
+		add(m_col_background);
+		add(m_col_foreground);
 	}
 
 	Gtk::TreeModelColumn<unsigned int>  m_col_queue;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
 	Gtk::TreeModelColumn<unsigned int>  m_col_seeders;
 	Gtk::TreeModelColumn<unsigned int>  m_col_leechers;
 	Gtk::TreeModelColumn<unsigned int>  m_col_percent;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
 	Gtk::TreeModelColumn<unsigned int>  m_col_empty;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_speed;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_speed;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_total;
@@ -46,15 +48,16 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_remaining;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_ratio;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_background;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_foreground;
 };
 
 // Gtk Torrent Tree View Section
-
 class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-
+	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
