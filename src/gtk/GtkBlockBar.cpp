@@ -136,7 +136,7 @@ bool GtkBlockBar::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
 
 		double start = i * increment;
-		cr->rectangle(start, 0, start + increment, height);
+		cr->rectangle(start, 0, increment, height);
 		cr->stroke_preserve();
 		cr->fill();
 	}
