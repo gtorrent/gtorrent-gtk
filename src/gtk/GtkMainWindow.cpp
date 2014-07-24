@@ -33,23 +33,17 @@ GtkMainWindow::GtkMainWindow() :
 	header = Gtk::manage(new Gtk::HeaderBar());
 	header->set_show_close_button(true);
 	header->set_title("gTorrent");
-	//TODO: add max/minimise buttons, next to the close button
-	//header->set_decoration_layout(
-	//		btn_connect,btn_add_torrent,btn_add_link,btn_up,btn_down,btn_pause,
-	//		btn_remove:maximise,minimize,close);
-	//TODO:Here's a nifty connect button to hang connection settings, rate limiter from.
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
 
+	action_group->add(Gtk::Action::create( "Properties", Gtk::Stock::PROPERTIES));
 	action_group->add(Gtk::Action::create(   "Add Link", Gtk::Stock::PASTE),       sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	action_group->add(Gtk::Action::create("Add Torrent", Gtk::Stock::ADD),         sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
-	action_group->add(Gtk::Action::create(    "Connect", Gtk::Stock::DIRECTORY));
-	action_group->add(Gtk::Action::create(      "Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
-	action_group->add(Gtk::Action::create(     "Resume", Gtk::Stock::MEDIA_PLAY),  sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
 	action_group->add(Gtk::Action::create(     "Remove", Gtk::Stock::CANCEL),      sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
-	action_group->add(Gtk::Action::create(       "Down", Gtk::Stock::GO_DOWN));
+	action_group->add(Gtk::Action::create(     "Resume", Gtk::Stock::MEDIA_PLAY),  sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
+	action_group->add(Gtk::Action::create(      "Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
 	action_group->add(Gtk::Action::create(         "Up", Gtk::Stock::GO_UP));
-	action_group->add(Gtk::Action::create( "Properties", Gtk::Stock::PROPERTIES));
+	action_group->add(Gtk::Action::create(       "Down", Gtk::Stock::GO_DOWN));
 
 	Glib::RefPtr<Gtk::UIManager> ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
@@ -58,17 +52,17 @@ GtkMainWindow::GtkMainWindow() :
 	Glib::ustring ui_info =
 	    "<ui>"
 	    "	<toolbar  name='ToolBar'>"
+			"		<toolitem action='Properties' />"
+			"		<separator />"
 	    "		<toolitem action='Add Link' />"
 	    "		<toolitem action='Add Torrent' />"
-	    "		<toolitem action='Connect' />"
-	    "		<separator />"
+			"		<separator />"
+			"		<toolitem action='Remove' />"
 	    "		<toolitem action='Pause' />"
 	    "		<toolitem action='Resume' />"
-	    "		<toolitem action='Remove' />"
 	    "		<separator />"
 	    "		<toolitem action='Down' />"
 	    "		<toolitem action='Up' />"
-	    "		<toolitem action='Properties' />"
 	    "		<separator />"
 	    "	</toolbar>"
 	    "</ui>";
@@ -90,16 +84,8 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
 
 	this->set_titlebar(*header);
-	//status = Gtk::manage(new Gtk::StatusBar());
-	//this->set_decorated(FALSE);
-	//this->set_hide_titlebar_when_maximized(TRUE);
 	this->maximize();
 	this->show_all();
-	//status = Gtk::manage(new Gtk::StatusBar());
-	//this->get_window().set_decoration(64);//WMDecoration.BORDER
-	//this.get_window().set_decorations(Gdk.WMDecoration.BORDER);
-	//this->set_decorations(FALSE);
-	//this->set_decorated(FALSE);
 }
 
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
@@ -129,7 +115,6 @@ void GtkMainWindow::onAddBtnClicked()
 {
 	Gtk::FileChooserDialog fc("Browse for torrent file", Gtk::FILE_CHOOSER_ACTION_OPEN);
 	fc.set_default_size(256, 256);
-	//fc.set_window_position(0, 128);
 	fc.set_select_multiple();
 	fc.set_transient_for(*this);
 	fc.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
