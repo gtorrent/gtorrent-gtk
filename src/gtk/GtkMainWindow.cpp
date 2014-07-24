@@ -17,14 +17,14 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_position(Gtk::WIN_POS_CENTER);
 	this->set_default_size(800, 500);
 
-    m_vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,2));
+	m_vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 2));
 	this->add(*m_vbox);
 
 	m_treeview = Gtk::manage(new GtkTorrentTreeView());
-    m_vbox->pack_start(*m_treeview);
+	m_vbox->pack_start(*m_treeview);
 
-    m_infobar = Gtk::manage(new GtkTorrentInfoBar());
-    m_vbox->pack_start(*m_infobar, Gtk::PACK_SHRINK);
+	m_infobar = Gtk::manage(new GtkTorrentInfoBar());
+	m_vbox->pack_start(*m_infobar, Gtk::PACK_SHRINK);
 
 
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
@@ -119,7 +119,7 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
-    m_infobar->updateInfo(m_treeview->getFirstSelected());
+	m_infobar->updateInfo(m_treeview->getFirstSelected());
 	return true;
 }
 

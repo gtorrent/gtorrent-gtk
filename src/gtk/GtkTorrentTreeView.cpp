@@ -11,15 +11,15 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 
-        this->set_model(m_liststore);
-        this->setupColumns();
+	this->set_model(m_liststore);
+	this->setupColumns();
 }
 
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	if(event->button == 3)
 	{
-		               m_rcMenu	= Gtk::manage(new Gtk::Menu());
+		m_rcMenu	= Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
 		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
@@ -64,13 +64,13 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 	if(event->button == 3)
 	{
 		m_rcMenu = Gtk::manage(new Gtk::Menu());
-                for(auto c : get_columns())
-                {
-                        Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
-                        rcmItem1->set_active(c->get_visible());
-                        rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
-                        m_rcMenu->add(*rcmItem1);
-                }
+		for(auto c : get_columns())
+		{
+			Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
+			rcmItem1->set_active(c->get_visible());
+			rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
+			m_rcMenu->add(*rcmItem1);
+		}
 
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
@@ -116,7 +116,7 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-                c->set_fixed_width(96);
+		c->set_fixed_width(96);
 	}
 }
 
@@ -181,10 +181,10 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-    if(selectedIndices().size() < 1)
-        return nullptr;
-    else
-        return t[selectedIndices()[0]];
+	if(selectedIndices().size() < 1)
+		return nullptr;
+	else
+		return t[selectedIndices()[0]];
 }
 
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)

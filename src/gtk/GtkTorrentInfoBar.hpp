@@ -7,9 +7,9 @@
 class GtkTorrentInfoBar : public Gtk::Box
 {
 private:
-    GtkBlockBar *m_progress;
-    Gtk::Label *m_title;
+	GtkBlockBar *m_progress;
+	Gtk::Label *m_title;
 public:
-    GtkTorrentInfoBar();
-    void updateInfo(shared_ptr<gt::Torrent> t);
+	GtkTorrentInfoBar();
+	void updateInfo(shared_ptr<gt::Torrent> t);
 };
