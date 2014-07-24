@@ -5,6 +5,7 @@
 #include "GtkMainWindow.hpp"
 #include <Application.hpp>
 #include <gtkmm/stock.h>
+#include <gtkmm/image.h>
 #include <glibmm.h>
 #include <giomm.h>
 #include <boost/algorithm/string.hpp>
@@ -16,6 +17,8 @@ GtkMainWindow::GtkMainWindow() :
 	//TODO:This needs to be refactored
 	this->set_position(Gtk::WIN_POS_CENTER);
 	this->set_default_size(800, 500);
+
+	this->set_icon_from_file("gtorrent.png");
 
 	m_vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 2));
 	this->add(*m_vbox);
