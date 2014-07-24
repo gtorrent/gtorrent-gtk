@@ -11,22 +11,7 @@ GtkBlockBar::GtkBlockBar() :
 	m_scale(1000)
 {
 	set_has_window(true);
-
 	set_hexpand(true);
-
-	m_refStyleProvider = Gtk::CssProvider::create();
-	Glib::RefPtr<Gtk::StyleContext> refStyleContext = get_style_context();
-	refStyleContext->add_provider(m_refStyleProvider,
-	                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-	try
-	{
-		m_refStyleProvider->load_from_path("custom_gtk.css");
-	}
-	catch(const Glib::Error& ex)
-	{
-		//cout << "Gtk::CssProvider::load_from_path() failed: " << ex.what() << endl;
-	}
 }
 
 GtkBlockBar::~GtkBlockBar()
