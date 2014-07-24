@@ -43,9 +43,8 @@ Gtk::SizeRequestMode GtkBlockBar::get_request_mode_vfunc() const
 //this widget.
 void GtkBlockBar::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
-    //FIXME: test values
-    minimum_width = m_blocks.size();
-    natural_width = m_blocks.size();
+    minimum_width = 100;
+    natural_width = 500;
 }
 
 void GtkBlockBar::get_preferred_height_for_width_vfunc(int /* width */,
