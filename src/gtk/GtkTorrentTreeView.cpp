@@ -219,7 +219,7 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 
 void GtkTorrentTreeView::stopView_onClick()
 {
-	/* Doesn't do nuffin wrong */
+	setSelectedPaused(true);
 }
 void GtkTorrentTreeView::openView_onClick()
 {
@@ -227,7 +227,7 @@ void GtkTorrentTreeView::openView_onClick()
 }
 void GtkTorrentTreeView::startView_onClick()
 {
-	/* Doesn't do nuffin wrong */
+	setSelectedPaused(false);
 }
 void GtkTorrentTreeView::removeView_onClick()
 {
