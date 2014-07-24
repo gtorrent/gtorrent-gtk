@@ -27,7 +27,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_vbox->pack_start(*m_infobar, Gtk::PACK_SHRINK);
 
 
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
@@ -38,16 +38,18 @@ GtkMainWindow::GtkMainWindow() :
 	//		btn_connect,btn_add_torrent,btn_add_link,btn_up,btn_down,btn_pause,
 	//		btn_remove:maximise,minimize,close);
 	//TODO:Here's a nifty connect button to hang connection settings, rate limiter from.
+
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
-	action_group->add(Gtk::Action::create("Add Link", Gtk::Stock::PASTE), sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
-	action_group->add(Gtk::Action::create("Add Torrent", Gtk::Stock::ADD), sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
-	action_group->add(Gtk::Action::create("Connect", Gtk::Stock::DIRECTORY));
-	action_group->add(Gtk::Action::create("Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
-	action_group->add(Gtk::Action::create("Resume", Gtk::Stock::MEDIA_PLAY), sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
-	action_group->add(Gtk::Action::create("Remove", Gtk::Stock::CANCEL), sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
-	action_group->add(Gtk::Action::create("Down", Gtk::Stock::GO_DOWN));
-	action_group->add(Gtk::Action::create("Up", Gtk::Stock::GO_UP));
-	action_group->add(Gtk::Action::create("Properties", Gtk::Stock::PROPERTIES));
+
+	action_group->add(Gtk::Action::create(   "Add Link", Gtk::Stock::PASTE),       sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
+	action_group->add(Gtk::Action::create("Add Torrent", Gtk::Stock::ADD),         sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
+	action_group->add(Gtk::Action::create(    "Connect", Gtk::Stock::DIRECTORY));
+	action_group->add(Gtk::Action::create(      "Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
+	action_group->add(Gtk::Action::create(     "Resume", Gtk::Stock::MEDIA_PLAY),  sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
+	action_group->add(Gtk::Action::create(     "Remove", Gtk::Stock::CANCEL),      sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
+	action_group->add(Gtk::Action::create(       "Down", Gtk::Stock::GO_DOWN));
+	action_group->add(Gtk::Action::create(         "Up", Gtk::Stock::GO_UP));
+	action_group->add(Gtk::Action::create( "Properties", Gtk::Stock::PROPERTIES));
 
 	Glib::RefPtr<Gtk::UIManager> ui_manager = Gtk::UIManager::create();
 	ui_manager->insert_action_group(action_group);
