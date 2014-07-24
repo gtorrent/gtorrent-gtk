@@ -62,7 +62,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
-	Gtk::CheckMenuItem *rcmItemSeq;
+    Gtk::CheckMenuItem *rcmItemSeq;
 
 	void setupColumns();
 	vector<unsigned> selectedIndices();
@@ -79,8 +79,8 @@ private:
 	void       removeView_onClick();
 	void     priorityView_onClick();
 	void     propertyView_onClick();
-	void  sequentialChange_onRealize();
-	void sequentialChange_onClick();
+    void  sequentialChange_onRealize();
+    void sequentialChange_onClick();
 
 public:
 	GtkTorrentTreeView();
