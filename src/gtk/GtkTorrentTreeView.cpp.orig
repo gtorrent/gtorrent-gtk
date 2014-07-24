@@ -28,11 +28,11 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
-	Gtk::TreeView::on_button_press_event(event);
+    Gtk::TreeView::on_button_press_event(event);
 
 	if(event->button == 3)
 	{
-		m_rcMenu	= Gtk::manage(new Gtk::Menu());
+		               m_rcMenu	= Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
 		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
@@ -189,7 +189,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] =  m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-
+		
 // TODO: Handle with events
 
 		//m_cells[i]->property_text() = t->getTextState();
@@ -209,15 +209,6 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 	return indices;
 }
 
-shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
-{
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-	if(selectedIndices().size() < 1)
-		return nullptr;
-	else
-		return t[selectedIndices()[0]];
-}
-
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
@@ -228,7 +219,7 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 
 void GtkTorrentTreeView::stopView_onClick()
 {
-	setSelectedPaused(true);
+	/* Doesn't do nuffin wrong */
 }
 void GtkTorrentTreeView::openView_onClick()
 {
@@ -236,7 +227,7 @@ void GtkTorrentTreeView::openView_onClick()
 }
 void GtkTorrentTreeView::startView_onClick()
 {
-	setSelectedPaused(false);
+	/* Doesn't do nuffin wrong */
 }
 void GtkTorrentTreeView::removeView_onClick()
 {
@@ -254,24 +245,24 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
-	for (auto i : selectedIndices())
-		t[i]->getHandle().set_sequential_download(rcmItemSeq->get_active());
+    for (auto i : selectedIndices())
+        t[i]->getHandle().set_sequential_download(rcmItemSeq->get_active());
 }
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
-	if(selectedIndices().size() > 0)
-	{
-		bool firstIsSeq = t[selectedIndices()[0]]->getHandle().status().sequential_download;
-		for (auto i : selectedIndices())
-			if(t[i]->getHandle().status().sequential_download != firstIsSeq)
-			{
-				rcmItemSeq->set_inconsistent();
-				return;
-			}
-		rcmItemSeq->set_active(firstIsSeq);
-	}
-	else
-		rcmItemSeq->set_active(false);
+    if(selectedIndices().size() > 0)
+    {
+        bool firstIsSeq = t[selectedIndices()[0]]->getHandle().status().sequential_download;
+        for (auto i : selectedIndices())
+            if(t[i]->getHandle().status().sequential_download != firstIsSeq)
+            {
+                rcmItemSeq->set_inconsistent();
+                return;
+            }
+        rcmItemSeq->set_active(firstIsSeq);
+    }
+    else
+        rcmItemSeq->set_active(false);
 }
