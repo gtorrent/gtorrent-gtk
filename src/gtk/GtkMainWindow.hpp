@@ -2,6 +2,7 @@
 
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
+#include "GtkGraph.hpp"
 #include <gtkmm/headerbar.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/window.h>
@@ -18,6 +19,7 @@ private:
 	Gtk::HeaderBar *header;
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar *m_infobar;
+	GtkGraph *m_graph;
 	// Gtk::Statusbar *status;
 
 	// Signal Responders

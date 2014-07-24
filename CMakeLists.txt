@@ -61,6 +61,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/gtk/GtkTorrentTreeView.cpp
         src/gtk/GtkTorrentInfoBar.cpp
         src/gtk/GtkBlockBar.cpp
+        src/gtk/GtkGraph.cpp
 		src/main.cpp
 )
 
