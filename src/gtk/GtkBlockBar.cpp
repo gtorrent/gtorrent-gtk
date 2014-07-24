@@ -126,8 +126,8 @@ void GtkBlockBar::on_realize()
         set_window(m_refGdkWindow);
 
         //set colors TODO
-        override_background_color(Gdk::RGBA("red"));
-        override_color(Gdk::RGBA("green"));
+        //override_background_color(Gdk::RGBA("red"));
+        //override_color(Gdk::RGBA("green"));
 
         //make the widget receive expose events
         m_refGdkWindow->set_user_data(gobj());
