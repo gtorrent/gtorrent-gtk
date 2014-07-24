@@ -178,6 +178,15 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 	return indices;
 }
 
+shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
+{
+	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+    if(selectedIndices().size() < 1)
+        return nullptr;
+    else
+        return t[selectedIndices()[0]];
+}
+
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();

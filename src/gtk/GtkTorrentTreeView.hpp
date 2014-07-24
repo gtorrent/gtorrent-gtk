@@ -81,4 +81,5 @@ public:
 	void addCell(shared_ptr<gt::Torrent> &t);
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
+    shared_ptr<gt::Torrent> getFirstSelected();
 };
