@@ -29,7 +29,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	if(event->button == 3)
 	{
-		               m_rcMenu	= Gtk::manage(new Gtk::Menu());
+		m_rcMenu	= Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
 		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
@@ -182,7 +182,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] =  m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-		
+
 // TODO: Handle with events
 
 		//m_cells[i]->property_text() = t->getTextState();
@@ -200,6 +200,15 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 	for (auto val : path)
 		indices.push_back(val[0]); // we only get the first index because our tree is 1 node deep
 	return indices;
+}
+
+shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
+{
+	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	if(selectedIndices().size() < 1)
+		return nullptr;
+	else
+		return t[selectedIndices()[0]];
 }
 
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
