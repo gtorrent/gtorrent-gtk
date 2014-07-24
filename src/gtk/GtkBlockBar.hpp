@@ -27,7 +27,6 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
-	Glib::RefPtr<Gtk::CssProvider> m_refStyleProvider;
 private:
 	vector<bool> m_blocks;
 };

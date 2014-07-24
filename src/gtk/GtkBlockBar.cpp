@@ -3,14 +3,12 @@
 #include <gtk/gtkwidget.h>
 #include <gtkmm/cssprovider.h>
 
-//FIXME
 GtkBlockBar::GtkBlockBar() :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("BlockBar"),
 	Gtk::Widget()
 {
 	set_has_window(true);
-	set_hexpand(true);
 }
 
 GtkBlockBar::~GtkBlockBar()
@@ -39,7 +37,6 @@ void GtkBlockBar::get_preferred_height_for_width_vfunc(int /* width */,
 
 void GtkBlockBar::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
-	//FIXME: test values
 	minimum_height = 10;
 	natural_height = 10;
 }
