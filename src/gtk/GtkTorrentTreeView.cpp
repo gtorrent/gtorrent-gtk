@@ -11,8 +11,18 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 
-        this->set_model(m_liststore);
-        this->setupColumns();
+	this->set_model(m_liststore);
+	this->setupColumns();
+
+	m_colors["Paused"]                  = pair<string, string>("#ff00ff", "#00ff00");
+	m_colors["Queued for checking"]     = pair<string, string>("#ff00ff", "#00ff00");
+	m_colors["Downloading metadata..."] = pair<string, string>("#ffff00", "#0000ff");
+	m_colors["Finished"]                = pair<string, string>("#0f0f0f", "#f0f0f0");
+	m_colors["Allocating..."]           = pair<string, string>("#ff0ff0", "#00f00f");
+	m_colors["Resuming..."]             = pair<string, string>("#00ffff", "#ff0000");
+	m_colors["Checking..."]             = pair<string, string>("#f00f0f", "#0ff0f0");
+	m_colors["Seeding"]                 = pair<string, string>("#123456", "#789ABC");
+	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
 }
 
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
@@ -64,13 +74,13 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 	if(event->button == 3)
 	{
 		m_rcMenu = Gtk::manage(new Gtk::Menu());
-                for(auto c : get_columns())
-                {
-                        Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
-                        rcmItem1->set_active(c->get_visible());
-                        rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
-                        m_rcMenu->add(*rcmItem1);
-                }
+		for(auto c : get_columns())
+		{
+			Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
+			rcmItem1->set_active(c->get_visible());
+			rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
+			m_rcMenu->add(*rcmItem1);
+		}
 
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
@@ -87,27 +97,34 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	this->append_column("Queue", m_cols.m_col_queue);
-	this->append_column("Age", m_cols.m_col_age);
-	this->append_column("ETA", m_cols.m_col_eta);
-	this->append_column("Name", m_cols.m_col_name);
-	this->append_column("Seed", m_cols.m_col_seeders);
-	this->append_column("Leech", m_cols.m_col_leechers);
-	this->append_column("Upload Speed", m_cols.m_col_ul_speed);
-	this->append_column("Download Speed", m_cols.m_col_dl_speed);
-	this->append_column("Uploaded", m_cols.m_col_ul_total);
-	this->append_column("Downloaded", m_cols.m_col_dl_total);
-	this->append_column("Size", m_cols.m_col_size);
-	this->append_column("Remains", m_cols.m_col_remaining);
-	this->append_column("Ratio", m_cols.m_col_dl_ratio);
+	append_column("Queue", m_cols.m_col_queue);
+	append_column("Age", m_cols.m_col_age);
+	append_column("ETA", m_cols.m_col_eta);
+	append_column("Name", m_cols.m_col_name);
+	append_column("Seed", m_cols.m_col_seeders);
+	append_column("Leech", m_cols.m_col_leechers);
+	append_column("Upload Speed", m_cols.m_col_ul_speed);
+	append_column("Download Speed", m_cols.m_col_dl_speed);
+	append_column("Uploaded", m_cols.m_col_ul_total);
+	append_column("Downloaded", m_cols.m_col_dl_total);
+	append_column("Size", m_cols.m_col_size);
+	append_column("Remains", m_cols.m_col_remaining);
+	append_column("Ratio", m_cols.m_col_dl_ratio);
+
+	for (auto & c : this->get_columns())
+	{
+		c->add_attribute(dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell())->property_background(), m_cols.m_col_background);
+		c->add_attribute(dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell())->property_foreground(), m_cols.m_col_foreground);
+	}
 
 	cell = Gtk::manage(new Gtk::CellRendererProgress());
 	cid = this->append_column("Progress", *cell);
 	col = this->get_column(cid - 1);
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
+	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 
-	for (auto & c : this->get_columns())
+	for (auto &c : this->get_columns())
 	{
 		Gtk::Button *butt = c->get_button();
 		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentColumns_onClick));
@@ -116,7 +133,7 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-                c->set_fixed_width(96);
+		c->set_fixed_width(96);
 	}
 }
 
@@ -125,18 +142,22 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	if (t == NULL)
 		return;
 
-	Gtk::TreeModel::Row row     = *(m_liststore->append());
+	Gtk::TreeModel::Row row      = *(m_liststore->append());
+	// if there's a % in the state string, then the torrent is downloading
+	string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
 
-	row[m_cols.m_col_age]       = t->getTextActiveTime();
-	row[m_cols.m_col_eta]       = t->getTextEta();
-	row[m_cols.m_col_name]      = t->getHandle().name();
-	row[m_cols.m_col_seeders]   = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]  = t->getTotalLeechers();
-	row[m_cols.m_col_ul_total]  = t->getTextTotalUploaded();
-	row[m_cols.m_col_dl_total]  = t->getTextTotalDownloaded();
-	row[m_cols.m_col_size]      = t->getTextSize();
-	row[m_cols.m_col_remaining] = t->getTextRemaining();
-	row[m_cols.m_col_dl_ratio]  = t->getTextTotalRatio();
+	row[m_cols.m_col_age]        = t->getTextActiveTime();
+	row[m_cols.m_col_eta]        = t->getTextEta();
+	row[m_cols.m_col_name]       = t->getHandle().name();
+	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
+	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
+	row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
+	row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
+	row[m_cols.m_col_size]       = t->getTextSize();
+	row[m_cols.m_col_remaining]  = t->getTextRemaining();
+	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+	row[m_cols.m_col_background] =  m_colors[fgbg].first;
+	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 }
 
 void GtkTorrentTreeView::updateCells()
@@ -145,21 +166,24 @@ void GtkTorrentTreeView::updateCells()
 	for (auto & c : m_liststore->children())
 	{
 		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
+		string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
 
-		c[m_cols.m_col_age]      = t->getTextActiveTime();
-		c[m_cols.m_col_eta]      = t->getTextEta();
-		c[m_cols.m_col_percent]  = t->getTotalProgress();
-		c[m_cols.m_col_seeders]  = t->getTotalSeeders();
-		c[m_cols.m_col_leechers] = t->getTotalLeechers();
-		c[m_cols.m_col_ul_speed] = t->getTextUploadRate();
-		c[m_cols.m_col_dl_speed] = t->getTextDownloadRate();
-		c[m_cols.m_col_ul_total] = t->getTextTotalUploaded();
-		c[m_cols.m_col_dl_total] = t->getTextTotalDownloaded();
-		c[m_cols.m_col_size]     = t->getTextSize();
-		c[m_cols.m_col_dl_ratio] = t->getTextTotalRatio();
-		c[m_cols.m_col_eta]      = t->getTextTimeRemaining();
-
-		// TODO: Handle with events
+		c[m_cols.m_col_age]        = t->getTextActiveTime();
+		c[m_cols.m_col_eta]        = t->getTextEta();
+		c[m_cols.m_col_percent]    = t->getTotalProgress();
+		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
+		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
+		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
+		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
+		c[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
+		c[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
+		c[m_cols.m_col_size]       = t->getTextSize();
+		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
+		c[m_cols.m_col_background] =  m_colors[fgbg].first;
+		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
+		
+// TODO: Handle with events
 
 		//m_cells[i]->property_text() = t->getTextState();
 
