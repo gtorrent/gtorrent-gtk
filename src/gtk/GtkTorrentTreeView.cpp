@@ -182,7 +182,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] =  m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-		
+
 // TODO: Handle with events
 
 		//m_cells[i]->property_text() = t->getTextState();

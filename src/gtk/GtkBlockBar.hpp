@@ -28,8 +28,6 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 	Glib::RefPtr<Gtk::CssProvider> m_refStyleProvider;
-
-	int m_scale;
 private:
 	vector<bool> m_blocks;
 };

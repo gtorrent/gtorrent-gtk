@@ -7,8 +7,7 @@
 GtkBlockBar::GtkBlockBar() :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("BlockBar"),
-	Gtk::Widget(),
-	m_scale(1000)
+	Gtk::Widget()
 {
 	set_has_window(true);
 	set_hexpand(true);
