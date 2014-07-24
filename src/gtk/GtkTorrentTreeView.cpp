@@ -116,11 +116,13 @@ void GtkTorrentTreeView::setupColumns()
 		c->add_attribute(dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell())->property_background(), m_cols.m_col_background);
 		c->add_attribute(dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell())->property_foreground(), m_cols.m_col_foreground);
 	}
+
 	cell = Gtk::manage(new Gtk::CellRendererProgress());
 	cid = this->append_column("Progress", *cell);
 	col = this->get_column(cid - 1);
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
+	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 
 	for (auto &c : this->get_columns())
 	{
@@ -155,7 +157,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
-	row[m_cols.m_col_background] =  m_colors[fgbg].second;
+	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 }
 
 void GtkTorrentTreeView::updateCells()
@@ -179,7 +181,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] =  m_colors[fgbg].first;
-		c[m_cols.m_col_background] =  m_colors[fgbg].second;
+		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 		
 // TODO: Handle with events
 
