@@ -24,11 +24,5 @@ int Application::run(int argc, char **argv)
 	gt::Log::Debug("Starting up GUI layer...");
 	m_gui = make_shared<GuiGtk>(argc, argv);
 
-	while (m_core->isRunning())
-	{
-		m_core->update();
-		m_gui->update();
-	}
-
 	return 0;
 }

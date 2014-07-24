@@ -4,6 +4,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/checkmenuitem.h>
 #include <gtorrent/Torrent.hpp>
 
 // Gtk Torrent Columns Section
@@ -28,17 +29,19 @@ public:
 		add(m_col_size);
 		add(m_col_remaining);
 		add(m_col_dl_ratio);
+		add(m_col_background);
+		add(m_col_foreground);
 	}
 
 	Gtk::TreeModelColumn<unsigned int>  m_col_queue;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
 	Gtk::TreeModelColumn<unsigned int>  m_col_seeders;
 	Gtk::TreeModelColumn<unsigned int>  m_col_leechers;
 	Gtk::TreeModelColumn<unsigned int>  m_col_percent;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
 	Gtk::TreeModelColumn<unsigned int>  m_col_empty;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_speed;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_speed;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_total;
@@ -46,34 +49,38 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_remaining;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_ratio;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_background;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_foreground;
 };
 
 // Gtk Torrent Tree View Section
-
 class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-
+	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
+	Gtk::CheckMenuItem *rcmItemSeq;
 
 	void setupColumns();
 	vector<unsigned> selectedIndices();
 
 	/* Event handlers for clicks on the controls */
-	bool       torrentView_onClick(GdkEventButton *event);
-	bool    torrentColumns_onClick(GdkEventButton *event);
-	bool ColumnContextMenu_onClick(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
+	bool         torrentView_onClick(GdkEventButton *event);
+	bool      torrentColumns_onClick(GdkEventButton *event);
+	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
 	/* Event handlers for the torrent view context menu */
-	void     stopView_onClick();
-	void     openView_onClick();
-	void    startView_onClick();
-	void   removeView_onClick();
-	void priorityView_onClick();
-	void propertyView_onClick();
+	void         stopView_onClick();
+	void         openView_onClick();
+	void        startView_onClick();
+	void       removeView_onClick();
+	void     priorityView_onClick();
+	void     propertyView_onClick();
+	void  sequentialChange_onRealize();
+	void sequentialChange_onClick();
 
 public:
 	GtkTorrentTreeView();
@@ -81,4 +88,5 @@ public:
 	void addCell(shared_ptr<gt::Torrent> &t);
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
+	shared_ptr<gt::Torrent> getFirstSelected();
 };

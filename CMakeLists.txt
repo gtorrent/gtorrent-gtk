@@ -18,8 +18,15 @@ SET (GTORRENT_VERSION_PATCH 2)
 SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
 configure_file(src/utils/Version.hpp.in Version.hpp @ONLY)
 
+OPTION(WIN_DEBUG "Disable -mwindows for debugging purposes" OFF)
+IF (WIN32 AND (NOT WIN_DEBUG))
+    SET (WIN32_CXXFLAGS "-mwindows" ) #Prevents process from automatically spawning a console window.
+ELSE ()
+    SET (WIN32_CXXFLAGS "")
+ENDIF ()
+
 # Set compiler flags
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall ${WIN32_CXXFLAGS}")
 
 # Fuck libboost for not providing boost.pc or fucking something
 SET (Boost_USE_STATIC_LIBS ON) 
@@ -52,6 +59,8 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/gtk/GtkAddMagnetLinkWindow.cpp
         src/gtk/GtkMainWindow.cpp
         src/gtk/GtkTorrentTreeView.cpp
+        src/gtk/GtkTorrentInfoBar.cpp
+        src/gtk/GtkBlockBar.cpp
 		src/main.cpp
 )
 
@@ -67,6 +76,8 @@ ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
 ADD_DEFINITIONS (
     ${LIBTORRENT_CFLAGS}
+    ${LIBGLIBMM_CFLAGS}
+    ${LIBGTKMM_CFLAGS}
 )
 
 INCLUDE_DIRECTORIES (
@@ -95,7 +106,15 @@ TARGET_LINK_LIBRARIES ( gtorrent-gtk
     ${LIBGLIBMM_LIBRARIES}
 )      
 
+# uninstall target
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/assets/gtorrent.png $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
-INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${PREFIX}/bin/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
