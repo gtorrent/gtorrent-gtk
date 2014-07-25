@@ -18,7 +18,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	//this->pack_end(*m_graph, Gtk::PACK_EXPAND_WIDGET, 5);
 
 	m_notebook->append_page(*m_graph, "Info Graph");
-	m_notebook->append_page(*m_torrent_info, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
