@@ -14,7 +14,6 @@ class GtkMainWindow : public Gtk::Window
 private:
 	shared_ptr<gt::Core> &m_core;
 
-	Gtk::Box *m_vbox;
 	Gtk::HeaderBar *header;
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar *m_infobar;

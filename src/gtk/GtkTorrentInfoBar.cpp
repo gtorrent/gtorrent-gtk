@@ -9,10 +9,10 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_notebook = Gtk::manage(new Gtk::Notebook());
 
 	m_title = Gtk::manage(new Gtk::Label());
-	this->pack_start(*m_title);
+//	this->pack_start(*m_title);
 	
 	m_progress = Gtk::manage(new GtkBlockBar());
-	this->pack_start(*m_notebook);
+//	this->pack_start(*m_notebook);
 
 	m_graph = Gtk::manage(new GtkGraph());
 	//this->pack_end(*m_graph, Gtk::PACK_EXPAND_WIDGET, 5);
@@ -23,6 +23,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
+	if(!selected) return;
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
 	bool selectionExists = false;
