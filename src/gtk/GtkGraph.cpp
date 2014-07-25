@@ -1,10 +1,4 @@
 #include "GtkGraph.hpp"
-#include <Application.hpp>
-#include <gdkmm/general.h>  // for cairo helper functions
-#include <gtk/gtkwidget.h>
-#include <gtkmm/cssprovider.h>
-#include <queue>
-#include <cmath>
 
 /**
 * Sets up the speed graph.

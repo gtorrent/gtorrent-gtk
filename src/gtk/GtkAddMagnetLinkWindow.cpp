@@ -1,6 +1,4 @@
 #include "GtkAddMagnetLinkWindow.hpp"
-#include <gtkmm/button.h>
-#include <gtorrent/Core.hpp>
 
 /**
 * Displays a window for adding magnet links.

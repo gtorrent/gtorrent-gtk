@@ -1,10 +1,3 @@
-#include <gtkmm/cellrendererprogress.h>
-#include <gtkmm/treeviewcolumn.h>
-#include <gtkmm/hvseparator.h>
-#include <gtkmm/checkmenuitem.h>
-#include <gtkmm/menuitem.h>
-#include <gtkmm/treeviewcolumn.h>
-#include <Application.hpp>
 #include "GtkTorrentTreeView.hpp"
 
 /**

@@ -2,6 +2,9 @@
 
 #include <gtkmm/widget.h>
 #include <gtkmm/cssprovider.h>
+#include <gdkmm/general.h>  // for cairo helper functions
+#include <gtk/gtkwidget.h>
+#include <gtkmm/cssprovider.h>
 
 class GtkBlockBar : public Gtk::Widget
 {

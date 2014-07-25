@@ -1,7 +1,4 @@
 #include "GtkBlockBar.hpp"
-#include <gdkmm/general.h>  // for cairo helper functions
-#include <gtk/gtkwidget.h>
-#include <gtkmm/cssprovider.h>
 
 /**
 * Sets up the block bar.
