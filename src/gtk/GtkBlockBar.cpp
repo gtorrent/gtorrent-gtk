@@ -1,7 +1,4 @@
 #include "GtkBlockBar.hpp"
-#include <gdkmm/general.h>  // for cairo helper functions
-#include <gtk/gtkwidget.h>
-#include <gtkmm/cssprovider.h>
 
 GtkBlockBar::GtkBlockBar() :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar

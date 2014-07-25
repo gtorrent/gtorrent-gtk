@@ -1,9 +1,8 @@
 #pragma once
 
-#include <core/Base.hpp>
 #include <gtk/Gtk.hpp>
-#include <gtorrent/Core.hpp>
 #include <Version.hpp>
+#include <gtorrent/Log.hpp>
 
 class Application
 {

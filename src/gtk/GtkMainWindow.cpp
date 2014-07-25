@@ -1,14 +1,4 @@
-#include "GtkAddMagnetLinkWindow.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include <gtkmm/filechooserdialog.h>
-#include <gtkmm/hvseparator.h>
 #include "GtkMainWindow.hpp"
-#include <Application.hpp>
-#include <gtkmm/stock.h>
-#include <glibmm.h>
-#include <giomm.h>
-#include <boost/algorithm/string.hpp>
-#include <gtkmm/uimanager.h>
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
@@ -16,17 +6,15 @@ GtkMainWindow::GtkMainWindow() :
 	//TODO:This needs to be refactored
 	this->set_position(Gtk::WIN_POS_CENTER);
 	this->set_default_size(800, 500);
-
-	m_vbox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 2));
-	this->add(*m_vbox);
+	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 
 	m_treeview = Gtk::manage(new GtkTorrentTreeView());
-	m_vbox->pack_start(*m_treeview);
+	panel->pack1(*m_treeview);
 
 	m_infobar = Gtk::manage(new GtkTorrentInfoBar());
-	m_vbox->pack_start(*m_infobar, Gtk::PACK_SHRINK);
+	panel->pack2(*m_infobar);
 
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
+	Glib::     signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
@@ -51,12 +39,12 @@ GtkMainWindow::GtkMainWindow() :
 	Glib::ustring ui_info =
 	    "<ui>"
 	    "	<toolbar  name='ToolBar'>"
-			"		<toolitem action='Properties' />"
-			"		<separator />"
+		"		<toolitem action='Properties' />"
+		"		<separator />"
 	    "		<toolitem action='Add Link' />"
 	    "		<toolitem action='Add Torrent' />"
-			"		<separator />"
-			"		<toolitem action='Remove' />"
+		"		<separator />"
+		"		<toolitem action='Remove' />"
 	    "		<toolitem action='Pause' />"
 	    "		<toolitem action='Resume' />"
 	    "		<separator />"
@@ -67,7 +55,7 @@ GtkMainWindow::GtkMainWindow() :
 	    "</ui>";
 
 	ui_manager->add_ui_from_string(ui_info);
-
+	this->add(*panel);
 	Gtk::Widget* pToolBar = ui_manager->get_widget("/ToolBar");
 	pToolBar->override_background_color(Gdk::RGBA("0, 0, 0, 0"));
 	header->add(*pToolBar);
@@ -83,7 +71,6 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
 
 	this->set_titlebar(*header);
-	this->maximize();
 	this->show_all();
 }
 

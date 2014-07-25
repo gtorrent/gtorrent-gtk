@@ -1,5 +1,5 @@
-#include "GtkMainWindow.hpp"
 #include "Gtk.hpp"
+#include "GtkMainWindow.hpp"
 
 GuiGtk::GuiGtk(int argc, char **argv)
 {
