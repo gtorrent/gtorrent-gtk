@@ -26,7 +26,6 @@ GtkMainWindow::GtkMainWindow() :
 	m_infobar = Gtk::manage(new GtkTorrentInfoBar());
 	m_vbox->pack_start(*m_infobar, Gtk::PACK_SHRINK);
 
-
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
