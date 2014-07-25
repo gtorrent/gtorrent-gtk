@@ -14,7 +14,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	this->pack_start(*m_title);
 
 	m_progress = Gtk::manage(new GtkBlockBar());
-
 	m_graph = Gtk::manage(new GtkGraph());
 
 	m_notebook->append_page(*m_graph, "Info Graph");
@@ -43,7 +42,8 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 	if(selectionExists)
 	{
 		this->set_visible(true);
-		m_progress->setBlocks(t[selectedIndex]->getPieces());
+		if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+			m_progress->setBlocks(t[selectedIndex]->getPieces());
 		m_title->set_text(t[selectedIndex]->getHandle().name());
 		m_graph->select(selectedIndex);
 	}
