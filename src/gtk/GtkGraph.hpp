@@ -6,11 +6,12 @@
 class GtkGraph : public Gtk::Widget
 {
 public:
-	GtkGraph(unsigned size = 10);
+	GtkGraph(unsigned size = 1000);
 	virtual ~GtkGraph();
 
-    void resize(unsigned size);
-    void add(double d);
+	void resize(unsigned size);
+	void add(unsigned index, double upload, double download);
+	void select(unsigned s);
 
 protected:
 
@@ -29,7 +30,13 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	queue<double> m_history;
-    unsigned m_maxSize;
-    double max(queue<double> q);
+	vector<pair<queue<double>, queue<double>>> m_history;
+	unsigned m_selected;
+	unsigned m_maxSize;
+	double max(queue<double> q);
+	inline double max(queue<double> q1, queue<double> q2)
+	{
+		return max(q1) > max(q2) ? max(q1) : max(q2);
+	}
+	void draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr);
 };
