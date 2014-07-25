@@ -1,5 +1,8 @@
 #include "GtkAddMagnetLinkWindow.hpp"
 
+/**
+* Displays a window for adding magnet links.
+*/
 GtkAddMagnetLinkWindow::GtkAddMagnetLinkWindow()
 {
 	this->set_modal(true);
@@ -21,11 +24,17 @@ GtkAddMagnetLinkWindow::GtkAddMagnetLinkWindow()
 	clip->request_text(sigc::mem_fun(*this, &GtkAddMagnetLinkWindow::onClipboardReady));
 }
 
+/**
+* Gets the magnet url.
+*/
 string GtkAddMagnetLinkWindow::getMagnetURL()
 {
 	return m_textview->get_buffer()->get_text();
 }
 
+/**
+* Gets text from the clipboard.
+*/
 void GtkAddMagnetLinkWindow::onClipboardReady(const Glib::ustring &text)
 {
 	if (gt::Core::isMagnetLink(text))
@@ -35,6 +44,9 @@ void GtkAddMagnetLinkWindow::onClipboardReady(const Glib::ustring &text)
 	}
 }
 
+/**
+* Adds the specified magnet link.
+*/
 void GtkAddMagnetLinkWindow::onAddBtnClicked()
 {
 	close();

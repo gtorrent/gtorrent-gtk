@@ -1,5 +1,8 @@
 #include "GtkGraph.hpp"
 
+/**
+* Sets up the speed graph.
+*/
 GtkGraph::GtkGraph(unsigned size) :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("BlockBar"),
@@ -13,41 +16,56 @@ GtkGraph::~GtkGraph()
 {
 }
 
+/**
+* Gets the vfunc() for speed graph.
+*/
 Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
 {
 	//Accept the default value supplied by the base class.
 	return Gtk::Widget::get_request_mode_vfunc();
 }
 
-//Discover the total amount of minimum space and natural space needed by
-//this widget.
+/**
+* Discovers the total amount of minimum space and natural space needed by the speed graph widget.
+*/
 void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
 	minimum_width = 100;
 	natural_width = 500;
 }
 
+/**
+* Gets the preferred height for the speed graph widget for this particular width.
+*/
 void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
         int& minimum_height, int& natural_height) const
 {
 	get_preferred_height(minimum_height, natural_height);
 }
 
+/**
+* Gets the preferred height for the speed graph widget.
+*/
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = 50;
 	natural_height = 100;
 }
 
+/**
+* Gets the preferred width for the speed graph widget for this particular height.
+*/
 void GtkGraph::get_preferred_width_for_height_vfunc(int /* height */,
         int& minimum_width, int& natural_width) const
 {
 	get_preferred_width(minimum_width, natural_width);
 }
 
+/**
+* Does something with the space that we have actually been given.
+*/
 void GtkGraph::on_size_allocate(Gtk::Allocation& allocation)
 {
-	//Do something with the space that we have actually been given:
 	//(We will not be given heights or widths less than we have requested, though
 	//we might get more)
 
@@ -61,18 +79,27 @@ void GtkGraph::on_size_allocate(Gtk::Allocation& allocation)
 	}
 }
 
+/**
+* Does something when the speed graph is mapped.
+*/
 void GtkGraph::on_map()
 {
 	//Call base class:
 	Gtk::Widget::on_map();
 }
 
+/**
+* Does something when the speed graph is unmapped.
+*/
 void GtkGraph::on_unmap()
 {
 	//Call base class:
 	Gtk::Widget::on_unmap();
 }
 
+/**
+* Does something when the speed graph is realized.
+*/
 void GtkGraph::on_realize()
 {
 	//Do not call base class Gtk::Widget::on_realize().
@@ -112,6 +139,9 @@ void GtkGraph::on_realize()
 	}
 }
 
+/**
+* Does something when the speed graph is unrealized.
+*/
 void GtkGraph::on_unrealize()
 {
 	m_refGdkWindow.reset();
@@ -120,6 +150,9 @@ void GtkGraph::on_unrealize()
 	Gtk::Widget::on_unrealize();
 }
 
+/**
+* Does something when the speed graph is drawn.
+*/
 bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	const double width = (double)get_allocation().get_width();
@@ -214,6 +247,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	return true;
 }
 
+/**
+* Draws the speed graph.
+*/
 void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	if(!q.empty())
@@ -235,6 +271,9 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 
 }
 
+/**
+* Does something when the speed graph is resized.
+*/
 void GtkGraph::resize(unsigned size)
 {
 	m_maxSize = size;
@@ -247,16 +286,9 @@ void GtkGraph::resize(unsigned size)
 	}
 }
 
-/*void print(queue<double> q)// q passed by value on purpose*/
-//{
-//while(!q.empty())
-//{
-//cout << q.front() << ' ';
-//q.pop();
-//}
-//cout << endl;
-/*}*/
-
+/**
+* Does something when the speed graph is added.
+*/
 void GtkGraph::add(unsigned index, double upload, double download)
 {
 	// we want our vector to always have the same size as t
@@ -277,6 +309,9 @@ void GtkGraph::add(unsigned index, double upload, double download)
 	//print(m_history[index].second);
 }
 
+/**
+* Does something when the speed graph is max.???
+*/
 double GtkGraph::max(queue<double> q)// q passed by value on purpose
 {
 	double max = 0;
@@ -289,6 +324,9 @@ double GtkGraph::max(queue<double> q)// q passed by value on purpose
 	return max;
 }
 
+/**
+* Does something when the speed graph is selected.
+*/
 void GtkGraph::select(unsigned s)
 {
 	m_selected = s;
