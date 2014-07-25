@@ -167,6 +167,13 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 }
 
+void GtkTorrentTreeView::removeCell(unsigned index)
+{
+	stringstream strIndex;
+	strIndex << "0:" << index;
+	m_liststore->erase(m_liststore->get_iter(strIndex.str()));
+}
+
 void GtkTorrentTreeView::updateCells()
 {
 	unsigned int i = 0;
@@ -226,6 +233,16 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 
 }
 
+void GtkTorrentTreeView::removeSelected()
+{
+	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	for (auto i : selectedIndices())
+	{
+		removeCell(i);
+		Application::getSingleton()->getCore()->removeTorrent(t[i]);
+	}
+}
+
 void GtkTorrentTreeView::stopView_onClick()
 {
 	setSelectedPaused(true);
@@ -240,7 +257,7 @@ void GtkTorrentTreeView::startView_onClick()
 }
 void GtkTorrentTreeView::removeView_onClick()
 {
-	/* Doesn't do nuffin wrong */
+	removeSelected();
 }
 void GtkTorrentTreeView::priorityView_onClick()
 {
