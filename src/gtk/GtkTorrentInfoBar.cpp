@@ -6,14 +6,20 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	: Gtk::Box(Gtk::ORIENTATION_VERTICAL)
 {
 	//TODO: better layout
+	m_notebook = Gtk::manage(new Gtk::Notebook());
+
 	m_title = Gtk::manage(new Gtk::Label());
 	this->pack_start(*m_title);
-
+	
 	m_progress = Gtk::manage(new GtkBlockBar());
-	this->pack_start(*m_progress);
+	this->pack_start(*m_notebook);
 
 	m_graph = Gtk::manage(new GtkGraph());
-	this->pack_end(*m_graph, Gtk::PACK_EXPAND_WIDGET, 5);
+	//this->pack_end(*m_graph, Gtk::PACK_EXPAND_WIDGET, 5);
+
+	m_notebook->append_page(*m_graph, "Info Graph");
+	m_notebook->append_page(*m_torrent_info, "Torrent Info");
+	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
