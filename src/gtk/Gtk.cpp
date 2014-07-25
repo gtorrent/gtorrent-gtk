@@ -1,4 +1,3 @@
-#include "GtkMainWindow.hpp"
 #include "Gtk.hpp"
 
 GuiGtk::GuiGtk(int argc, char **argv)

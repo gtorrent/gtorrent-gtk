@@ -1,16 +1,4 @@
-#include "GtkAddMagnetLinkWindow.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include <gtkmm/filechooserdialog.h>
-#include <gtkmm/hvseparator.h>
 #include "GtkMainWindow.hpp"
-#include <Application.hpp>
-#include <gtkmm/stock.h>
-#include <glibmm.h>
-#include <giomm.h>
-#include <boost/algorithm/string.hpp>
-#include <gtkmm/uimanager.h>
-#include <gtkmm/paned.h>
-
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
