@@ -10,7 +10,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_title = Gtk::manage(new Gtk::Label());
 	this->pack_start(*m_title);
-	
+
 	m_progress = Gtk::manage(new GtkBlockBar());
 	this->pack_start(*m_notebook);//FIXME: this is misleading m_notebook is getting packed twice
 
@@ -39,8 +39,8 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 	if(selectionExists)
 	{
 		this->set_visible(true);
-        if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
-            m_progress->setBlocks(t[selectedIndex]->getPieces());
+		if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+			m_progress->setBlocks(t[selectedIndex]->getPieces());
 		m_title->set_text(t[selectedIndex]->getHandle().name());
 		m_graph->select(selectedIndex);
 	}
