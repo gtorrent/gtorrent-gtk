@@ -179,9 +179,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		label.str("");
 		label.clear();
 		if(order > 100)
-			label << maxValue / (1024 * 1000) << "MiB/s";
+			label << maxValue / (1024 * 1000) << "MB/s";
 		else
-			label << maxValue / 1024 << "kiB/s";
+			label << maxValue / 1024 << "KB/s";
 		cr->move_to(0, 10);
 		cr->text_path(label.str());
 		cr->fill();
@@ -193,9 +193,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		label.str("");
 		label.clear();
 		if(order > 100)
-			label << maxValue / (2 * 1024 * 1000) << "MiB/s";
+			label << maxValue / (2 * 1024 * 1000) << "MB/s";
 		else
-			label << maxValue / (2 * 1024) << "kiB/s";
+			label << maxValue / (2 * 1024) << "KB/s";
 		cr->move_to(0, height / 2 + 10);
 		cr->text_path(label.str());
 		cr->fill();
@@ -207,9 +207,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		label.str("");
 		label.clear();
 		if(order > 100)
-			label << "0MiB/s";
+			label << "0MB/s";
 		else
-			label << "0kiB/s";
+			label << "0KB/s";
 		cr->move_to(0, height - 5);
 		cr->text_path(label.str());
 		cr->fill();
