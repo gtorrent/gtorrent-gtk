@@ -5,6 +5,9 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/main.h>
 #include <gtkmm/box.h>
+#include <gtkmm/button.h>
+
+#include <gtorrent/Core.hpp>
 
 class GtkAddMagnetLinkWindow : public Gtk::Dialog
 {

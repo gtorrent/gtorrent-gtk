@@ -1,11 +1,18 @@
 #pragma once
 
-#include <gtkmm/cellrendererprogress.h>
+#include <gtorrent/Torrent.hpp>
+
 #include <gtkmm/treemodel.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/cellrendererprogress.h>
+#include <gtkmm/treeviewcolumn.h>
+#include <gtkmm/hvseparator.h>
 #include <gtkmm/checkmenuitem.h>
-#include <gtorrent/Torrent.hpp>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/treeviewcolumn.h>
+
+#include <Application.hpp>
 
 // Gtk Torrent Columns Section
 
@@ -86,7 +93,9 @@ public:
 	GtkTorrentTreeView();
 
 	void addCell(shared_ptr<gt::Torrent> &t);
+	void removeCell(unsigned index);
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
+	void removeSelected();
 	shared_ptr<gt::Torrent> getFirstSelected();
 };

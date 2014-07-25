@@ -1,8 +1,13 @@
 #pragma once
 
+#include <gtorrent/Torrent.hpp>
+
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
-#include <gtorrent/Torrent.hpp>
+#include <gtkmm/label.h>
+
+#include <Application.hpp>
+
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
 
