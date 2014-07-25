@@ -202,10 +202,7 @@ void GtkMainWindow::onResumeBtnClicked()
 */
 void GtkMainWindow::onRemoveBtnClicked()
 {
-	//get the torrent selected in treeview
-
-	//remove the torrent from treeview
-	//torrent.remove();
+	m_treeview->removeSelected();
 }
 
 /**

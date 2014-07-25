@@ -182,6 +182,16 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 }
 
 /**
+* Removes the cell in the torrent tree view.
+*/
+void GtkTorrentTreeView::removeCell(unsigned index)
+{
+	stringstream strIndex;
+	strIndex << "0:" << index;
+	m_liststore->erase(m_liststore->get_iter(strIndex.str()));
+}
+
+/**
 * Updates the cells in the torrent tree view.
 */
 void GtkTorrentTreeView::updateCells()
@@ -253,6 +263,19 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 }
 
 /**
+* Removes the torrent selected in the torrent tree view using the right click menu.
+*/
+void GtkTorrentTreeView::removeSelected()
+{
+	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	for (auto i : selectedIndices())
+	{
+		removeCell(i);
+		Application::getSingleton()->getCore()->removeTorrent(t[i]);
+	}
+}
+
+/**
 * Pauses the torrent selected in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::stopView_onClick()
@@ -281,7 +304,7 @@ void GtkTorrentTreeView::startView_onClick()
 */
 void GtkTorrentTreeView::removeView_onClick()
 {
-	/* Doesn't do nuffin wrong */
+	removeSelected();
 }
 
 /**
