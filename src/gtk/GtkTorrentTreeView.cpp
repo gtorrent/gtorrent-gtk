@@ -1,5 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
-
+#include <giomm/file.h>
 /**
 * Sets up the tree view containing torrent information.
 */
@@ -28,8 +28,12 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	Gtk::TreeView::on_button_press_event(event);
+//	puts("nerds");
+//	printf("%d, %d\n", event->type, event->button);
+	if(event->type == 5 && event->button == 1) //if double left click
+		openView_onClick();
 
-	if(event->button == 3)
+	if(event->button == 3) // if right-click
 	{
 		m_rcMenu	= Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
@@ -237,7 +241,7 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 */
 shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	if(selectedIndices().size() < 1)
 		return nullptr;
 	else
@@ -249,7 +253,7 @@ shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 		t[i]->setPaused(isPaused);// the pause button switches the status
 
@@ -260,7 +264,7 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 */
 void GtkTorrentTreeView::removeSelected()
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 	{
 		removeCell(i);
@@ -281,7 +285,15 @@ void GtkTorrentTreeView::stopView_onClick()
 */
 void GtkTorrentTreeView::openView_onClick()
 {
-	/* Doesn't do nuffin wrong */
+	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
+	shared_ptr<gt::Torrent> t = getFirstSelected();
+	t->getTextState();
+	auto files = t->getHandle().get_torrent_info().files();
+	string path = Application::getSingleton()->getCore()->getDefaultSavePath() + '/' + t->getHandle().get_torrent_info().file_at(0).path;
+	if (files.num_files() > 1) // if there's more than a file, we open the containing folder
+		path = path.substr(0, path.find_last_of('/'));
+	Glib::RefPtr<Gio::File> thingtoopen = Gio::File::create_for_path(path);
+	fileHandler->launch(thingtoopen);
 }
 
 /**
