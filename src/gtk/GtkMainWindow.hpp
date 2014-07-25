@@ -5,7 +5,6 @@
 #include <glibmm.h>
 #include <giomm.h>
 #include <gtkmm/headerbar.h>
-#include <gtkmm/statusbar.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
 #include <gtkmm/main.h>
@@ -20,7 +19,7 @@
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkAddMagnetLinkWindow.hpp"
 
-#include <Application.hpp>
+//#include <Application.hpp>
 
 
 class GtkMainWindow : public Gtk::Window

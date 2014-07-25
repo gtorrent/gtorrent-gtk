@@ -11,6 +11,7 @@
 #include <gtkmm/checkmenuitem.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/treeviewcolumn.h>
+
 #include <Application.hpp>
 
 // Gtk Torrent Columns Section

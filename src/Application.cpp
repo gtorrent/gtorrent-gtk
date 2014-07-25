@@ -1,5 +1,4 @@
 #include "Application.hpp"
-#include <gtorrent/Log.hpp>
 
 shared_ptr<Application> Application::m_app = nullptr;
 
