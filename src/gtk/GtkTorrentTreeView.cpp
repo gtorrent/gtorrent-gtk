@@ -7,6 +7,9 @@
 #include <Application.hpp>
 #include "GtkTorrentTreeView.hpp"
 
+/**
+* Sets up the tree view containing torrent information.
+*/
 GtkTorrentTreeView::GtkTorrentTreeView()
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
@@ -26,6 +29,9 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
 }
 
+/**
+* Sets up the actions for when tree view is clicked.
+*/
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	Gtk::TreeView::on_button_press_event(event);
@@ -69,6 +75,9 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	return true;
 }
 
+/**
+* Sets up the action for when a mouse click is released on the torrent tree view.
+*/
 bool GtkTorrentTreeView::ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc)
 {
 	tvc->set_visible(!tvc->get_visible());
@@ -97,7 +106,9 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 	return true; //The bool that determine if the event has been handled allows to propagete or not a click
 }
 
-// TODO REFACTOR THE LIVING HELL OUT OF THIS ABOMINATION -- nyanpasu
+/**
+* Sets up the columns in the torrent tree view.
+*/
 void GtkTorrentTreeView::setupColumns()
 {
 	unsigned int cid = 0;
@@ -144,6 +155,9 @@ void GtkTorrentTreeView::setupColumns()
 	}
 }
 
+/**
+* Sets up the cells in the torrent tree view.
+*/
 void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 {
 	if (t == NULL)
@@ -167,6 +181,9 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 }
 
+/**
+* Updates the cells in the torrent tree view.
+*/
 void GtkTorrentTreeView::updateCells()
 {
 	unsigned int i = 0;
@@ -198,6 +215,9 @@ void GtkTorrentTreeView::updateCells()
 	}
 }
 
+/**
+* Gets the selected cells in the torrent tree view.
+*/
 vector<unsigned> GtkTorrentTreeView::selectedIndices()
 {
 	Glib::RefPtr<Gtk::TreeSelection> sel = this->get_selection();
@@ -209,6 +229,9 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 	return indices;
 }
 
+/**
+* Gets the first selected cell in the torrent tree view.
+*/
 shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
@@ -218,6 +241,9 @@ shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 		return t[selectedIndices()[0]];
 }
 
+/**
+* Pauses the torrent selected in the torrent tree view.
+*/
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
@@ -226,30 +252,57 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 
 }
 
+/**
+* Pauses the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::stopView_onClick()
 {
 	setSelectedPaused(true);
 }
+
+/**
+* Opens the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::openView_onClick()
 {
 	/* Doesn't do nuffin wrong */
 }
+
+/**
+* Resumes the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::startView_onClick()
 {
 	setSelectedPaused(false);
 }
+
+/**
+* Removes the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::removeView_onClick()
 {
 	/* Doesn't do nuffin wrong */
 }
+
+/**
+* Prioritizes the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::priorityView_onClick()
 {
 	/* Doesn't do nuffin wrong */
 }
+
+/**
+* Launches properties for the torrent selected in the torrent tree view using the right click menu.
+*/
 void GtkTorrentTreeView::propertyView_onClick()
 {
 	/* Doesn't do nuffin wrong */
 }
+
+/**
+* Sets the torrent selected in the torrent tree view using the right click menu to download sequentially.
+*/
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
@@ -257,6 +310,10 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 	for (auto i : selectedIndices())
 		t[i]->getHandle().set_sequential_download(rcmItemSeq->get_active());
 }
+
+/**
+* Handles setting of sequential downloading.
+*/
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();

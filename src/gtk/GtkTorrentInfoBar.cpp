@@ -2,6 +2,9 @@
 #include <gtkmm/label.h>
 #include <Application.hpp>
 
+/**
+* Sets up the torrent info bar.
+*/
 GtkTorrentInfoBar::GtkTorrentInfoBar()
 	: Gtk::Box(Gtk::ORIENTATION_VERTICAL)
 {
@@ -10,7 +13,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_title = Gtk::manage(new Gtk::Label());
 	this->pack_start(*m_title);
-	
+
 	m_progress = Gtk::manage(new GtkBlockBar());
 	this->pack_start(*m_notebook);
 
@@ -21,6 +24,9 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
+/**
+* Updates the torrent info bar.
+*/
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();

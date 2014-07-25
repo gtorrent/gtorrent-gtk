@@ -10,6 +10,9 @@
 #include <boost/algorithm/string.hpp>
 #include <gtkmm/uimanager.h>
 
+/**
+* Sets up the main window.
+*/
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
@@ -87,6 +90,9 @@ GtkMainWindow::GtkMainWindow() :
 	this->show_all();
 }
 
+/**
+* Does something when a file is dropped onto the window.
+*/
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
 	string sel_data = selection_data.get_data_as_string();
@@ -112,6 +118,9 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 	}
 }
 
+/**
+* Does something each second.
+*/
 bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
@@ -119,6 +128,9 @@ bool GtkMainWindow::onSecTick()
 	return true;
 }
 
+/**
+* Does something when the add button is clicked.
+*/
 void GtkMainWindow::onAddBtnClicked()
 {
 	Gtk::FileChooserDialog fc("Browse for torrent file", Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -149,6 +161,9 @@ void GtkMainWindow::onAddBtnClicked()
 	}
 }
 
+/**
+* Does something when the add magnet button is clicked.
+*/
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
 	GtkAddMagnetLinkWindow d;
@@ -166,16 +181,25 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	}
 }
 
+/**
+* Does something when the pause button is clicked.
+*/
 void GtkMainWindow::onPauseBtnClicked()
 {
 	m_treeview->setSelectedPaused(true);
 }
 
+/**
+* Does something when the resume button is clicked.
+*/
 void GtkMainWindow::onResumeBtnClicked()
 {
 	m_treeview->setSelectedPaused(false);
 }
 
+/**
+* Does something when the remove button is clicked.
+*/
 void GtkMainWindow::onRemoveBtnClicked()
 {
 	//get the torrent selected in treeview
@@ -183,21 +207,17 @@ void GtkMainWindow::onRemoveBtnClicked()
 	//remove the torrent from treeview
 	//torrent.remove();
 }
-/*
+
+/**
+* Does something when the properties button is clicked.
+*/
 void GtkMainWindow::onPropertiesBtnClicked()
 {
-	GtkPropertiesWindow d;
-	d.set_transient_for(*this);
-	int r = d.run();
+}
 
-	switch (r)
-	{
-	case Gtk::RESPONSE_OK:
-		//TODO: Store slected settings to .config file
-		break;
-	}
-}*/
-
+/**
+* Does something when the window is destroyed.
+*/
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_core->shutdown();
