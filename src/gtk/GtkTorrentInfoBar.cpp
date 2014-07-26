@@ -8,6 +8,8 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 {
 	//TODO: better layout
 	m_notebook = Gtk::manage(new Gtk::Notebook());
+	m_stat_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
 	m_title = Gtk::manage(new Gtk::Label());
 
@@ -16,7 +18,14 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_progress = Gtk::manage(new GtkBlockBar());
 	m_graph = Gtk::manage(new GtkGraph());
 
+    m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
+    m_progress->set_size_request(0, 50);
+
+
+    m_stat_box->add(*m_piece_box);
+
 	m_notebook->append_page(*m_graph, "Info Graph");
+	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
