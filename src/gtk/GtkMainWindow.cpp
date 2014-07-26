@@ -75,6 +75,8 @@ GtkMainWindow::GtkMainWindow() :
 
 	this->set_titlebar(*header);
 	this->show_all();
+
+	panel->set_position(this->get_height()*0.5);
 }
 
 /**

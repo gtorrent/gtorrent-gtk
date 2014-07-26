@@ -11,7 +11,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_title = Gtk::manage(new Gtk::Label());
 
-	this->pack_start(*m_title);
+	this->pack_start(*m_title, Gtk::PACK_SHRINK);
 
 	m_progress = Gtk::manage(new GtkBlockBar());
 	m_graph = Gtk::manage(new GtkGraph());

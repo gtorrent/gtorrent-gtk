@@ -1,5 +1,6 @@
 #include "GtkTorrentTreeView.hpp"
 #include <giomm/file.h>
+#include <gtkmm/separatormenuitem.h>
 /**
 * Sets up the tree view containing torrent information.
 */
@@ -39,10 +40,10 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
 		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
-		/* If someone finds out how to put a horizontal separator in the menu like on web browsers  put it here */
+		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
 		Gtk::MenuItem *rcmItem4 = Gtk::manage(new Gtk::MenuItem("Open"));
 		Gtk::MenuItem *rcmItem5 = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
-		/* If someone finds out how to put a horizontal separator in the menu like on web browsers  put it here */
+		Gtk::SeparatorMenuItem *rcSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
 		Gtk::MenuItem *rcmItem6 = Gtk::manage(new Gtk::MenuItem("Property"));
 		rcmItemSeq = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
 
@@ -60,8 +61,10 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->add(*rcmItem1);
 		m_rcMenu->add(*rcmItem2);
 		m_rcMenu->add(*rcmItem3);
+		m_rcMenu->add(*rcSep1);
 		m_rcMenu->add(*rcmItem4);
 		m_rcMenu->add(*rcmItem5);
+		m_rcMenu->add(*rcSep2);
 		m_rcMenu->add(*rcmItem6);
 		m_rcMenu->add(*rcmItemSeq);
 
