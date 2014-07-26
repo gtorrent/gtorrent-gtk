@@ -42,12 +42,12 @@ GtkMainWindow::GtkMainWindow() :
 	Glib::ustring ui_info =
 	    "<ui>"
 	    "	<toolbar  name='ToolBar'>"
-		"		<toolitem action='Properties' />"
-		"		<separator />"
+	    "		<toolitem action='Properties' />"
+	    "		<separator />"
 	    "		<toolitem action='Add Link' />"
 	    "		<toolitem action='Add Torrent' />"
-		"		<separator />"
-		"		<toolitem action='Remove' />"
+	    "		<separator />"
+	    "		<toolitem action='Remove' />"
 	    "		<toolitem action='Pause' />"
 	    "		<toolitem action='Resume' />"
 	    "		<separator />"
@@ -76,7 +76,7 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_titlebar(*header);
 	this->show_all();
 
-	panel->set_position(this->get_height()*0.5);
+	panel->set_position(this->get_height() * 0.5);
 }
 
 /**
