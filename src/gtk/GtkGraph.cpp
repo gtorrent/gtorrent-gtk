@@ -246,8 +246,6 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	return true;
 }
-double oldy;
-double oldery;
 /**
 * Draws the speed graph.
 */
@@ -259,17 +257,19 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 		q.pop();
 
 		double x = increment;
+		static double oldy = 0;
+		static double oldery = 0;
 		while(!q.empty())
 		{
 			double y = height - (q.front() * height / maxValue);
 			//cr->line_to(x, y);
-			oldery=oldy;
-			oldy=y;
+			oldery = oldy;
+			oldy = y;
 
 			q.pop();
 
-			cr->curve_to(x+increment,oldery,x+increment,oldy,x+(increment*2), y);
-			x += increment*2;
+			cr->curve_to(x + increment / 2, oldery, x + increment / 2, oldy, x + increment, y);
+			x += increment;
 		}
 		cr->stroke();
 	}
