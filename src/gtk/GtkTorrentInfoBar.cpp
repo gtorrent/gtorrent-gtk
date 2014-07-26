@@ -25,7 +25,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 */
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
-	if(!selected) return;
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
 	bool selectionExists = false;
