@@ -11,10 +11,10 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_default_size(800, 500);
 	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 
-	m_treeview = Gtk::manage(new GtkTorrentTreeView());
-	panel->pack1(*m_treeview);
+	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
+	m_treeview = Gtk::manage(new GtkTorrentTreeView(m_infobar));
 
-	m_infobar = Gtk::manage(new GtkTorrentInfoBar());
+	panel->pack1(*m_treeview);
 	panel->pack2(*m_infobar);
 
 	Glib::     signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);

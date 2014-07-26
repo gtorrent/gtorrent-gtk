@@ -4,7 +4,7 @@
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView()
+GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
@@ -72,6 +72,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->popup(event->button, event->time);
 	}
 
+	m_infobar->updateInfo(getFirstSelected());
 	return true;
 }
 
@@ -288,8 +289,14 @@ void GtkTorrentTreeView::stopView_onClick()
 */
 void GtkTorrentTreeView::openView_onClick()
 {
-	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
 	shared_ptr<gt::Torrent> t = getFirstSelected();
+
+	if(t == nullptr)
+		return;
+	if(!t->getHandle().status().has_metadata)
+		return;
+
+	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
 	t->getTextState();
 	auto files = t->getHandle().get_torrent_info().files();
 	string path = Application::getSingleton()->getCore()->getDefaultSavePath() + '/' + t->getHandle().get_torrent_info().file_at(0).path;
