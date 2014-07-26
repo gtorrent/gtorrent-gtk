@@ -208,7 +208,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
 		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
-        c[m_cols.m_col_name]       = t->getHandle().name();
+		c[m_cols.m_col_name]       = t->getHandle().name();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
