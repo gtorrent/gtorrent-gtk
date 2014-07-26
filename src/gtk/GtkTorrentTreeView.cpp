@@ -21,6 +21,9 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 	m_colors["Checking..."]             = pair<string, string>("#f00f0f", "#0ff0f0");
 	m_colors["Seeding"]                 = pair<string, string>("#123456", "#789ABC");
 	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
+
+	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
+		addCell(tor);
 }
 
 /**
