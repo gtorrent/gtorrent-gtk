@@ -253,7 +253,7 @@ shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 }
 
 /**
-* Pauses the torrent selected in the torrent tree view.
+* Pauses selected torrents in the torrent tree view.
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
@@ -264,7 +264,7 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 }
 
 /**
-* Removes the torrent selected in the torrent tree view using the right click menu.
+* Removes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::removeSelected()
 {
@@ -277,7 +277,7 @@ void GtkTorrentTreeView::removeSelected()
 }
 
 /**
-* Pauses the torrent selected in the torrent tree view using the right click menu.
+* Pauses selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::stopView_onClick()
 {
@@ -285,7 +285,7 @@ void GtkTorrentTreeView::stopView_onClick()
 }
 
 /**
-* Opens the torrent selected in the torrent tree view using the right click menu.
+* Opens the first selected torrent in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::openView_onClick()
 {
@@ -307,7 +307,7 @@ void GtkTorrentTreeView::openView_onClick()
 }
 
 /**
-* Resumes the torrent selected in the torrent tree view using the right click menu.
+* Resumes the selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::startView_onClick()
 {
@@ -315,7 +315,7 @@ void GtkTorrentTreeView::startView_onClick()
 }
 
 /**
-* Removes the torrent selected in the torrent tree view using the right click menu.
+* Removes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::removeView_onClick()
 {
@@ -323,7 +323,7 @@ void GtkTorrentTreeView::removeView_onClick()
 }
 
 /**
-* Prioritizes the torrent selected in the torrent tree view using the right click menu.
+* Prioritizes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::priorityView_onClick()
 {
@@ -331,7 +331,7 @@ void GtkTorrentTreeView::priorityView_onClick()
 }
 
 /**
-* Launches properties for the torrent selected in the torrent tree view using the right click menu.
+* Launches properties for the firs selected torrent in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::propertyView_onClick()
 {
@@ -339,7 +339,7 @@ void GtkTorrentTreeView::propertyView_onClick()
 }
 
 /**
-* Sets the torrent selected in the torrent tree view using the right click menu to download sequentially.
+* Sets the first torrent selected in the torrent tree view using the right click menu to download sequentially.
 */
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
@@ -350,7 +350,7 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 }
 
 /**
-* Handles setting of sequential downloading.
+* Prepares the drawing of the sequential download right click menu item according to the selected torrents.
 */
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
