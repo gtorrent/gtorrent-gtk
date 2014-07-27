@@ -18,6 +18,9 @@ SET (GTORRENT_VERSION_PATCH 2)
 SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
 CONFIGURE_FILE (src/utils/Version.hpp.in Version.hpp @ONLY)
 
+# Set Cmake to build runtime in cwd
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+
 # Options
 OPTION (HAVE_WINDEBUG "Enable -mwindows for debugging purposes" ON)
 
@@ -47,6 +50,8 @@ PKG_SEARCH_MODULE (LIBGLIBMM REQUIRED glibmm-2.4)
 
 # Build gt-core
 ADD_SUBDIRECTORY (gtorrent-core/src)
+
+# Build gt-gtk
 ADD_SUBDIRECTORY (src)
 
 # Uninstall target
