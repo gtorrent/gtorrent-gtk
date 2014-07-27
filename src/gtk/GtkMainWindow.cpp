@@ -11,8 +11,6 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_default_size(800, 500);
 	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 
-	this->set_icon_from_file("gtorrent.png");
-
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(m_infobar));
 
