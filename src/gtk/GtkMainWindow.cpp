@@ -1,3 +1,4 @@
+#include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
 
 /**
@@ -75,6 +76,21 @@ GtkMainWindow::GtkMainWindow() :
 
 	this->set_titlebar(*header);
 	this->show_all();
+
+/*
+  if (config says we've never show the dialog)
+  {
+    GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
+	int code = dialog->run() << endl;
+	if(code != -1)
+    {
+//      plateformgui::associate(bool magnet, bool torrent);
+	    plateformgui::associate(code & 2, code & 1)
+		write in config that dialog has been shown
+    }
+	delete dialog;
+  }
+*/
 }
 
 /**
@@ -92,7 +108,7 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 	else
 	{
 		string fn = Glib::filename_from_uri(sel_data);
-		boost::algorithm::trim(fn);
+		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
 		bool want_uncertain = true;
 		string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")

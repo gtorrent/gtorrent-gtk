@@ -18,7 +18,7 @@ int Application::run(int argc, char **argv)
 {
 	gt::Log::Debug("GTorrent v." GTORRENT_VERSION);
 	gt::Log::Debug("Starting up core library...");
-	m_core = make_shared<gt::Core>();
+	m_core = make_shared<gt::Core>(argc, argv);
 
 	gt::Log::Debug("Starting up GUI layer...");
 	m_gui = make_shared<GuiGtk>(argc, argv);
