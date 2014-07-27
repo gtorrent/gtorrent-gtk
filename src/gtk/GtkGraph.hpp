@@ -1,18 +1,24 @@
 #pragma once
 
+#include <queue>
+#include <cmath>
+
 #include <gtkmm/widget.h>
-#include <gtkmm/cssprovider.h>
-#include <gdkmm/general.h>  // for cairo helper functions
+#include <gdkmm/general.h>
 #include <gtk/gtkwidget.h>
 #include <gtkmm/cssprovider.h>
 
-class GtkBlockBar : public Gtk::Widget
+#include "../Application.hpp"
+
+class GtkGraph : public Gtk::Widget
 {
 public:
-	GtkBlockBar();
-	virtual ~GtkBlockBar();
-	void setBlocks(std::vector<bool> b);
+	GtkGraph(unsigned size = 500);
+	virtual ~GtkGraph();
 
+	void resize(unsigned size);
+	void add(unsigned index, double upload, double download);
+	void select(unsigned s);
 
 protected:
 
@@ -31,5 +37,13 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	std::vector<bool> m_blocks;
+	vector<pair<queue<double>, queue<double>>> m_history;
+	unsigned m_selected;
+	unsigned m_maxSize;
+	double max(queue<double> q);
+	inline double max(queue<double> q1, queue<double> q2)
+	{
+		return max(q1) > max(q2) ? max(q1) : max(q2);
+	}
+	void draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr);
 };
