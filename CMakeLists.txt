@@ -44,6 +44,7 @@ FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
 
 # Find libraries the proper way
 INCLUDE (FindPkgConfig)
+
 PKG_SEARCH_MODULE (LIBTORRENT REQUIRED libtorrent-rasterbar)
 PKG_SEARCH_MODULE (LIBGTKMM REQUIRED gtkmm-3.0)
 PKG_SEARCH_MODULE (LIBGLIBMM REQUIRED glibmm-2.4)
@@ -59,6 +60,8 @@ CONFIGURE_FILE (
 	"${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
 	IMMEDIATE @ONLY)
+
+file(COPY assets/gtorrent.png DESTINATION ${CMAKE_BINARY_DIR})
 
 ADD_CUSTOM_TARGET (uninstall
 	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
