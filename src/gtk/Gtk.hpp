@@ -1,8 +1,9 @@
 #pragma once
 
 #include <gtkmm/settings.h>
-#include <core/Base.hpp>
 #include <gtkmm/main.h>
+
+#include "../core/Base.hpp"
 
 class GuiGtk : public GuiBase
 {
