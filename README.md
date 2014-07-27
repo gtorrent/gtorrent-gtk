@@ -11,4 +11,4 @@ Gtk client built on gtorrent-core
 2. Go into the new directory with `cd gtorrent-gtk`
 3. Install dependencies with `scripts/deps.sh`
 4. Compile with `scripts/install.sh`
-5. Run gtorrent-gtk with `build/gtorrent-gtk`
+5. Run gtorrent-gtk with `cd build && ./gtorrent-gtk`
