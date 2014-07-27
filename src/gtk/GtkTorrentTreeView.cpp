@@ -116,16 +116,16 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column("Queue", m_cols.m_col_queue);
+	append_column("#", m_cols.m_col_queue);
 	append_column("Age", m_cols.m_col_age);
 	append_column("ETA", m_cols.m_col_eta);
 	append_column("Name", m_cols.m_col_name);
 	append_column("Seed", m_cols.m_col_seeders);
 	append_column("Leech", m_cols.m_col_leechers);
-	append_column("Upload Speed", m_cols.m_col_ul_speed);
-	append_column("Download Speed", m_cols.m_col_dl_speed);
-	append_column("Uploaded", m_cols.m_col_ul_total);
-	append_column("Downloaded", m_cols.m_col_dl_total);
+	append_column("Up Speed", m_cols.m_col_ul_speed);
+	append_column("Down Speed", m_cols.m_col_dl_speed);
+	//append_column("Uploaded", m_cols.m_col_ul_total);
+	//append_column("Downloaded", m_cols.m_col_dl_total);
 	append_column("Size", m_cols.m_col_size);
 	append_column("Remains", m_cols.m_col_remaining);
 	append_column("Ratio", m_cols.m_col_dl_ratio);
@@ -152,8 +152,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(96);
+		c->set_fixed_width(120);
 	}
+	this->get_column(0)->set_fixed_width(48);
 }
 
 /**
@@ -173,8 +174,8 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_name]       = t->getHandle().name();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
-	row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
-	row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
+	//row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
+	//row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();

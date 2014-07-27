@@ -26,25 +26,25 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
     m_stat_box->add(*m_piece_box);
 
-  	Gtk::Table *table_layout = Gtk::manage(new Gtk::Table(3, 2, false));
-  	table_layout->set_col_spacings(5);
+  	m_table_layout = Gtk::manage(new Gtk::Table(3, 2, false));
+  	m_table_layout->set_col_spacings(5);
 
-    Gtk::Label *down_total_label = Gtk::manage(new Gtk::Label());
-    down_total_label->set_markup("<b>Downloaded</b>");
-    Gtk::Label *down_total = Gtk::manage(new Gtk::Label("0"));
-    table_layout->attach(*down_total_label, 0, 1, 0, 1, Gtk::AttachOptions::SHRINK);
-    table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-    table_layout->attach(*down_total, 2, 3, 0, 1, Gtk::AttachOptions::SHRINK);
+    m_down_total_label = Gtk::manage(new Gtk::Label());
+    m_down_total_label->set_markup("<b>Downloaded</b>");
+    m_down_total = Gtk::manage(new Gtk::Label("0"));
+    m_table_layout->attach(*m_down_total_label, 0, 1, 0, 1, Gtk::AttachOptions::SHRINK);
+    m_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+    m_table_layout->attach(*m_down_total, 2, 3, 0, 1, Gtk::AttachOptions::SHRINK);
 
-    Gtk::Label *up_total_label = Gtk::manage(new Gtk::Label());
-    up_total_label->set_markup("<b>Uploaded</b>");
-    Gtk::Label *up_total = Gtk::manage(new Gtk::Label("0"));
-    table_layout->attach(*up_total_label, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
-    table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-    table_layout->attach(*up_total, 2, 3, 1, 2, Gtk::AttachOptions::SHRINK);
+    m_up_total_label = Gtk::manage(new Gtk::Label());
+    m_up_total_label->set_markup("<b>Uploaded</b>");
+    m_up_total = Gtk::manage(new Gtk::Label("0"));
+    m_table_layout->attach(*m_up_total_label, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
+    m_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+    m_table_layout->attach(*m_up_total, 2, 3, 1, 2, Gtk::AttachOptions::SHRINK);
 
     m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-    m_stat_box->pack_start(*table_layout, Gtk::PACK_SHRINK);
+    m_stat_box->pack_start(*m_table_layout, Gtk::PACK_SHRINK);
 	m_notebook->append_page(*m_graph, "Info Graph");
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
@@ -75,6 +75,8 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 			m_progress->setBlocks(t[selectedIndex]->getPieces());
 		m_title->set_text(t[selectedIndex]->getHandle().name());
 		m_graph->select(selectedIndex);
+		m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+		m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
 	}
 	else
 		this->set_visible(false);
