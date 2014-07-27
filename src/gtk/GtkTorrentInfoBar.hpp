@@ -22,11 +22,11 @@ private:
 	Gtk::Box *m_stat_box;
 	Gtk::Box *m_piece_box;
 
-    Gtk::Table *m_table_layout;
-    Gtk::Label *m_down_total_label;
-    Gtk::Label *m_down_total;
-    Gtk::Label *m_up_total_label;
-    Gtk::Label *m_up_total;
+	Gtk::Table *m_table_layout;
+	Gtk::Label *m_down_total_label;
+	Gtk::Label *m_down_total;
+	Gtk::Label *m_up_total_label;
+	Gtk::Label *m_up_total;
 public:
 	GtkTorrentInfoBar();
 	void updateInfo(shared_ptr<gt::Torrent> selected);

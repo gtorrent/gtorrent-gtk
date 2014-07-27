@@ -31,5 +31,5 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-        std::vector<bool> m_blocks;
+	std::vector<bool> m_blocks;
 };
