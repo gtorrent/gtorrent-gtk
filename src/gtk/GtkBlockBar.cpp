@@ -1,4 +1,5 @@
 #include "GtkBlockBar.hpp"
+#include <vector>
 
 /**
 * Sets up the block bar.
@@ -177,7 +178,7 @@ bool GtkBlockBar::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 /**
 * Sets the blocks in block bar.
 */
-void GtkBlockBar::setBlocks(vector<bool> b)
+void GtkBlockBar::setBlocks(std::vector<bool> b)
 {
 	m_blocks = b;
 	queue_draw();

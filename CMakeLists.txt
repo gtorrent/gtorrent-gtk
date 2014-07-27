@@ -26,7 +26,7 @@ ELSE ()
 ENDIF ()
 
 # Set compiler flags
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -include all.h -Wall ${WIN32_CXXFLAGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall ${WIN32_CXXFLAGS}")
 
 # Fuck libboost for not providing boost.pc or fucking something
 SET (Boost_USE_STATIC_LIBS ON) 
@@ -42,6 +42,9 @@ PKG_SEARCH_MODULE(LIBGLIBMM REQUIRED glibmm-2.4)
 
 INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} )
 
+# Build gt-core
+ADD_SUBDIRECTORY (gtorrent-core/src)
+
 LINK_DIRECTORIES (
     ${Boost_LIBRARY_DIRS}
     ${LIBTORRENT_LIBRARY_DIRS}
@@ -49,8 +52,6 @@ LINK_DIRECTORIES (
     ${LIBGLIBMM_LIBRARY_DIRS}
 	${CMAKE_SOURCE_DIRECTORY}
 )
-
-# Create static libbrary
 
 ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/Application.cpp
@@ -65,14 +66,6 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 		src/main.cpp
 )
 
-ADD_LIBRARY ( gtorrent
-		gtorrent-core/src
-		gtorrent-core/src/Core.cpp
-		gtorrent-core/src/Log.cpp
-		gtorrent-core/src/Torrent.cpp
-		gtorrent-core/src/utils
-)
-
 ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
 ADD_DEFINITIONS (
@@ -85,22 +78,15 @@ INCLUDE_DIRECTORIES (
     gtorrent-core/include
     gtorrent-core/include/gtorrent
 	src
-	include
     ${Boost_INCLUDE_DIRS}
     ${LIBTORRENT_INCLUDE_DIRS}
     ${LIBGTKMM_INCLUDE_DIRS}
     ${LIBGLIBMM_INCLUDE_DIRS}
 )
 
-TARGET_LINK_LIBRARIES ( gtorrent
-    ${CMAKE_SOURCE_DIRECTORY}/libs/libtorrent.a
-    ${Boost_LIBRARIES}
-    ${LIBTORRENT_LIBRARIES}
-
-)      
-
 TARGET_LINK_LIBRARIES ( gtorrent-gtk
-    ${CMAKE_BINARY_DIR}/libgtorrent.a
+# Harmful here, FIXME
+    ${CMAKE_BINARY_DIR}/gtorrent-core/src/libgtorrent.a
     ${Boost_LIBRARIES}
     ${LIBTORRENT_LIBRARIES}
     ${LIBGTKMM_LIBRARIES}
