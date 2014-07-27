@@ -1,4 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
+
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
 /**

@@ -8,7 +8,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtkmm/cssprovider.h>
 
-#include <Application.hpp>
+#include "../Application.hpp"
 
 class GtkGraph : public Gtk::Widget
 {

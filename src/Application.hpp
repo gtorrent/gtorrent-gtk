@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gtk/Gtk.hpp>
-#include <Version.hpp>
+#include "gtk/Gtk.hpp"
+#include "Version.hpp"
 #include <gtorrent/Log.hpp>
 
 class Application

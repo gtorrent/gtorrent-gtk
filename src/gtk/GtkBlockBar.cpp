@@ -1,4 +1,5 @@
 #include "GtkBlockBar.hpp"
+
 #include <vector>
 
 /**
