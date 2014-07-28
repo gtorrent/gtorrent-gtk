@@ -13,6 +13,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 	this->set_model(m_liststore);
 	this->setupColumns();
 
+	// TODO colours should be obtained via settings
 	m_colors["Paused"]                  = pair<string, string>("#ff00ff", "#00ff00");
 	m_colors["Queued for checking"]     = pair<string, string>("#ff00ff", "#00ff00");
 	m_colors["Downloading metadata..."] = pair<string, string>("#ffff00", "#0000ff");
@@ -33,23 +34,21 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	Gtk::TreeView::on_button_press_event(event);
-//	puts("nerds");
-//	printf("%d, %d\n", event->type, event->button);
 	if(event->type == 5 && event->button == 1) //if double left click
 		openView_onClick();
 
 	if(event->button == 3) // if right-click
 	{
-		m_rcMenu	= Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
-		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
-		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
+		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
+		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
+		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
+		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
 		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
-		Gtk::MenuItem *rcmItem4 = Gtk::manage(new Gtk::MenuItem("Open"));
-		Gtk::MenuItem *rcmItem5 = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
+		Gtk::MenuItem *rcmItem5        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
 		Gtk::SeparatorMenuItem *rcSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
-		Gtk::MenuItem *rcmItem6 = Gtk::manage(new Gtk::MenuItem("Property"));
-		rcmItemSeq = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
+		Gtk::MenuItem *rcmItem6        = Gtk::manage(new Gtk::MenuItem("Property"));
+		rcmItemSeq                     = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
 
 		rcmItem1->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::startView_onClick));
 		rcmItem2->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::stopView_onClick));
