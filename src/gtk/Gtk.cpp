@@ -11,8 +11,8 @@ GuiGtk::GuiGtk(int argc, char **argv)
 	GtkMainWindow mainWindow;
 
 	string binpath = argv[0];
-	binpath = binpath.substr(0, binpath.find_last_of("/")); //TODO: create and use Platform::fileSeparator
-	mainWindow.set_icon_from_file(binpath + "/gtorrent.png");
+	binpath = binpath.substr(0, binpath.find_last_of(gt::Platform::getFileSeparator()));
+	mainWindow.set_icon_from_file(binpath + gt::Platform::getFileSeparator() + "gtorrent.png");
 
 	kit.run(mainWindow);
 }
