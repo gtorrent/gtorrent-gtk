@@ -5,9 +5,10 @@
 * Checks if specified file exists
 */
 // TODO Use platform-specific code
-bool exists (const std::string& name) {
-struct stat buffer;
-return (stat (name.c_str(), &buffer) == 0);
+bool exists (const std::string& name)
+{
+	struct stat buffer;
+	return (stat (name.c_str(), &buffer) == 0);
 }
 
 /**
@@ -23,7 +24,8 @@ GuiGtk::GuiGtk(int argc, char **argv)
 	binpath = binpath.substr(0, binpath.find_last_of("/")); //TODO: create and use Platform::fileSeparator
 
 	string iconpath = binpath + "/gtorrent.png";
-	if (exists (iconpath)) {
+	if (exists (iconpath))
+	{
 		mainWindow.set_icon_from_file(iconpath);
 	}
 

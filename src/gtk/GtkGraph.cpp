@@ -254,7 +254,7 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 	static double oldy;
 	if(!q.empty())
 	{
-        oldy = height + (q.front() * height / maxValue);
+		oldy = height + (q.front() * height / maxValue);
 		cr->move_to(0, oldy);
 		q.pop();
 
