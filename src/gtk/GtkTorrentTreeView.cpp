@@ -304,7 +304,7 @@ void GtkTorrentTreeView::openView_onClick()
 	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
 	t->getTextState();
 	auto files = t->getHandle().get_torrent_info().files();
-	string path = t->getHandle().save_path();
+	string path = t->getHandle().save_path() + '/' + t->getHandle().get_torrent_info().file_at(0).path;
 	if (files.num_files() > 1) // if there's more than a file, we open the containing folder
 		path = path.substr(0, path.find_last_of('/'));
 	Glib::RefPtr<Gio::File> thingtoopen = Gio::File::create_for_path(path);
