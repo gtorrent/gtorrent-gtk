@@ -246,24 +246,27 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	return true;
 }
-
 /**
-* Draws the speed graph.
+* Draws a curve for the speed graph.
 */
 void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
+	static double oldy;
 	if(!q.empty())
 	{
-		cr->move_to(0, height - (q.front() * height / maxValue));
+		oldy = height + (q.front() * height / maxValue);
+		cr->move_to(0, oldy);
 		q.pop();
 
-		double x = increment;
+		double x = 0;
 		while(!q.empty())
 		{
 			double y = height - (q.front() * height / maxValue);
-			cr->line_to(x, y);
-			//cout << x << ' ' << y << endl;
+
+			cr->curve_to(x + increment / 2, oldy, x + increment / 2, y, x + increment, y);
+
 			q.pop();
+			oldy = y;
 			x += increment;
 		}
 		cr->stroke();
@@ -272,7 +275,7 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 }
 
 /**
-* Does something when the speed graph is resized.
+* Resizes the history of the graph widget.
 */
 void GtkGraph::resize(unsigned size)
 {
@@ -287,7 +290,7 @@ void GtkGraph::resize(unsigned size)
 }
 
 /**
-* Does something when the speed graph is added.
+* Adds upload and download values to the history of the torrent identified by the index
 */
 void GtkGraph::add(unsigned index, double upload, double download)
 {
@@ -306,11 +309,10 @@ void GtkGraph::add(unsigned index, double upload, double download)
 	while(m_history[index].second.size() > m_maxSize)
 		m_history[index].second.pop();
 	queue_draw();
-	//print(m_history[index].second);
 }
 
 /**
-* Does something when the speed graph is max.???
+* Returns the maximum value of a queue or 0.
 */
 double GtkGraph::max(queue<double> q)// q passed by value on purpose
 {
@@ -325,7 +327,7 @@ double GtkGraph::max(queue<double> q)// q passed by value on purpose
 }
 
 /**
-* Does something when the speed graph is selected.
+* Selects by index the torrent history to be displayed.
 */
 void GtkGraph::select(unsigned s)
 {

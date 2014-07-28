@@ -12,7 +12,8 @@
 #include <gtkmm/menuitem.h>
 #include <gtkmm/treeviewcolumn.h>
 
-#include <Application.hpp>
+#include "../Application.hpp"
+#include "GtkTorrentInfoBar.hpp"
 
 // Gtk Torrent Columns Section
 
@@ -67,7 +68,7 @@ private:
 	GtkTorrentColumns m_cols;
 	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
-
+	GtkTorrentInfoBar *m_infobar;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
 	Gtk::CheckMenuItem *rcmItemSeq;
 
@@ -90,7 +91,7 @@ private:
 	void sequentialChange_onClick();
 
 public:
-	GtkTorrentTreeView();
+	GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar);
 
 	void addCell(shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);

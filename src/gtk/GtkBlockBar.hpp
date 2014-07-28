@@ -11,7 +11,7 @@ class GtkBlockBar : public Gtk::Widget
 public:
 	GtkBlockBar();
 	virtual ~GtkBlockBar();
-	void setBlocks(vector<bool> b);
+	void setBlocks(std::vector<bool> b);
 
 
 protected:
@@ -31,5 +31,5 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	vector<bool> m_blocks;
+	std::vector<bool> m_blocks;
 };

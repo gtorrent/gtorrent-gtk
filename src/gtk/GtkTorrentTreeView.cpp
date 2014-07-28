@@ -1,9 +1,11 @@
 #include "GtkTorrentTreeView.hpp"
+
 #include <giomm/file.h>
+#include <gtkmm/separatormenuitem.h>
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView()
+GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
@@ -11,6 +13,7 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	this->set_model(m_liststore);
 	this->setupColumns();
 
+	// TODO colours should be obtained via settings
 	m_colors["Paused"]                  = pair<string, string>("#ff00ff", "#00ff00");
 	m_colors["Queued for checking"]     = pair<string, string>("#ff00ff", "#00ff00");
 	m_colors["Downloading metadata..."] = pair<string, string>("#ffff00", "#0000ff");
@@ -20,6 +23,9 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 	m_colors["Checking..."]             = pair<string, string>("#f00f0f", "#0ff0f0");
 	m_colors["Seeding"]                 = pair<string, string>("#123456", "#789ABC");
 	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
+
+	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
+		addCell(tor);
 }
 
 /**
@@ -28,23 +34,21 @@ GtkTorrentTreeView::GtkTorrentTreeView()
 bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 {
 	Gtk::TreeView::on_button_press_event(event);
-//	puts("nerds");
-//	printf("%d, %d\n", event->type, event->button);
 	if(event->type == 5 && event->button == 1) //if double left click
 		openView_onClick();
 
 	if(event->button == 3) // if right-click
 	{
-		m_rcMenu	= Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("Start"));
-		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("Stop"));
-		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("Remove"));
-		/* If someone finds out how to put a horizontal separator in the menu like on web browsers  put it here */
-		Gtk::MenuItem *rcmItem4 = Gtk::manage(new Gtk::MenuItem("Open"));
-		Gtk::MenuItem *rcmItem5 = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
-		/* If someone finds out how to put a horizontal separator in the menu like on web browsers  put it here */
-		Gtk::MenuItem *rcmItem6 = Gtk::manage(new Gtk::MenuItem("Property"));
-		rcmItemSeq = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
+		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
+		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
+		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
+		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
+		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
+		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
+		Gtk::MenuItem *rcmItem5        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+		Gtk::SeparatorMenuItem *rcSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
+		Gtk::MenuItem *rcmItem6        = Gtk::manage(new Gtk::MenuItem("Property"));
+		rcmItemSeq                     = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
 
 		rcmItem1->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::startView_onClick));
 		rcmItem2->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::stopView_onClick));
@@ -60,8 +64,10 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->add(*rcmItem1);
 		m_rcMenu->add(*rcmItem2);
 		m_rcMenu->add(*rcmItem3);
+		m_rcMenu->add(*rcSep1);
 		m_rcMenu->add(*rcmItem4);
 		m_rcMenu->add(*rcmItem5);
+		m_rcMenu->add(*rcSep2);
 		m_rcMenu->add(*rcmItem6);
 		m_rcMenu->add(*rcmItemSeq);
 
@@ -69,6 +75,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->popup(event->button, event->time);
 	}
 
+	m_infobar->updateInfo(getFirstSelected());
 	return true;
 }
 
@@ -112,16 +119,16 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column("Queue", m_cols.m_col_queue);
+	append_column("#", m_cols.m_col_queue);
 	append_column("Age", m_cols.m_col_age);
 	append_column("ETA", m_cols.m_col_eta);
 	append_column("Name", m_cols.m_col_name);
 	append_column("Seed", m_cols.m_col_seeders);
 	append_column("Leech", m_cols.m_col_leechers);
-	append_column("Upload Speed", m_cols.m_col_ul_speed);
-	append_column("Download Speed", m_cols.m_col_dl_speed);
-	append_column("Uploaded", m_cols.m_col_ul_total);
-	append_column("Downloaded", m_cols.m_col_dl_total);
+	append_column("Up Speed", m_cols.m_col_ul_speed);
+	append_column("Down Speed", m_cols.m_col_dl_speed);
+	//append_column("Uploaded", m_cols.m_col_ul_total);
+	//append_column("Downloaded", m_cols.m_col_dl_total);
 	append_column("Size", m_cols.m_col_size);
 	append_column("Remains", m_cols.m_col_remaining);
 	append_column("Ratio", m_cols.m_col_dl_ratio);
@@ -148,8 +155,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(96);
+		c->set_fixed_width(120);
 	}
+	this->get_column(0)->set_fixed_width(48);
 }
 
 /**
@@ -169,8 +177,8 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_name]       = t->getHandle().name();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
-	row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
-	row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
+	//row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
+	//row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
@@ -204,6 +212,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
 		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
+		c[m_cols.m_col_name]       = t->getHandle().name();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
@@ -249,7 +258,7 @@ shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 }
 
 /**
-* Pauses the torrent selected in the torrent tree view.
+* Pauses selected torrents in the torrent tree view.
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
@@ -260,20 +269,20 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 }
 
 /**
-* Removes the torrent selected in the torrent tree view using the right click menu.
+* Removes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::removeSelected()
 {
 	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 	{
-		removeCell(i);
 		Application::getSingleton()->getCore()->removeTorrent(t[i]);
+		removeCell(i);
 	}
 }
 
 /**
-* Pauses the torrent selected in the torrent tree view using the right click menu.
+* Pauses selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::stopView_onClick()
 {
@@ -281,12 +290,18 @@ void GtkTorrentTreeView::stopView_onClick()
 }
 
 /**
-* Opens the torrent selected in the torrent tree view using the right click menu.
+* Opens the first selected torrent in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::openView_onClick()
 {
-	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
 	shared_ptr<gt::Torrent> t = getFirstSelected();
+
+	if(t == nullptr)
+		return;
+	if(!t->getHandle().status().has_metadata)
+		return;
+
+	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
 	t->getTextState();
 	auto files = t->getHandle().get_torrent_info().files();
 	string path = Application::getSingleton()->getCore()->getDefaultSavePath() + '/' + t->getHandle().get_torrent_info().file_at(0).path;
@@ -297,7 +312,7 @@ void GtkTorrentTreeView::openView_onClick()
 }
 
 /**
-* Resumes the torrent selected in the torrent tree view using the right click menu.
+* Resumes the selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::startView_onClick()
 {
@@ -305,7 +320,7 @@ void GtkTorrentTreeView::startView_onClick()
 }
 
 /**
-* Removes the torrent selected in the torrent tree view using the right click menu.
+* Removes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::removeView_onClick()
 {
@@ -313,7 +328,7 @@ void GtkTorrentTreeView::removeView_onClick()
 }
 
 /**
-* Prioritizes the torrent selected in the torrent tree view using the right click menu.
+* Prioritizes selected torrents in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::priorityView_onClick()
 {
@@ -321,7 +336,7 @@ void GtkTorrentTreeView::priorityView_onClick()
 }
 
 /**
-* Launches properties for the torrent selected in the torrent tree view using the right click menu.
+* Launches properties for the firs selected torrent in the torrent tree view using the right click menu.
 */
 void GtkTorrentTreeView::propertyView_onClick()
 {
@@ -329,7 +344,7 @@ void GtkTorrentTreeView::propertyView_onClick()
 }
 
 /**
-* Sets the torrent selected in the torrent tree view using the right click menu to download sequentially.
+* Sets the first torrent selected in the torrent tree view using the right click menu to download sequentially.
 */
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
@@ -340,7 +355,7 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 }
 
 /**
-* Handles setting of sequential downloading.
+* Prepares the drawing of the sequential download right click menu item according to the selected torrents.
 */
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {

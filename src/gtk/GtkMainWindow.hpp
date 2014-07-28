@@ -1,7 +1,5 @@
 #pragma once
 
-#include <gtorrent/Core.hpp>
-
 #include <glibmm.h>
 #include <giomm.h>
 #include <gtkmm/headerbar.h>
@@ -14,6 +12,8 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
+
+#include <gtorrent/Core.hpp>
 
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
