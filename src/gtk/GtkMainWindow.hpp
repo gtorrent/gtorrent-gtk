@@ -18,6 +18,7 @@
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkAddMagnetLinkWindow.hpp"
+#include "GtkAddRssWindow.hpp"
 
 //#include <Application.hpp>
 
@@ -37,6 +38,7 @@ private:
 	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
+	void onAddRssBtnClicked();
 	void onPauseBtnClicked();
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
