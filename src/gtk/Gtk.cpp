@@ -2,6 +2,16 @@
 #include "GtkMainWindow.hpp"
 
 /**
+* Checks if specified file exists
+*/
+// TODO Use platform-specific code
+bool exists (const std::string& name)
+{
+	struct stat buffer;
+	return (stat(name.c_str(), &buffer) == 0);
+}
+
+/**
 * Sets up the main window.
 */
 GuiGtk::GuiGtk(int argc, char **argv)
@@ -12,7 +22,9 @@ GuiGtk::GuiGtk(int argc, char **argv)
 
 	string binpath = argv[0];
 	binpath = binpath.substr(0, binpath.find_last_of(gt::Platform::getFileSeparator()));
-	mainWindow.set_icon_from_file(binpath + gt::Platform::getFileSeparator() + "gtorrent.png");
+	string iconpath = binpath + gt::Platform::getFileSeparator() + "gtorrent.png";
+	if (exists (iconpath))
+		mainWindow.set_icon_from_file(iconpath);
 
 	kit.run(mainWindow);
 }

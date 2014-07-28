@@ -2,5 +2,4 @@
 --indent=tab
 --indent-namespaces
 --pad-oper
---recursive
 --suffix=none
