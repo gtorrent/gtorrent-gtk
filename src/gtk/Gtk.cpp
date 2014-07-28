@@ -4,6 +4,7 @@
 /**
 * Checks if specified file exists
 */
+// TODO Use platform-specific code
 bool exists (const std::string& name) {
 struct stat buffer;
 return (stat (name.c_str(), &buffer) == 0);
