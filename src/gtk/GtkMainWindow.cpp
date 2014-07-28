@@ -1,5 +1,8 @@
+#include "Platform.hpp"
+#include "Settings.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
+
 
 /**
 * Sets up the main window.
@@ -77,20 +80,19 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_titlebar(*header);
 	this->show_all();
 
-/*
-  if (config says we've never show the dialog)
-  {
-    GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
-	int code = dialog->run() << endl;
-	if(code != -1)
-    {
-//      plateformgui::associate(bool magnet, bool torrent);
-	    plateformgui::associate(code & 2, code & 1)
-		write in config that dialog has been shown
-    }
-	delete dialog;
-  }
-*/
+
+
+	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
+		gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	{
+		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
+		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
+		if(code != -1)
+			gt::Platform::associate(code & 2, code & 1);
+		gt::Settings::setOption("FileAssociation", code);
+		delete dialog;
+	}
+
 }
 
 /**
