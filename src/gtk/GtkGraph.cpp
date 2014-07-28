@@ -251,24 +251,22 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 */
 void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
+	static double oldy;
 	if(!q.empty())
 	{
-		cr->move_to(0, height - (q.front() * height / maxValue));
+        oldy = height + (q.front() * height / maxValue);
+		cr->move_to(0, oldy);
 		q.pop();
 
-		double x = increment;
-		static double oldy = 0;
-		static double oldery = 0;
+		double x = 0;
 		while(!q.empty())
 		{
 			double y = height - (q.front() * height / maxValue);
-			//cr->line_to(x, y);
-			oldery = oldy;
-			oldy = y;
+
+			cr->curve_to(x + increment / 2, oldy, x + increment / 2, y, x + increment, y);
 
 			q.pop();
-
-			cr->curve_to(x + increment / 2, oldery, x + increment / 2, oldy, x + increment, y);
+			oldy = y;
 			x += increment;
 		}
 		cr->stroke();
@@ -311,7 +309,6 @@ void GtkGraph::add(unsigned index, double upload, double download)
 	while(m_history[index].second.size() > m_maxSize)
 		m_history[index].second.pop();
 	queue_draw();
-	//print(m_history[index].second);
 }
 
 /**
