@@ -130,6 +130,10 @@ bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
 	m_infobar->updateInfo(m_treeview->getFirstSelected());
+	shared_ptr<gt::Torrent> t = m_core->update();
+	if (t)
+		m_treeview->addCell(t);
+
 	return true;
 }
 
