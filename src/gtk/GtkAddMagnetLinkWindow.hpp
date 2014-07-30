@@ -26,5 +26,4 @@ public:
 	// Getters
 
 	string getMagnetURL();
-	string getRssURL();
 };

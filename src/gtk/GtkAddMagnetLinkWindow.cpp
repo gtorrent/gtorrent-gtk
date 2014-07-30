@@ -33,14 +33,6 @@ string GtkAddMagnetLinkWindow::getMagnetURL()
 }
 
 /**
-* Gets the rss url.
-*/
-string GtkAddMagnetLinkWindow::getRssURL()
-{
-	return m_textview->get_buffer()->get_text();
-}
-
-/**
 * Gets text from the clipboard.
 */
 void GtkAddMagnetLinkWindow::onClipboardReady(const Glib::ustring &text)
