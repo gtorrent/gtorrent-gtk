@@ -13,7 +13,7 @@
 class GtkGraph : public Gtk::Widget
 {
 public:
-	GtkGraph(unsigned size = 500);
+	GtkGraph(unsigned size = 61);
 	virtual ~GtkGraph();
 
 	void resize(unsigned size);
