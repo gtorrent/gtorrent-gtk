@@ -1,4 +1,4 @@
-############################################################
+#############################################################
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
@@ -12,7 +12,7 @@ SET (GTORRENT_VERSION_MAJOR 0)
 SET (GTORRENT_VERSION_MINOR 0)
 SET (GTORRENT_VERSION_PATCH 2)
 
-############################################################
+#############################################################
 
 # Configure version into utils/Version.hpp
 SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
