@@ -6,6 +6,7 @@
 #include <gtkmm/main.h>
 
 #include "../core/Base.hpp"
+#include <gtorrent/Platform.hpp>
 
 class GuiGtk : public GuiBase
 {
