@@ -79,8 +79,7 @@ GtkMainWindow::GtkMainWindow() :
 
 	this->set_titlebar(*header);
 	this->show_all();
-
-
+	m_infobar->set_visible(false);
 
 	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
 		gt::Settings::getOptionAsInt("FileAssociation") == -1)

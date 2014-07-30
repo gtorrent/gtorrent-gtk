@@ -21,7 +21,7 @@ int Application::run(int argc, char **argv)
 {
 	gt::Log::Debug("GTorrent v." GTORRENT_VERSION);
 	gt::Log::Debug("Starting up core library...");
-	cout << "Adding this...:\n\n\n" << argv[1] << endl;
+
 	m_core = make_shared<gt::Core>(argc, argv);
 
 	gt::Log::Debug("Starting up GUI layer...");

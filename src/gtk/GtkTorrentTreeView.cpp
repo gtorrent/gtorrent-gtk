@@ -2,6 +2,10 @@
 
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
+#include <Log.hpp>
+#include <Settings.hpp>
+#include <Platform.hpp>
+
 /**
 * Sets up the tree view containing torrent information.
 */
@@ -14,15 +18,15 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 	this->setupColumns();
 
 	// TODO colours should be obtained via settings
-	m_colors["Paused"]                  = pair<string, string>("#ff00ff", "#00ff00");
-	m_colors["Queued for checking"]     = pair<string, string>("#ff00ff", "#00ff00");
-	m_colors["Downloading metadata..."] = pair<string, string>("#ffff00", "#0000ff");
-	m_colors["Finished"]                = pair<string, string>("#0f0f0f", "#f0f0f0");
-	m_colors["Allocating..."]           = pair<string, string>("#ff0ff0", "#00f00f");
-	m_colors["Resuming..."]             = pair<string, string>("#00ffff", "#ff0000");
-	m_colors["Checking..."]             = pair<string, string>("#f00f0f", "#0ff0f0");
-	m_colors["Seeding"]                 = pair<string, string>("#123456", "#789ABC");
-	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
+	m_colors["Paused"]                  = pair<string, string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
+	m_colors["Queued for checking"]     = pair<string, string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
+	m_colors["Downloading metadata..."] = pair<string, string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
+	m_colors["Finished"]                = pair<string, string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
+	m_colors["Allocating..."]           = pair<string, string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
+	m_colors["Resuming..."]             = pair<string, string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
+	m_colors["Checking..."]             = pair<string, string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
+	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
+	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
@@ -119,19 +123,17 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column("#", m_cols.m_col_queue);
-	append_column("Age", m_cols.m_col_age);
-	append_column("ETA", m_cols.m_col_eta);
-	append_column("Name", m_cols.m_col_name);
-	append_column("Seed", m_cols.m_col_seeders);
-	append_column("Leech", m_cols.m_col_leechers);
-	append_column("Up Speed", m_cols.m_col_ul_speed);
+	append_column(         "#", m_cols.m_col_queue);
+	append_column(       "Age", m_cols.m_col_age);
+	append_column(       "ETA", m_cols.m_col_eta);
+	append_column(      "Name", m_cols.m_col_name);
+	append_column(      "Seed", m_cols.m_col_seeders);
+	append_column(     "Leech", m_cols.m_col_leechers);
+	append_column(  "Up Speed", m_cols.m_col_ul_speed);
 	append_column("Down Speed", m_cols.m_col_dl_speed);
-	//append_column("Uploaded", m_cols.m_col_ul_total);
-	//append_column("Downloaded", m_cols.m_col_dl_total);
-	append_column("Size", m_cols.m_col_size);
-	append_column("Remains", m_cols.m_col_remaining);
-	append_column("Ratio", m_cols.m_col_dl_ratio);
+	append_column(      "Size", m_cols.m_col_size);
+	append_column(   "Remains", m_cols.m_col_remaining);
+	append_column(     "Ratio", m_cols.m_col_dl_ratio);
 
 	for (auto & c : this->get_columns())
 	{
@@ -177,13 +179,12 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_name]       = t->getHandle().name();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
-	//row[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
-	//row[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
+
 }
 
 /**
@@ -208,20 +209,17 @@ void GtkTorrentTreeView::updateCells()
 		string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
-		c[m_cols.m_col_eta]        = t->getTextEta();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
 		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
 		c[m_cols.m_col_name]       = t->getHandle().name();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
-		c[m_cols.m_col_ul_total]   = t->getTextTotalUploaded();
-		c[m_cols.m_col_dl_total]   = t->getTextTotalDownloaded();
 		c[m_cols.m_col_size]       = t->getTextSize();
-		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+		c[m_cols.m_col_dl_ratio]   = t->getTextState();
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
-		c[m_cols.m_col_background] =  m_colors[fgbg].first;
-		c[m_cols.m_col_foreground] =  m_colors[fgbg].second;
+		c[m_cols.m_col_background] = m_colors[fgbg].first;
+		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 
 // TODO: Handle with events
 
@@ -301,14 +299,7 @@ void GtkTorrentTreeView::openView_onClick()
 	if(!t->getHandle().status().has_metadata)
 		return;
 
-	Glib::RefPtr<Gio::AppInfo> fileHandler = Gio::AppInfo::create_from_commandline("xdg-open", "If I knew I wouldn't ask, you turbonerd.", Gio::APP_INFO_CREATE_SUPPORTS_URIS);
-	t->getTextState();
-	auto files = t->getHandle().get_torrent_info().files();
-	string path = t->getHandle().save_path() + '/' + t->getHandle().get_torrent_info().file_at(0).path;
-	if (files.num_files() > 1) // if there's more than a file, we open the containing folder
-		path = path.substr(0, path.find_last_of('/'));
-	Glib::RefPtr<Gio::File> thingtoopen = Gio::File::create_for_path(path);
-	fileHandler->launch(thingtoopen);
+	gt::Platform::openTorrent(t);
 }
 
 /**
