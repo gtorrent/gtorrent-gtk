@@ -42,7 +42,7 @@ install:
         - ./configure --prefix=/usr
         - make
         - sudo make install
-		- cd ..
+        - cd ..
 script:
         - mkdir -p build/
         - cd build/
