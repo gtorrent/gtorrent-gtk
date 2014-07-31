@@ -176,7 +176,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_eta]        = t->getTextEta();
-	row[m_cols.m_col_name]       = t->getHandle().name();
+	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
 	row[m_cols.m_col_size]       = t->getTextSize();
@@ -212,7 +212,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
 		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
-		c[m_cols.m_col_name]       = t->getHandle().name();
+		c[m_cols.m_col_name]       = t->getName();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
@@ -294,9 +294,7 @@ void GtkTorrentTreeView::openView_onClick()
 {
 	shared_ptr<gt::Torrent> t = getFirstSelected();
 
-	if(t == nullptr)
-		return;
-	if(!t->getHandle().status().has_metadata)
+	if(t == nullptr || !t->hasMetadata())
 		return;
 
 	gt::Platform::openTorrent(t);
@@ -342,7 +340,7 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
 	for (auto i : selectedIndices())
-		t[i]->getHandle().set_sequential_download(rcmItemSeq->get_active());
+		t[i]->setSequentialDownload(rcmItemSeq->get_active());
 }
 
 /**
@@ -354,9 +352,9 @@ void GtkTorrentTreeView::sequentialChange_onRealize()
 
 	if(selectedIndices().size() > 0)
 	{
-		bool firstIsSeq = t[selectedIndices()[0]]->getHandle().status().sequential_download;
+		bool firstIsSeq = t[selectedIndices()[0]]->SequentialDownloadEnabled();
 		for (auto i : selectedIndices())
-			if(t[i]->getHandle().status().sequential_download != firstIsSeq)
+			if(t[i]->SequentialDownloadEnabled() != firstIsSeq)
 			{
 				rcmItemSeq->set_inconsistent();
 				return;

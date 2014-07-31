@@ -74,7 +74,7 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 		this->set_visible(true);
 		if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
 			m_progress->setBlocks(t[selectedIndex]->getPieces());
-		m_title->set_text(t[selectedIndex]->getHandle().name());
+		m_title->set_text(t[selectedIndex]->getName());
 		m_graph->select(selectedIndex);
 		m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
 		m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
