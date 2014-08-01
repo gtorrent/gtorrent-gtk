@@ -37,7 +37,7 @@ string GtkAddRssWindow::getRssURL()
 */
 void GtkAddRssWindow::onClipboardReady(const Glib::ustring &text)
 {
-	if (gt::Core::isMagnetLink(text))
+	if (gt::Core::isRssUrl(text))
 	{
 		Glib::RefPtr<Gtk::TextBuffer> buf = m_textview->get_buffer();
 		buf->set_text(text);
@@ -45,7 +45,7 @@ void GtkAddRssWindow::onClipboardReady(const Glib::ustring &text)
 }
 
 /**
-* Adds the specified magnet link.
+* Adds the specified rss URL.
 */
 void GtkAddRssWindow::onAddBtnClicked()
 {
