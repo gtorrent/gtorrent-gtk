@@ -1,4 +1,8 @@
+#include "Platform.hpp"
+#include "Settings.hpp"
+#include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
+
 
 /**
 * Sets up the main window.
@@ -78,7 +82,19 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_titlebar(*header);
 	this->show_all();
 
-	panel->set_position(this->get_height() * 0.5);
+
+
+	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
+		gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	{
+		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
+		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
+		if(code != -1)
+			gt::Platform::associate(code & 2, code & 1);
+		gt::Settings::setOption("FileAssociation", code);
+		delete dialog;
+	}
+
 }
 
 /**
@@ -96,7 +112,7 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 	else
 	{
 		string fn = Glib::filename_from_uri(sel_data);
-		boost::algorithm::trim(fn);
+		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
 		bool want_uncertain = true;
 		string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
@@ -116,6 +132,10 @@ bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
 	m_infobar->updateInfo(m_treeview->getFirstSelected());
+	shared_ptr<gt::Torrent> t = m_core->update();
+	if (t)
+		m_treeview->addCell(t);
+
 	return true;
 }
 
