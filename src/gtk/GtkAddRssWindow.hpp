@@ -9,7 +9,7 @@
 
 #include <gtorrent/Core.hpp>
 
-class GtkAddMagnetLinkWindow : public Gtk::Dialog
+class GtkAddRssWindow : public Gtk::Dialog
 {
 private:
 	Gtk::HeaderBar *m_header;
@@ -21,9 +21,9 @@ private:
 	void onClipboardReady(const Glib::ustring &text);
 
 public:
-	GtkAddMagnetLinkWindow();
+	GtkAddRssWindow();
 
 	// Getters
 
-	string getMagnetURL();
+	string getRssURL();
 };
