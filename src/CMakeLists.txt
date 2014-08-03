@@ -22,6 +22,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	core/Base.cpp
 	gtk/Gtk.cpp
 	gtk/GtkAddMagnetLinkWindow.cpp
+	gtk/GtkAddRssWindow.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
 	gtk/GtkTorrentTreeView.cpp
@@ -38,7 +39,7 @@ TARGET_LINK_LIBRARIES ( gtorrent-gtk
 	${LIBTORRENT_LIBRARIES}
 	${LIBGTKMM_LIBRARIES}
 	${LIBGLIBMM_LIBRARIES}
-	)      
+	)
 
 ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 
