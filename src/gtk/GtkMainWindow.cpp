@@ -33,6 +33,7 @@ GtkMainWindow::GtkMainWindow() :
 	action_group->add(Gtk::Action::create( "Properties", Gtk::Stock::PROPERTIES));
 	action_group->add(Gtk::Action::create(   "Add Link", Gtk::Stock::PASTE),       sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	action_group->add(Gtk::Action::create("Add Torrent", Gtk::Stock::ADD),         sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
+	action_group->add(Gtk::Action::create(    "Add Rss", Gtk::Stock::CONNECT),     sigc::mem_fun(*this, &GtkMainWindow::onAddRssBtnClicked));
 	action_group->add(Gtk::Action::create(     "Remove", Gtk::Stock::CANCEL),      sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
 	action_group->add(Gtk::Action::create(     "Resume", Gtk::Stock::MEDIA_PLAY),  sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
 	action_group->add(Gtk::Action::create(      "Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
@@ -50,6 +51,7 @@ GtkMainWindow::GtkMainWindow() :
 	    "		<separator />"
 	    "		<toolitem action='Add Link' />"
 	    "		<toolitem action='Add Torrent' />"
+			"		<toolitem action='Add Rss' />"
 	    "		<separator />"
 	    "		<toolitem action='Remove' />"
 	    "		<toolitem action='Pause' />"
@@ -183,6 +185,26 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 	case Gtk::RESPONSE_OK:
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(d.getMagnetURL());
+		if (t)//Checks if t is not null
+			m_treeview->addCell(t);
+		//TODO Add error dialogue if torrent add is unsuccessful
+		break;
+	}
+}
+
+/**
+* Does something when the add rss button is clicked.
+*/
+void GtkMainWindow::onAddRssBtnClicked()
+{
+	GtkAddRssWindow d;
+	d.set_transient_for(*this);
+	int r = d.run();
+
+	switch (r)
+	{
+	case Gtk::RESPONSE_OK:
+		shared_ptr<gt::Torrent> t = m_core->addRss(d.getRssURL());
 		if (t)//Checks if t is not null
 			m_treeview->addCell(t);
 		//TODO Add error dialogue if torrent add is unsuccessful
