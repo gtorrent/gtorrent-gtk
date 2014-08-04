@@ -28,44 +28,47 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_show_close_button(true);
 	header->set_title("gTorrent");
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create();
+	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_settings    = Gtk::manage(new Gtk::Button());
+	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 
-	action_group->add(Gtk::Action::create( "Properties", Gtk::Stock::PROPERTIES));
-	action_group->add(Gtk::Action::create(   "Add Link", Gtk::Stock::PASTE),       sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
-	action_group->add(Gtk::Action::create("Add Torrent", Gtk::Stock::ADD),         sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
-	action_group->add(Gtk::Action::create(     "Remove", Gtk::Stock::CANCEL),      sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
-	action_group->add(Gtk::Action::create(     "Resume", Gtk::Stock::MEDIA_PLAY),  sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
-	action_group->add(Gtk::Action::create(      "Pause", Gtk::Stock::MEDIA_PAUSE), sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
-	action_group->add(Gtk::Action::create(         "Up", Gtk::Stock::GO_UP));
-	action_group->add(Gtk::Action::create(       "Down", Gtk::Stock::GO_DOWN));
+	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
+	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
+	btn_pause      ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
+	btn_resume     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
+	btn_remove     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
+	btn_settings   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
 
-	Glib::RefPtr<Gtk::UIManager> ui_manager = Gtk::UIManager::create();
-	ui_manager->insert_action_group(action_group);
-	add_accel_group(ui_manager->get_accel_group());
+	btn_add_link   ->set_image_from_icon_name("edit-paste");
+	btn_add_torrent->set_image_from_icon_name("gtk-add");
+	btn_connect    ->set_image_from_icon_name("gtk-directory");
+	btn_pause      ->set_image_from_icon_name("media-playback-pause");
+	btn_properties ->set_image_from_icon_name("gtk-properties");
+	btn_remove     ->set_image_from_icon_name("gtk-cancel");
+	btn_resume     ->set_image_from_icon_name("media-playback-start");
+	btn_settings   ->set_image_from_icon_name("media-playback-start");
 
-	Glib::ustring ui_info =
-	    "<ui>"
-	    "	<toolbar  name='ToolBar'>"
-	    "		<toolitem action='Properties' />"
-	    "		<separator />"
-	    "		<toolitem action='Add Link' />"
-	    "		<toolitem action='Add Torrent' />"
-	    "		<separator />"
-	    "		<toolitem action='Remove' />"
-	    "		<toolitem action='Pause' />"
-	    "		<toolitem action='Resume' />"
-	    "		<separator />"
-	    "		<toolitem action='Down' />"
-	    "		<toolitem action='Up' />"
-	    "		<separator />"
-	    "	</toolbar>"
-	    "</ui>";
-
-	ui_manager->add_ui_from_string(ui_info);
-	this->add(*panel);
-	Gtk::Widget* pToolBar = ui_manager->get_widget("/ToolBar");
-	pToolBar->override_background_color(Gdk::RGBA("0, 0, 0, 0"));
-	header->add(*pToolBar);
+	//TODO:align properties button to right of top bar
+	//btn_properties->set_alignment(1.0f,0.0f);
+	header->add(*btn_add_torrent);
+	header->add(*btn_add_link);
+	header->add(*btn_connect);
+	header->add(*separator0);
+	header->add(*btn_pause);
+	header->add(*btn_resume);
+	header->add(*btn_remove);
+	header->add(*separator1);
+	header->add(*btn_properties);
+	header->add(*separator2);
+	header->add(*btn_settings);
 
 	// Let's add some DnD goodness
 	vector<Gtk::TargetEntry> listTargets;
@@ -77,8 +80,8 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview->drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
 
-	this->set_titlebar(*header);
-	this->show_all();
+	set_titlebar(*header);
+	show_all();
 	m_infobar->set_visible(false);
 
 	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
