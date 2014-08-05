@@ -17,17 +17,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 	this->set_model(m_liststore);
 	this->setupColumns();
 
-	// TODO colours should be obtained via settings
-	m_colors["Paused"]                  = pair<string, string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
-	m_colors["Queued for checking"]     = pair<string, string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
-	m_colors["Downloading metadata..."] = pair<string, string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
-	m_colors["Finished"]                = pair<string, string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
-	m_colors["Allocating..."]           = pair<string, string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
-	m_colors["Resuming..."]             = pair<string, string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
-	m_colors["Checking..."]             = pair<string, string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
-	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
-	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
-
+	reloadColors();
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
 }
@@ -363,4 +353,18 @@ void GtkTorrentTreeView::sequentialChange_onRealize()
 	}
 	else
 		rcmItemSeq->set_active(false);
+}
+
+void GtkTorrentTreeView::reloadColors()
+{
+	m_colors["Paused"]                  = pair<string, string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
+	m_colors["Queued for checking"]     = pair<string, string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
+	m_colors["Downloading metadata..."] = pair<string, string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
+	m_colors["Finished"]                = pair<string, string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
+	m_colors["Allocating..."]           = pair<string, string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
+	m_colors["Resuming..."]             = pair<string, string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
+	m_colors["Checking..."]             = pair<string, string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
+	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
+	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
+
 }

@@ -29,8 +29,6 @@ class GtkMainWindow : public Gtk::Window
 	GtkSettingsDialog d;
 
 	Gtk::HeaderBar *header;
-	GtkTorrentTreeView *m_treeview;
-	GtkTorrentInfoBar *m_infobar;
 	// Gtk::Statusbar *status;
 
 	// Signal Responders
@@ -46,6 +44,8 @@ class GtkMainWindow : public Gtk::Window
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
+	GtkTorrentTreeView *m_treeview;
+	GtkTorrentInfoBar  *m_infobar;
 	GtkMainWindow();
 
 	bool onDestroy(GdkEventAny *event);

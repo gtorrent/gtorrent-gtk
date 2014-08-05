@@ -98,5 +98,6 @@ public:
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
+	void reloadColors();
 	shared_ptr<gt::Torrent> getFirstSelected();
 };

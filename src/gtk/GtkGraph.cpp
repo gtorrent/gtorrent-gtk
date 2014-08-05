@@ -165,7 +165,6 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if(m_selected < m_history.size())
 	{
 		double increment = width / 60;
-		gt::Log::Debug(string(string("width = ") + to_string(width)).c_str());
 		unsigned order;
 		if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
 			order = 1;
