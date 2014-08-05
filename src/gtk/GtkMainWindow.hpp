@@ -18,14 +18,15 @@
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkAddMagnetLinkWindow.hpp"
+#include "GtkSettingsDialog.hpp"
 
 //#include <Application.hpp>
 
 
 class GtkMainWindow : public Gtk::Window
 {
-private:
 	shared_ptr<gt::Core> &m_core;
+	GtkSettingsDialog d;
 
 	Gtk::HeaderBar *header;
 	GtkTorrentTreeView *m_treeview;
@@ -40,6 +41,7 @@ private:
 	void onPauseBtnClicked();
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
+	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 

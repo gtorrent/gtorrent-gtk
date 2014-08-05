@@ -54,7 +54,7 @@ GtkMainWindow::GtkMainWindow() :
 	btn_properties ->set_image_from_icon_name("gtk-properties");
 	btn_remove     ->set_image_from_icon_name("gtk-cancel");
 	btn_resume     ->set_image_from_icon_name("media-playback-start");
-	btn_settings   ->set_image_from_icon_name("media-playback-start");
+	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
 
 	//TODO:align properties button to right of top bar
 	//btn_properties->set_alignment(1.0f,0.0f);
@@ -68,7 +68,7 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*separator1);
 	header->add(*btn_properties);
 	header->add(*separator2);
-	header->add(*btn_settings);
+	header->pack_end(*btn_settings);
 
 	// Let's add some DnD goodness
 	vector<Gtk::TargetEntry> listTargets;
@@ -81,6 +81,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
 
 	set_titlebar(*header);
+	add(*panel);
 	show_all();
 	m_infobar->set_visible(false);
 
@@ -185,7 +186,7 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 	case Gtk::RESPONSE_OK:
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(d.getMagnetURL());
-		if (t)//Checks if t is not null
+		if (t)
 			m_treeview->addCell(t);
 		//TODO Add error dialogue if torrent add is unsuccessful
 		break;
@@ -224,10 +225,15 @@ void GtkMainWindow::onPropertiesBtnClicked()
 }
 
 /**
-* Does something when the window is destroyed.
+* Does something when the window is destroyed. // That's some 10/10 doc right there.
 */
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_core->shutdown();
 	return false;
+}
+
+void GtkMainWindow::onSettingsBtnClicked()
+{
+	d.run();
 }
