@@ -216,7 +216,10 @@ void GtkSettingsDialog::onStatusChanged()
 void GtkSettingsDialog::onForegroundSet()
 {
 	char colorstring[16] = {0};
-	sprintf(colorstring, "#%X%X%X", forebutt->get_rgba().get_red_u(), forebutt->get_rgba().get_green_u(), forebutt->get_rgba().get_blue_u());
+	sprintf(colorstring, "#%02X%02X%02X",
+			forebutt->get_rgba().get_red_u()   / 256,
+			forebutt->get_rgba().get_green_u() / 256,
+			forebutt->get_rgba().get_blue_u()  / 256);
 	std::cout << colorstring << std::endl;
 	switch(statuscombo->get_active_row_number())
 	{
@@ -255,7 +258,10 @@ void GtkSettingsDialog::onForegroundSet()
 void GtkSettingsDialog::onBackgroundSet()
 {
 	char colorstring[16] = {0};
-	sprintf(colorstring, "#%X%X%X", backbutt->get_rgba().get_red_u(), backbutt->get_rgba().get_green_u(), backbutt->get_rgba().get_blue_u());
+	sprintf(colorstring, "#%02X%02X%02X",
+			backbutt->get_rgba().get_red_u()   / 256,
+			backbutt->get_rgba().get_green_u() / 256,
+			backbutt->get_rgba().get_blue_u()  / 256);
 	switch(statuscombo->get_active_row_number())
 	{
 	case 0:

@@ -96,6 +96,7 @@ GtkMainWindow::GtkMainWindow() :
 		delete dialog;
 	}
 
+	d = new GtkSettingsDialog(this);
 }
 
 /**
@@ -235,5 +236,5 @@ bool GtkMainWindow::onDestroy(GdkEventAny *event)
 
 void GtkMainWindow::onSettingsBtnClicked()
 {
-	d.run();
+	d->run();
 }

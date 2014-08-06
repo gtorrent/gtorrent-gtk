@@ -26,7 +26,7 @@
 class GtkMainWindow : public Gtk::Window
 {
 	shared_ptr<gt::Core> &m_core;
-	GtkSettingsDialog d;
+	GtkSettingsDialog *d = nullptr;
 
 	Gtk::HeaderBar *header;
 	// Gtk::Statusbar *status;
