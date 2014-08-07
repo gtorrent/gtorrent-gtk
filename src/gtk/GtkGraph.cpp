@@ -259,8 +259,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	double oldy;
-	if(q.empty())
-		return;
+	if(q.empty()) return;
 	
 	oldy = height + (q.front() * height / maxValue);
 	cr->move_to(0, oldy);
@@ -271,17 +270,13 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 	while(q.size() >= 2)
 	{
 		double y = height - (q.front() * height / maxValue);
-
-		//cr->curve_to(x + (increment / 2), oldy, x - (increment / 2), y, x, y); //I give up, feel free to correct me here.
-		cr->line_to(x, y);
-
+		cr->curve_to(x - (increment / 2), oldy, x - (increment / 2), y, x, y); // I'm 100% sure I tried this and it didn't work
 		q.pop();
 		oldy = y;
 		x += increment;
 	}
 
 	cr->stroke();
-	
 }
 
 /**
