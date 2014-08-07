@@ -5,7 +5,7 @@
 class GuiBase
 {
 protected:
-	shared_ptr<gt::Core> &m_core;
+	std::shared_ptr<gt::Core> &m_core;
 
 public:
 	GuiBase();
