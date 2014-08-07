@@ -1,8 +1,9 @@
 #include "GtkGraph.hpp"
+#include <Settings.hpp>
 
 /**
-* Sets up the speed graph.
-*/
+ * Sets up the speed graph.
+ */
 GtkGraph::GtkGraph(unsigned size) :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("BlockBar"),
@@ -17,8 +18,8 @@ GtkGraph::~GtkGraph()
 }
 
 /**
-* Gets the vfunc() for speed graph.
-*/
+ * Gets the vfunc() for speed graph.
+ */
 Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
 {
 	//Accept the default value supplied by the base class.
@@ -26,8 +27,8 @@ Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
 }
 
 /**
-* Discovers the total amount of minimum space and natural space needed by the speed graph widget.
-*/
+ * Discovers the total amount of minimum space and natural space needed by the speed graph widget.
+ */
 void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
 	minimum_width = 100;
@@ -35,17 +36,17 @@ void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width)
 }
 
 /**
-* Gets the preferred height for the speed graph widget for this particular width.
-*/
+ * Gets the preferred height for the speed graph widget for this particular width.
+ */
 void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
-        int& minimum_height, int& natural_height) const
+													int& minimum_height, int& natural_height) const
 {
 	get_preferred_height(minimum_height, natural_height);
 }
 
 /**
-* Gets the preferred height for the speed graph widget.
-*/
+ * Gets the preferred height for the speed graph widget.
+ */
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = 50;
@@ -53,17 +54,17 @@ void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_heig
 }
 
 /**
-* Gets the preferred width for the speed graph widget for this particular height.
-*/
+ * Gets the preferred width for the speed graph widget for this particular height.
+ */
 void GtkGraph::get_preferred_width_for_height_vfunc(int /* height */,
-        int& minimum_width, int& natural_width) const
+													int& minimum_width, int& natural_width) const
 {
 	get_preferred_width(minimum_width, natural_width);
 }
 
 /**
-* Does something with the space that we have actually been given.
-*/
+ * Does something with the space that we have actually been given.
+ */
 void GtkGraph::on_size_allocate(Gtk::Allocation& allocation)
 {
 	//(We will not be given heights or widths less than we have requested, though
@@ -80,8 +81,8 @@ void GtkGraph::on_size_allocate(Gtk::Allocation& allocation)
 }
 
 /**
-* Does something when the speed graph is mapped.
-*/
+ * Does something when the speed graph is mapped.
+ */
 void GtkGraph::on_map()
 {
 	//Call base class:
@@ -89,8 +90,8 @@ void GtkGraph::on_map()
 }
 
 /**
-* Does something when the speed graph is unmapped.
-*/
+ * Does something when the speed graph is unmapped.
+ */
 void GtkGraph::on_unmap()
 {
 	//Call base class:
@@ -98,8 +99,8 @@ void GtkGraph::on_unmap()
 }
 
 /**
-* Does something when the speed graph is realized.
-*/
+ * Does something when the speed graph is realized.
+ */
 void GtkGraph::on_realize()
 {
 	//Do not call base class Gtk::Widget::on_realize().
@@ -140,8 +141,8 @@ void GtkGraph::on_realize()
 }
 
 /**
-* Does something when the speed graph is unrealized.
-*/
+ * Does something when the speed graph is unrealized.
+ */
 void GtkGraph::on_unrealize()
 {
 	m_refGdkWindow.reset();
@@ -151,8 +152,8 @@ void GtkGraph::on_unrealize()
 }
 
 /**
-* Does something when the speed graph is drawn.
-*/
+ * Does something when the speed graph is drawn.
+ */
 bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	const double width = (double)get_allocation().get_width();
@@ -163,7 +164,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	if(m_selected < m_history.size())
 	{
-		double increment = width / (double)(m_history[m_selected].first.size() - 1);
+		double increment = width / 60;
 		unsigned order;
 		if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
 			order = 1;
@@ -173,72 +174,78 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			order = 100;
 		else
 			order = 1000;
-		double maxValue = max(m_history[m_selected].first, m_history[m_selected].second) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
+		int maxValue = max(m_history[m_selected].first, m_history[m_selected].second) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
 
 		// draw curves
 
 		//Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
-		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA("red"));
-		ostringstream label;
-		label << "Upload";
-		cr->move_to(10, height / 2 - 15);
-		cr->text_path(label.str());
-		cr->fill();
-		cr->stroke();
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
+
+		string label;
+		if(gt::Settings::settings["ShowLegend"] != "No")
+		{
+			label = "Upload";
+			cr->move_to(10, height / 2 - 15);
+			cr->text_path(label);
+			cr->fill();
+			cr->stroke();
+		}
+
 		draw(m_history[m_selected].first, height, increment, maxValue, cr);
 
-		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA("green"));
-		label.str("");
-		label.clear();
-		label << "Download";
-		cr->move_to(10, height / 2 - 30);
-		cr->text_path(label.str());
-		cr->fill();
-		cr->stroke();
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
+
+		if(gt::Settings::settings["ShowLegend"] != "No")
+		{
+			label = "Download";
+			cr->move_to(10, height / 2 - 30);
+			cr->text_path(label);
+			cr->fill();
+			cr->stroke();
+		}
+
 		draw(m_history[m_selected].second, height, increment, maxValue, cr);
 
 		// draw grid
-		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA("grey"));
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphGridColor"]));
 
 		cr->move_to(0, 0);
 		cr->line_to(width, 0);
 		cr->stroke();
-		label.str("");
-		label.clear();
+
 		if(order > 100)
-			label << maxValue / (1024 * 1000) << "MB/s";
+			label = to_string(maxValue / (1024 * 1000)) + "MB/s";
 		else
-			label << maxValue / 1024 << "KB/s";
+			label = to_string(maxValue / 1024) + "KB/s";
+
 		cr->move_to(0, 10);
-		cr->text_path(label.str());
+		cr->text_path(label);
 		cr->fill();
 		cr->stroke();
 
 		cr->move_to(0, height / 2);
 		cr->line_to(width, height / 2);
 		cr->stroke();
-		label.str("");
-		label.clear();
+
 		if(order > 100)
-			label << maxValue / (2 * 1024 * 1000) << "MB/s";
+			label = to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
 		else
-			label << maxValue / (2 * 1024) << "KB/s";
+			label = to_string(maxValue / (2 * 1024)) + "KB/s";
 		cr->move_to(0, height / 2 + 10);
-		cr->text_path(label.str());
+		cr->text_path(label);
 		cr->fill();
 		cr->stroke();
 
 		cr->move_to(0, height);
 		cr->line_to(width, height);
 		cr->stroke();
-		label.str("");
-		label.clear();
+
 		if(order > 100)
-			label << "0MB/s";
+			label = "0MB/s";
 		else
-			label << "0KB/s";
+			label = "0KB/s";
 		cr->move_to(0, height - 5);
-		cr->text_path(label.str());
+		cr->text_path(label);
 		cr->fill();
 		cr->stroke();
 
@@ -247,36 +254,34 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	return true;
 }
 /**
-* Draws a curve for the speed graph.
-*/
+ * Draws a curve for the speed graph.
+ */
 void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	static double oldy;
-	if(!q.empty())
+	double oldy;
+	if(q.empty()) return;
+	
+	oldy = height + (q.front() * height / maxValue);
+	cr->move_to(0, oldy);
+	q.pop();
+	increment += 2 * increment / 60; //:^)
+
+	double x = increment * (60 - q.size());
+	while(q.size() >= 2)
 	{
-		oldy = height + (q.front() * height / maxValue);
-		cr->move_to(0, oldy);
+		double y = height - (q.front() * height / maxValue);
+		cr->curve_to(x - (increment / 2), oldy, x - (increment / 2), y, x, y); // I'm 100% sure I tried this and it didn't work
 		q.pop();
-
-		double x = 0;
-		while(!q.empty())
-		{
-			double y = height - (q.front() * height / maxValue);
-
-			cr->curve_to(x + increment / 2, oldy, x + increment / 2, y, x + increment, y);
-
-			q.pop();
-			oldy = y;
-			x += increment;
-		}
-		cr->stroke();
+		oldy = y;
+		x += increment;
 	}
 
+	cr->stroke();
 }
 
 /**
-* Resizes the history of the graph widget.
-*/
+ * Resizes the history of the graph widget.
+ */
 void GtkGraph::resize(unsigned size)
 {
 	m_maxSize = size;
@@ -290,8 +295,8 @@ void GtkGraph::resize(unsigned size)
 }
 
 /**
-* Adds upload and download values to the history of the torrent identified by the index
-*/
+ * Adds upload and download values to the history of the torrent identified by the index
+ */
 void GtkGraph::add(unsigned index, double upload, double download)
 {
 	// we want our vector to always have the same size as t
@@ -312,8 +317,8 @@ void GtkGraph::add(unsigned index, double upload, double download)
 }
 
 /**
-* Returns the maximum value of a queue or 0.
-*/
+ * Returns the maximum value of a queue or 0.
+ */
 double GtkGraph::max(queue<double> q)// q passed by value on purpose
 {
 	double max = 0;
@@ -327,7 +332,7 @@ double GtkGraph::max(queue<double> q)// q passed by value on purpose
 }
 
 /**
-* Selects by index the torrent history to be displayed.
+ * Selects by index the torrent history to be displayed.
 */
 void GtkGraph::select(unsigned s)
 {

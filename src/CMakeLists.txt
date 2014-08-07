@@ -28,6 +28,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkTorrentInfoBar.cpp
 	gtk/GtkBlockBar.cpp
 	gtk/GtkGraph.cpp
+	gtk/GtkSettingsDialog.cpp
 	main.cpp
 	)
 
