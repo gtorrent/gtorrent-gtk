@@ -16,7 +16,8 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(I
 
 	this->set_model(m_liststore);
 	this->setupColumns();
-
+	this->set_hexpand();
+	this->set_vexpand();
 	reloadColors();
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
@@ -67,6 +68,13 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
+	}
+
+	if(is_blank_at_pos(event->x, event->y) && event->send_event == false) // is_blank_at_pos return true even if the blank is the background of a row... so I just resend the click.
+	{
+		get_selection()->unselect_all();
+		event->send_event = true; // why doesn't put() do that
+		Gdk::Event((GdkEvent*)(event)).put();
 	}
 
 	m_infobar->updateInfo(getFirstSelected());
