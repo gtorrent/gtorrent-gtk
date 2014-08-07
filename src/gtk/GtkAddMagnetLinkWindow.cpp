@@ -27,7 +27,7 @@ GtkAddMagnetLinkWindow::GtkAddMagnetLinkWindow()
 /**
 * Gets the magnet url.
 */
-string GtkAddMagnetLinkWindow::getMagnetURL()
+std::string GtkAddMagnetLinkWindow::getMagnetURL()
 {
 	return m_textview->get_buffer()->get_text();
 }
