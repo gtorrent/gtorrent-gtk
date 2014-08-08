@@ -37,35 +37,29 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget("cachechunksspin", cachechunk);
 	builder->get_widget("defaultrecispin", defaultreci);
 	builder->get_widget("filechooserbutt", filebutt);
-
 	builder->get_widget(  "gridcolorbutt", gridbutt);
 	builder->get_widget(    "upcolorbutt", upcolorbutt);
 	builder->get_widget(  "downcolorbutt", downcolorbutt);
 	builder->get_widget(  "chokecombo", chokecombo);
-
 	savepathbox->set_can_focus(false); //user has to use the filechooser to set the savepath
-
-	gt::Settings::settings["GlobalUploadLimit"]         == "" ?    "0" : gt::Settings::settings["GlobalUploadLimit"];
-	gt::Settings::settings["DecreaseReciprocationRate"] == "" ?    "3" : gt::Settings::settings["DecreaseReciprocationRate"];
-	gt::Settings::settings["IncreaseReciprocationRate"] == "" ?   "10" : gt::Settings::settings["IncreaseReciprocationRate"];
-	gt::Settings::settings["DHTUploadLimit"]            == "" ? "4000" : gt::Settings::settings["DHTUploadLimit"];
-	gt::Settings::settings["GlobalDownloadLimit"]       == "" ?    "0" : gt::Settings::settings["GlobalDownloadLimit"];
-	gt::Settings::settings["CacheSize"]                 == "" ?  "512" : gt::Settings::settings["CacheSize"];
-	gt::Settings::settings["CachedChunks"]              == "" ?   "20" : gt::Settings::settings["CachedChunks"];
-	gt::Settings::settings["DefaultReciprocationRate"]  == "" ?   "14" : gt::Settings::settings["DefaultReciprocationRate"];
-	gt::Settings::settings["CacheExpiry"]               == "" ?   "10" : gt::Settings::settings["CacheExpiry"];
-
+	gt::Settings::settings["GlobalUploadLimit"]         = gt::Settings::settings["GlobalUploadLimit"]         .empty() ?    "0" : gt::Settings::settings["GlobalUploadLimit"];
+	gt::Settings::settings["DecreaseReciprocationRate"] = gt::Settings::settings["DecreaseReciprocationRate"] .empty() ?    "3" : gt::Settings::settings["DecreaseReciprocationRate"];
+	gt::Settings::settings["IncreaseReciprocationRate"] = gt::Settings::settings["IncreaseReciprocationRate"] .empty() ?   "10" : gt::Settings::settings["IncreaseReciprocationRate"];
+	gt::Settings::settings["DHTUploadLimit"]            = gt::Settings::settings["DHTUploadLimit"]            .empty() ? "4000" : gt::Settings::settings["DHTUploadLimit"];
+	gt::Settings::settings["GlobalDownloadLimit"]       = gt::Settings::settings["GlobalDownloadLimit"]       .empty() ?    "0" : gt::Settings::settings["GlobalDownloadLimit"];
+	gt::Settings::settings["CacheSize"]                 = gt::Settings::settings["CacheSize"]                 .empty() ?  "512" : gt::Settings::settings["CacheSize"];
+	gt::Settings::settings["CachedChunks"]              = gt::Settings::settings["CachedChunks"]              .empty() ?   "20" : gt::Settings::settings["CachedChunks"];
+	gt::Settings::settings["DefaultReciprocationRate"]  = gt::Settings::settings["DefaultReciprocationRate"]  .empty() ?   "14" : gt::Settings::settings["DefaultReciprocationRate"];
+	gt::Settings::settings["CacheExpiry"]               = gt::Settings::settings["CacheExpiry"]               .empty() ?   "10" : gt::Settings::settings["CacheExpiry"];
 	decreci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DecreaseReciprocationRate"]),  0, 100, 10, 10, 10);
 	increci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["IncreaseReciprocationRate"]),  0, 100, 10, 10, 10); 
 	defaultreci->get_adjustment()->configure(std::stoi(gt::Settings::settings["DefaultReciprocationRate"]),   0, 100, 10, 10, 10); 
-
 	uplimit    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["GlobalUploadLimit"]),         -1, 0x7FFFFFF, 10, 10, 10);
 	dhtlimit   ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DHTUploadLimit"]),            -1, 0x7FFFFFF, 10, 10, 10); 
 	downlimit  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["GlobalDownloadLimit"]),       -1, 0x7FFFFFF, 10, 10, 10); 
 	cachesize  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheSize"]),                 -1, 0x7FFFFFF, 10, 10, 10); 
 	cachechunk ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CachedChunks"]),              -1, 0x7FFFFFF, 10, 10, 10); 
 	cacheexpiry->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheExpiry"]),               -1, 0x7FFFFFF, 10, 10, 10); 
-
 	okbutt       ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOkClicked));
 	notokbutt    ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onnotOkClicked));
 	statuscombo  ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onStatusChanged));
