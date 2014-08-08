@@ -74,9 +74,9 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	{
 		get_selection()->unselect_all();
 		event->send_event = true; // why doesn't put() do that
-		Gdk::Event((GdkEvent*)(event)).put();
+//		m_infobar->updateInfo(getFirstSelected());
+		Gdk::Event((GdkEvent*)event).put();
 	}
-
 	m_infobar->updateInfo(getFirstSelected());
 	return true;
 }

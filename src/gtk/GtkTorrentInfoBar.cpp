@@ -56,29 +56,32 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 */
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-
-	bool selectionExists = false;
-	unsigned selectedIndex;
-	for(unsigned i = 0; i < t.size(); ++i)
-	{
-		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
-		if(selected == t[i])
-		{
-			selectedIndex = i;
-			selectionExists = true;
-		}
-	}
-	if(selectionExists)
-	{
-		this->set_visible(true);
-		if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
-			m_progress->setBlocks(t[selectedIndex]->getPieces());
-		m_title->set_text(t[selectedIndex]->getName());
-		m_graph->select(selectedIndex);
-		m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
-		m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
-	}
+	if(selected)
+		set_visible(true);
 	else
-		this->set_visible(false);
+		set_visible(false);
+}
+
+void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
+{
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+//	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+
+	for(unsigned i = 0; i < t.size(); ++i)
+		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
+
+	int selectedIndex = 0;
+	for(unsigned i = 0; i < t.size(); ++i)
+		if(selected == t[i])
+			selectedIndex = i;
+
+	if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+		m_progress->setBlocks(t[selectedIndex]->getPieces());
+	m_title->set_text(t[selectedIndex]->getName());
+	m_graph->select(selectedIndex);
+	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
+
+	updateInfo(selected);
+
 }
