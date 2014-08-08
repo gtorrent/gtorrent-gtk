@@ -2,7 +2,7 @@
 #include "Settings.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
-
+#include <gtkmm/scrollbar.h>
 
 /**
 * Sets up the main window.
@@ -14,14 +14,17 @@ GtkMainWindow::GtkMainWindow() :
 	this->set_position(Gtk::WIN_POS_CENTER);
 	this->set_default_size(800, 500);
 	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
+	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
 
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(m_infobar));
 
-	panel->pack1(*m_treeview);
+	//swin->get_vscrollbar()->hide(); // works, but then you can't use the scrollwheel
+	m_swin->add(*m_treeview);
+	panel->pack1(*m_swin);
 	panel->pack2(*m_infobar);
 
-	Glib::     signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
@@ -138,7 +141,7 @@ bool GtkMainWindow::onSecTick()
 	shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 		m_treeview->addCell(t);
-
+	m_swin->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
 

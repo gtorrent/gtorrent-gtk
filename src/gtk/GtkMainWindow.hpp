@@ -12,6 +12,7 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <gtorrent/Core.hpp>
 
@@ -46,6 +47,7 @@ class GtkMainWindow : public Gtk::Window
 public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
+	Gtk::ScrolledWindow *m_swin;
 	GtkMainWindow();
 
 	bool onDestroy(GdkEventAny *event);
