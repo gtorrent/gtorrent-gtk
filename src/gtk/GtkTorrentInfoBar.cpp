@@ -12,6 +12,10 @@
 	m_notebook 											= Gtk::manage			(new Gtk::Notebook());
 	m_stat_box 											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_piece_box 										= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_files_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_peers_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_trackers_box									= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_preferences_box								= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
 	m_title 												= Gtk::manage			(new Gtk::Label());
 
@@ -489,15 +493,22 @@
 	m_table_layout									->attach					(*m_current_tracker_label, 					0, 1, 65, 66, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_current_tracker, 								2, 3, 65, 66, Gtk::AttachOptions::SHRINK);
+/*
+Gtk::ScrolledWindow* scrolled_window = Gtk::manage( new
+Gtk::ScrolledWindow() ) ;
+scrolled_window->set_policy( Gtk::POLICY_NEVER,
+Gtk::POLICY_AUTOMATIC ) ;
+scrolled_window->show() ;
+scrolled_window->add( *m_stat_box ) ;*/
 
 	m_stat_box											->pack_start			(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_stat_box											->pack_start			(*m_table_layout, Gtk::PACK_SHRINK);
 	m_notebook											->append_page			(*m_graph, "graph");
 	m_notebook											->append_page			(*m_stat_box, "info");
-	//m_notebook											->append_page			(*m_files_box, 				"files");
-	//m_notebook											->append_page			(*m_peers_box, 				"peers");
-	//m_notebook											->append_page			(*m_trackers_box, 		"trackers");
-	//m_notebook											->append_page			(*m_preferences_box, 	"preferences");
+	m_notebook											->append_page			(*m_files_box, 				"files");
+	m_notebook											->append_page			(*m_peers_box, 				"peers");
+	m_notebook											->append_page			(*m_trackers_box, 		"trackers");
+	m_notebook											->append_page			(*m_preferences_box, 	"preferences");
 	this														->pack_end				(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 
 	/*m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);

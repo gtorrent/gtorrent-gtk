@@ -114,16 +114,16 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::CellRendererProgress *cell = nullptr;
 
 	append_column(         "#", m_cols.m_col_queue);
-	append_column(       "Age", m_cols.m_col_age);
-	append_column(       "ETA", m_cols.m_col_eta);
-	append_column(      "Name", m_cols.m_col_name);
-	append_column(      "Seed", m_cols.m_col_seeders);
-	append_column(     "Leech", m_cols.m_col_leechers);
-	append_column(  "Up Speed", m_cols.m_col_ul_speed);
-	append_column("Down Speed", m_cols.m_col_dl_speed);
-	append_column(      "Size", m_cols.m_col_size);
-	append_column(   "Remains", m_cols.m_col_remaining);
-	append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	append_column(       "age", m_cols.m_col_age);
+	append_column(       "eta", m_cols.m_col_eta);
+	append_column(      "name", m_cols.m_col_name);
+	append_column(      "seed", m_cols.m_col_seeders);
+	append_column(     "leech", m_cols.m_col_leechers);
+	append_column(  			"up", m_cols.m_col_ul_speed);
+	append_column(			"down", m_cols.m_col_dl_speed);
+	append_column(      "size", m_cols.m_col_size);
+	append_column(   "remains", m_cols.m_col_remaining);
+	append_column(     "ratio", m_cols.m_col_dl_ratio);
 
 	for (auto & c : this->get_columns())
 	{
