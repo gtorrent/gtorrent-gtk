@@ -30,11 +30,15 @@ GtkMainWindow::GtkMainWindow() :
 
 	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings    = Gtk::manage(new Gtk::Button());
-	Gtk::VSeparator *separator  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 
 	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
@@ -45,17 +49,25 @@ GtkMainWindow::GtkMainWindow() :
 
 	btn_add_link   ->set_image_from_icon_name("edit-paste");
 	btn_add_torrent->set_image_from_icon_name("gtk-add");
+	btn_connect    ->set_image_from_icon_name("gtk-directory");
 	btn_pause      ->set_image_from_icon_name("media-playback-pause");
+	btn_properties ->set_image_from_icon_name("gtk-properties");
 	btn_remove     ->set_image_from_icon_name("gtk-cancel");
 	btn_resume     ->set_image_from_icon_name("media-playback-start");
 	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
 
+	//TODO:align properties button to right of top bar
+	//btn_properties->set_alignment(1.0f,0.0f);
 	header->add(*btn_add_torrent);
 	header->add(*btn_add_link);
-	header->add(*separator);
+	header->add(*btn_connect);
+	header->add(*separator0);
 	header->add(*btn_pause);
 	header->add(*btn_resume);
 	header->add(*btn_remove);
+	header->add(*separator1);
+	header->add(*btn_properties);
+	header->add(*separator2);
 	header->pack_end(*btn_settings);
 
 	// Let's add some DnD goodness

@@ -1,11 +1,11 @@
-#include "GtkPiece.hpp"
+#include "GtkBlockBar.hpp"
 
 #include <vector>
 
 /**
 * Sets up the block bar.
 */
-GtkPiece::GtkPiece() :
+GtkBlockBar::GtkBlockBar() :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("BlockBar"),
 	Gtk::Widget()
@@ -13,14 +13,14 @@ GtkPiece::GtkPiece() :
 	set_has_window(true);
 }
 
-GtkPiece::~GtkPiece()
+GtkBlockBar::~GtkBlockBar()
 {
 }
 
 /**
 * Gets the vfunc() for block bar.
 */
-Gtk::SizeRequestMode GtkPiece::get_request_mode_vfunc() const
+Gtk::SizeRequestMode GtkBlockBar::get_request_mode_vfunc() const
 {
 	//Accept the default value supplied by the base class.
 	return Gtk::Widget::get_request_mode_vfunc();
@@ -29,7 +29,7 @@ Gtk::SizeRequestMode GtkPiece::get_request_mode_vfunc() const
 /**
 * Discovers the total amount of minimum space and natural space needed by the block bar widget.
 */
-void GtkPiece::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
+void GtkBlockBar::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
 	minimum_width = 100;
 	natural_width = 500;
@@ -38,7 +38,7 @@ void GtkPiece::get_preferred_width_vfunc(int& minimum_width, int& natural_width)
 /**
 * Gets the preferred height for the block bar widget for this particular width.
 */
-void GtkPiece::get_preferred_height_for_width_vfunc(int /* width */,
+void GtkBlockBar::get_preferred_height_for_width_vfunc(int /* width */,
         int& minimum_height, int& natural_height) const
 {
 	get_preferred_height(minimum_height, natural_height);
@@ -47,7 +47,7 @@ void GtkPiece::get_preferred_height_for_width_vfunc(int /* width */,
 /**
 * Gets the preferred height for the block bar widget.
 */
-void GtkPiece::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
+void GtkBlockBar::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = 10;
 	natural_height = 10;
@@ -56,7 +56,7 @@ void GtkPiece::get_preferred_height_vfunc(int& minimum_height, int& natural_heig
 /**
 * Gets the preferred width for the block bar widget for this particular height.
 */
-void GtkPiece::get_preferred_width_for_height_vfunc(int /* height */,
+void GtkBlockBar::get_preferred_width_for_height_vfunc(int /* height */,
         int& minimum_width, int& natural_width) const
 {
 	get_preferred_width(minimum_width, natural_width);
@@ -65,7 +65,7 @@ void GtkPiece::get_preferred_width_for_height_vfunc(int /* height */,
 /**
 * Does something with the space that we have actually been given.
 */
-void GtkPiece::on_size_allocate(Gtk::Allocation& allocation)
+void GtkBlockBar::on_size_allocate(Gtk::Allocation& allocation)
 {
 	//
 	//(We will not be given heights or widths less than we have requested, though
@@ -84,7 +84,7 @@ void GtkPiece::on_size_allocate(Gtk::Allocation& allocation)
 /**
 * Does something when the block bar is mapped.
 */
-void GtkPiece::on_map()
+void GtkBlockBar::on_map()
 {
 	//Call base class:
 	Gtk::Widget::on_map();
@@ -93,7 +93,7 @@ void GtkPiece::on_map()
 /**
 * Does something when the block bar is unmapped.
 */
-void GtkPiece::on_unmap()
+void GtkBlockBar::on_unmap()
 {
 	//Call base class:
 	Gtk::Widget::on_unmap();
@@ -102,7 +102,7 @@ void GtkPiece::on_unmap()
 /**
 * Does something when the block bar is realized.
 */
-void GtkPiece::on_realize()
+void GtkBlockBar::on_realize()
 {
 	//Do not call base class Gtk::Widget::on_realize().
 	//It's intended only for widgets that set_has_window(false).
@@ -144,7 +144,7 @@ void GtkPiece::on_realize()
 /**
 * Does something when the block bar is unrealized.
 */
-void GtkPiece::on_unrealize()
+void GtkBlockBar::on_unrealize()
 {
 	m_refGdkWindow.reset();
 
@@ -155,7 +155,7 @@ void GtkPiece::on_unrealize()
 /**
 * Does something when the block bar is drawn.
 */
-bool GtkPiece::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
+bool GtkBlockBar::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	const double width = (double)get_allocation().get_width();
 	const double height = (double)get_allocation().get_height();
@@ -179,7 +179,7 @@ bool GtkPiece::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 /**
 * Sets the blocks in block bar.
 */
-void GtkPiece::setBlocks(std::vector<bool> b)
+void GtkBlockBar::setBlocks(std::vector<bool> b)
 {
 	m_blocks = b;
 	queue_draw();
