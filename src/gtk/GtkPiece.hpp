@@ -6,11 +6,11 @@
 #include <gtk/gtkwidget.h>
 #include <gtkmm/cssprovider.h>
 
-class GtkBlockBar : public Gtk::Widget
+class GtkPiece : public Gtk::Widget
 {
 public:
-	GtkBlockBar();
-	virtual ~GtkBlockBar();
+	GtkPiece();
+	virtual ~GtkPiece();
 	void setBlocks(std::vector<bool> b);
 
 
