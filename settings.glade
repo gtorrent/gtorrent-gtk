@@ -22,7 +22,7 @@
             <property name="layout_style">spread</property>
             <child>
               <object class="GtkButton" id="notokaybutt">
-                <property name="label" translatable="yes">Cancel</property>
+                <property name="label" translatable="yes">no</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -46,7 +46,7 @@
             </child>
             <child>
               <object class="GtkButton" id="okbutt">
-                <property name="label" translatable="yes">Confirm</property>
+                <property name="label" translatable="yes">Yes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
