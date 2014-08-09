@@ -15,7 +15,7 @@
 	m_files_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_peers_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_trackers_box									= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_preferences_box								= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	//m_preferences_box								= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
 	m_title 												= Gtk::manage			(new Gtk::Label());
 
@@ -508,7 +508,7 @@ scrolled_window->add( *m_stat_box ) ;*/
 	m_notebook											->append_page			(*m_files_box, 				"files");
 	m_notebook											->append_page			(*m_peers_box, 				"peers");
 	m_notebook											->append_page			(*m_trackers_box, 		"trackers");
-	m_notebook											->append_page			(*m_preferences_box, 	"preferences");
+	//m_notebook											->append_page			(*m_preferences_box, 	"preferences");
 	this														->pack_end				(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 
 	/*m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
