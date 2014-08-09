@@ -9,14 +9,8 @@
 #include <gtorrent/Torrent.hpp>
 
 #include "../Application.hpp"
-//#include "GtkFiles.hpp"
 #include "GtkGraph.hpp"
-//#include "GtkOverview.hpp"
-//#include "GtkPeers.hpp"
 #include "GtkPiece.hpp"
-//#include "GtkPreferences.hpp"
-//#include "GtkTrackers.hpp"
-
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
@@ -26,18 +20,22 @@ class GtkTorrentInfoBar : public Gtk::Box
 		Gtk::Notebook *m_notebook;
 		Gtk::Box 			*m_overview_box;
 		GtkGraph 			*m_graph;
-		Gtk::Box 			*m_stat_box;
-		Gtk::Box 			*m_times_box;
-		Gtk::Box 			*m_bools_box;
+		Gtk::Box 			*m_network_box;
+		Gtk::Box 			*m_time_box;
+		Gtk::Box 			*m_bool_box;
 		Gtk::Box 			*m_piece_box;
 		GtkPiece 			*m_progress;
-		Gtk::Box 			*m_files_box;
-		Gtk::Box 			*m_peers_box;
-		Gtk::Box 			*m_trackers_box;
+		Gtk::Box 			*m_file_box;
+		Gtk::Box 			*m_peer_box;
 
-		Gtk::Table 		*m_table_layout;
-		Gtk::Table 		*m_bools_table_layout;
-		Gtk::Table 		*m_times_table_layout;
+		Gtk::Table 		*m_network_table_layout;
+		Gtk::Table 		*m_bool_table_layout;
+		Gtk::Table 		*m_time_table_layout;
+		Gtk::Table 		*m_peer_table_layout;
+		Gtk::Table 		*m_file_table_layout;
+
+		Gtk::Label 		*m_eta_label;
+		Gtk::Label 		*m_eta;
 
 		Gtk::Label 		*m_down_total_label;
 		Gtk::Label 		*m_down_total;

@@ -46,7 +46,7 @@
             </child>
             <child>
               <object class="GtkButton" id="okbutt">
-                <property name="label" translatable="yes">Yes</property>
+                <property name="label" translatable="yes">yes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -113,15 +113,15 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <items>
-                                      <item translatable="yes">Checking</item>
-                                      <item translatable="yes">Allocating</item>
-                                      <item translatable="yes">Seeding</item>
-                                      <item translatable="yes">Downloading</item>
-                                      <item translatable="yes">Queued</item>
-                                      <item translatable="yes">Paused</item>
-                                      <item translatable="yes">Downloading metadata</item>
-                                      <item translatable="yes">Resuming</item>
-                                      <item translatable="yes">Finished</item>
+                                      <item translatable="yes">checking</item>
+                                      <item translatable="yes">allocating</item>
+                                      <item translatable="yes">seeding</item>
+                                      <item translatable="yes">downloading</item>
+                                      <item translatable="yes">queued</item>
+                                      <item translatable="yes">paused</item>
+                                      <item translatable="yes">downloading metadata</item>
+                                      <item translatable="yes">resuming</item>
+                                      <item translatable="yes">finished</item>
                                     </items>
                                   </object>
                                   <packing>
@@ -135,7 +135,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="title" translatable="yes">Foreground Color</property>
+                                    <property name="title" translatable="yes">foreground color</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -148,7 +148,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="title" translatable="yes">Background Color</property>
+                                    <property name="title" translatable="yes">background color</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -164,7 +164,7 @@
                           <object class="GtkLabel" id="label7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Status Colors</property>
+                            <property name="label" translatable="yes">status colors</property>
                           </object>
                         </child>
                       </object>
@@ -235,7 +235,7 @@
                                   <object class="GtkLabel" id="label9">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Download curve color</property>
+                                    <property name="label" translatable="yes">download curve color</property>
                                     <attributes>
                                       <attribute name="gravity" value="east"/>
                                       <attribute name="gravity-hint" value="strong"/>
@@ -250,7 +250,7 @@
                                   <object class="GtkLabel" id="label10">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Upload curve color</property>
+                                    <property name="label" translatable="yes">upload curve color</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -261,7 +261,7 @@
                                   <object class="GtkLabel" id="label11">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Grid color</property>
+                                    <property name="label" translatable="yes">grid color</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -272,7 +272,7 @@
                                   <object class="GtkLabel" id="label12">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Show Legend</property>
+                                    <property name="label" translatable="yes">show legend</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -288,7 +288,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">Graph Colors</property>
+                            <property name="label" translatable="yes">graph colors</property>
                           </object>
                         </child>
                       </object>
@@ -304,7 +304,7 @@
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Customization</property>
+                <property name="label" translatable="yes">customization</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -387,7 +387,7 @@
                                   <object class="GtkLabel" id="label2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Proxy type</property>
+                                    <property name="label" translatable="yes">proxy type</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -398,7 +398,7 @@
                                   <object class="GtkLabel" id="label3">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Host</property>
+                                    <property name="label" translatable="yes">host</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -409,7 +409,7 @@
                                   <object class="GtkLabel" id="label13">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Username</property>
+                                    <property name="label" translatable="yes">username</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -420,7 +420,7 @@
                                   <object class="GtkLabel" id="label14">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Password</property>
+                                    <property name="label" translatable="yes">password</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -431,7 +431,7 @@
                                   <object class="GtkLabel" id="label15">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Port</property>
+                                    <property name="label" translatable="yes">port</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -464,7 +464,7 @@
                           <object class="GtkLabel" id="label1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Proxy settings</property>
+                            <property name="label" translatable="yes">proxy settings</property>
                           </object>
                         </child>
                       </object>
@@ -480,7 +480,7 @@
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Proxy</property>
+                <property name="label" translatable="yes">proxy</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -553,7 +553,7 @@
                                   <object class="GtkLabel" id="label19">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Global Download Limit</property>
+                                    <property name="label" translatable="yes">global download limit</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -564,7 +564,7 @@
                                   <object class="GtkLabel" id="label20">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Global Upload Limit</property>
+                                    <property name="label" translatable="yes">global upload limit</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -575,7 +575,7 @@
                                   <object class="GtkLabel" id="label21">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">DHT Upload Limit</property>
+                                    <property name="label" translatable="yes">DHT upload limit</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -586,7 +586,7 @@
                                   <object class="GtkLabel" id="label17">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Anonymous mode</property>
+                                    <property name="label" translatable="yes">anonymous mode</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -597,7 +597,7 @@
                                   <object class="GtkLabel" id="label18">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">User Agent</property>
+                                    <property name="label" translatable="yes">user agent</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -632,7 +632,7 @@
                           <object class="GtkLabel" id="label16">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Network settings</property>
+                            <property name="label" translatable="yes">network settings</property>
                           </object>
                         </child>
                       </object>
@@ -648,7 +648,7 @@
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Network</property>
+                <property name="label" translatable="yes">network</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -704,7 +704,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="action">select-folder</property>
-                                    <property name="title" translatable="yes">Select a Folder</property>
+                                    <property name="title" translatable="yes">select folder</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -715,7 +715,7 @@
                                   <object class="GtkLabel" id="label24">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Downloaded file location</property>
+                                    <property name="label" translatable="yes">downloaded file location</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -736,7 +736,7 @@
                                   <object class="GtkLabel" id="label25">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Cache size</property>
+                                    <property name="label" translatable="yes">cache size</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -767,7 +767,7 @@
                                   <object class="GtkLabel" id="label26">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Cached Chunks</property>
+                                    <property name="label" translatable="yes">cached chunks</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -778,7 +778,7 @@
                                   <object class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Cache expiry</property>
+                                    <property name="label" translatable="yes">cache expiry</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -799,7 +799,7 @@
                                   <object class="GtkLabel" id="label28">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Suggest pieces in disk cache</property>
+                                    <property name="label" translatable="yes">suggest pieces in disk cache</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -817,7 +817,7 @@
                           <object class="GtkLabel" id="label23">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Disk usage settings</property>
+                            <property name="label" translatable="yes">disk usage</property>
                           </object>
                         </child>
                       </object>
@@ -833,7 +833,7 @@
               <object class="GtkLabel" id="label22">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Storage</property>
+                <property name="label" translatable="yes">storage</property>
               </object>
               <packing>
                 <property name="position">3</property>
@@ -892,7 +892,7 @@
                                   <object class="GtkLabel" id="label31">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Choking Algorithm</property>
+                                    <property name="label" translatable="yes">choking algorithm</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -905,9 +905,9 @@
                                     <property name="can_focus">False</property>
                                     <property name="active">0</property>
                                     <items>
-                                      <item translatable="yes">Round Robin</item>
-                                      <item translatable="yes">Fastest Upload</item>
-                                      <item translatable="yes">Anti Leech</item>
+                                      <item translatable="yes">round robin</item>
+                                      <item translatable="yes">fastest upload</item>
+                                      <item translatable="yes">anti leech</item>
                                     </items>
                                   </object>
                                   <packing>
@@ -919,7 +919,7 @@
                                   <object class="GtkLabel" id="label32">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Seed Choking Algorithm</property>
+                                    <property name="label" translatable="yes">seed choking algorithm</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -934,7 +934,7 @@
                           <object class="GtkLabel" id="label30">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Choking</property>
+                            <property name="label" translatable="yes">choking</property>
                           </object>
                         </child>
                       </object>
@@ -975,7 +975,7 @@
                                   <object class="GtkLabel" id="label35">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Decrease reciprocation rate</property>
+                                    <property name="label" translatable="yes">decrease reciprocation rate</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1009,7 +1009,7 @@
                                   <object class="GtkLabel" id="label34">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Increase reciprocation rate</property>
+                                    <property name="label" translatable="yes">increase reciprocation rate</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1020,7 +1020,7 @@
                                   <object class="GtkLabel" id="label33">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Default reciprocation rate</property>
+                                    <property name="label" translatable="yes">default reciprocation rate</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1035,7 +1035,7 @@
                           <object class="GtkLabel" id="label36">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Bit Tyrant settings</property>
+                            <property name="label" translatable="yes">bit tyrant</property>
                           </object>
                         </child>
                       </object>
@@ -1054,7 +1054,7 @@
               <object class="GtkLabel" id="label29">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Transfers</property>
+                <property name="label" translatable="yes">transfers</property>
               </object>
               <packing>
                 <property name="position">4</property>

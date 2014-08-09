@@ -113,17 +113,17 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column(         "#", m_cols.m_col_queue);
-	append_column(       "age", m_cols.m_col_age);
-	append_column(       "eta", m_cols.m_col_eta);
+	//append_column(         "#", m_cols.m_col_queue);
+	//append_column(       "age", m_cols.m_col_age);
+	//append_column(       "eta", m_cols.m_col_eta);
 	append_column(      "name", m_cols.m_col_name);
-	append_column(      "seed", m_cols.m_col_seeders);
-	append_column(     "leech", m_cols.m_col_leechers);
-	append_column(  			"up", m_cols.m_col_ul_speed);
-	append_column(			"down", m_cols.m_col_dl_speed);
-	append_column(      "size", m_cols.m_col_size);
-	append_column(   "remains", m_cols.m_col_remaining);
-	append_column(     "ratio", m_cols.m_col_dl_ratio);
+	//append_column(      "seed", m_cols.m_col_seeders);
+	//append_column(     "leech", m_cols.m_col_leechers);
+	//append_column(  			"up", m_cols.m_col_ul_speed);
+	//append_column(			"down", m_cols.m_col_dl_speed);
+	//append_column(      "size", m_cols.m_col_size);
+	//append_column(   "remains", m_cols.m_col_remaining);
+	//append_column(     "ratio", m_cols.m_col_dl_ratio);
 
 	for (auto & c : this->get_columns())
 	{
@@ -132,7 +132,7 @@ void GtkTorrentTreeView::setupColumns()
 	}
 
 	cell = Gtk::manage(new Gtk::CellRendererProgress());
-	cid = this->append_column("Progress", *cell);
+	cid = this->append_column("progress", *cell);
 	col = this->get_column(cid - 1);
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
@@ -149,7 +149,7 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_reorderable();
 		c->set_fixed_width(120);
 	}
-	this->get_column(0)->set_fixed_width(48);
+	this->get_column(0)->set_fixed_width(240);
 }
 
 /**
@@ -164,14 +164,14 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	// if there's a % in the state string, then the torrent is downloading
 	string fgbg = t->getStateString().find('%') == string::npos ? t->getStateString() : "Downloading";
 
-	row[m_cols.m_col_age]        = t->getActiveTimeString();
-	row[m_cols.m_col_eta]        = t->getEtaString();
+	//row[m_cols.m_col_age]        = t->getActiveTimeString();
+	//row[m_cols.m_col_eta]        = t->getEtaString();
 	row[m_cols.m_col_name]       = t->getName();
-	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
-	row[m_cols.m_col_size]       = t->getSizeString();
-	row[m_cols.m_col_remaining]  = t->getRemainingString();
-	row[m_cols.m_col_dl_ratio]   = t->getTotalRatioString();
+	//row[m_cols.m_col_seeders]    = t->getTotalSeeders();
+	//row[m_cols.m_col_leechers]   = t->getTotalLeechers();
+	//row[m_cols.m_col_size]       = t->getSizeString();
+  //row[m_cols.m_col_remaining]  = t->getRemainingString();
+	//row[m_cols.m_col_dl_ratio]   = t->getTotalRatioString();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 
@@ -198,16 +198,16 @@ void GtkTorrentTreeView::updateCells()
 		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 		string fgbg = t->getStateString().find('%') == string::npos ? t->getStateString() : "Downloading";
 
-		c[m_cols.m_col_age]        = t->getActiveTimeString();
+		//c[m_cols.m_col_age]        = t->getActiveTimeString();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
-		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
-		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
+		//c[m_cols.m_col_seeders]    = t->getTotalSeeders();
+		//c[m_cols.m_col_leechers]   = t->getTotalLeechers();
 		c[m_cols.m_col_name]       = t->getName();
-		c[m_cols.m_col_ul_speed]   = t->getUploadRateString();
-		c[m_cols.m_col_dl_speed]   = t->getDownloadRateString();
-		c[m_cols.m_col_size]       = t->getSizeString();
-		c[m_cols.m_col_dl_ratio]   = t->getStateString();
-		c[m_cols.m_col_eta]        = t->getTimeRemainingString();
+		//c[m_cols.m_col_ul_speed]   = t->getUploadRateString();
+		//c[m_cols.m_col_dl_speed]   = t->getDownloadRateString();
+		//c[m_cols.m_col_size]       = t->getSizeString();
+		//c[m_cols.m_col_dl_ratio]   = t->getStateString();
+		//c[m_cols.m_col_eta]        = t->getTimeRemainingString();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 
