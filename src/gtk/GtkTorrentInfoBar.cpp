@@ -11,11 +11,13 @@
 {
 	m_notebook 											= Gtk::manage			(new Gtk::Notebook());
 	m_stat_box 											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_times_box 										= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_bools_box 										= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
 	m_piece_box 										= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_files_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_peers_box											= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_trackers_box									= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	//m_preferences_box								= Gtk::manage			(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
 	m_title 												= Gtk::manage			(new Gtk::Label());
 
@@ -31,6 +33,12 @@
 
 	m_table_layout 									= Gtk::manage			(new Gtk::Table(66, 2, false));
 	m_table_layout									->set_col_spacings(5);
+
+	m_bools_table_layout 						= Gtk::manage			(new Gtk::Table(66, 2, false));
+	m_bools_table_layout							->set_col_spacings(5);
+
+	m_times_table_layout 						= Gtk::manage			(new Gtk::Table(66, 2, false));
+	m_times_table_layout							->set_col_spacings(5);
 
 	m_error_label 									= Gtk::manage			(new Gtk::Label());
 	m_error_label										->set_markup			("<b>error</b>");
@@ -53,19 +61,6 @@
 	m_table_layout									->attach					(*(new Gtk::VSeparator()),				 	1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_torrent_file, 									2, 3, 2, 3, Gtk::AttachOptions::SHRINK);
 
-	m_next_announce_label 					= Gtk::manage			(new Gtk::Label());
-	m_next_announce_label						->set_markup			("<b>announce</b>");
-	m_next_announce 								= Gtk::manage			(new Gtk::Label("0"));
-	m_table_layout									->attach					(*m_next_announce_label, 						0, 1, 3, 4, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_next_announce, 									2, 3, 3, 4, Gtk::AttachOptions::SHRINK);
-
-	m_announce_interval_label				= Gtk::manage			(new Gtk::Label());
-	m_announce_interval_label				->set_markup			("<b>interval</b>");
-	m_announce_interval 						= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_announce_interval_label, 				0, 1, 4, 5, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_announce_interval, 							2, 3, 4, 5, Gtk::AttachOptions::SHRINK);
 
 	m_down_total_label 							= Gtk::manage			(new Gtk::Label());
 	m_down_total_label							->set_markup			("<b>down total</b>");
@@ -144,26 +139,7 @@
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_all_time_download, 							2, 3,15,16, Gtk::AttachOptions::SHRINK);
 
-	m_added_time_label 							= Gtk::manage			(new Gtk::Label());
-	m_added_time_label							->set_markup			("<b>added time</b>");
-	m_added_time 										= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_added_time_label, 							0, 1,16,17, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_added_time, 										2, 3,16,17, Gtk::AttachOptions::SHRINK);
 
-	m_completed_time_label 					= Gtk::manage			(new Gtk::Label());
-	m_completed_time_label					->set_markup			("<b>completed time</b>");
-	m_completed_time 								= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_completed_time_label, 					0, 1,17,18, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_completed_time, 								2, 3,17,18, Gtk::AttachOptions::SHRINK);
-
-	m_last_seen_complete_label 			= Gtk::manage			(new Gtk::Label());
-	m_last_seen_complete_label			->set_markup			("<b>last seen complete</b>");
-	m_last_seen_complete 						= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_last_seen_complete_label, 			0, 1,18,19, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_last_seen_complete, 						2, 3,18,19, Gtk::AttachOptions::SHRINK);
 
 	m_progress_ppm_label 						= Gtk::manage			(new Gtk::Label());
 	m_progress_ppm_label						->set_markup			("<b>progress ppm</b>");
@@ -319,40 +295,7 @@
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_down_bandwidth_queue, 					2, 3,40,41, Gtk::AttachOptions::SHRINK);
 
-	m_time_since_upload_label 			= Gtk::manage			(new Gtk::Label());
-	m_time_since_upload_label				->set_markup			("<b>time since upload</b>");
-	m_time_since_upload 						= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_time_since_upload_label, 				0, 1,41,42, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_time_since_upload, 							2, 3,41,42, Gtk::AttachOptions::SHRINK);
 
-	m_time_since_download_label 		= Gtk::manage			(new Gtk::Label());
-	m_time_since_download_label			->set_markup			("<b>time since download</b>");
-	m_time_since_download 					= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_time_since_download_label, 			0, 1,42,43, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_time_since_download, 						2, 3,42,43, Gtk::AttachOptions::SHRINK);
-
-	m_active_time_label 						= Gtk::manage			(new Gtk::Label());
-	m_active_time_label							->set_markup			("<b>active time</b>");
-	m_active_time 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_active_time_label, 							0, 1,43,44, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_active_time, 										2, 3,43,44, Gtk::AttachOptions::SHRINK);
-
-	m_finished_time_label 					= Gtk::manage			(new Gtk::Label());
-	m_finished_time_label						->set_markup			("<b>finished time</b>");
-	m_finished_time 								= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_finished_time_label, 						0, 1,44,45, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_finished_time, 									2, 3,44,45, Gtk::AttachOptions::SHRINK);
-
-	m_seeding_time_label 						= Gtk::manage			(new Gtk::Label());
-	m_seeding_time_label						->set_markup			("<b>seeding time</b>");
-	m_seeding_time 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_seeding_time_label, 						0, 1,45,46, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_seeding_time, 									2, 3,45,46, Gtk::AttachOptions::SHRINK);
 
 	m_seed_rank_label 							= Gtk::manage			(new Gtk::Label());
 	m_seed_rank_label								->set_markup			("<b>seed rank</b>");
@@ -361,12 +304,7 @@
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_seed_rank, 											2, 3,46,47, Gtk::AttachOptions::SHRINK);
 
-	m_last_scrape_label 						= Gtk::manage			(new Gtk::Label());
-	m_last_scrape_label							->set_markup			("<b>last scrape</b>");
-	m_last_scrape 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_last_scrape_label, 							0, 1,47,48, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_last_scrape, 										2, 3,47,48, Gtk::AttachOptions::SHRINK);
+
 
 	m_priority_label 								= Gtk::manage			(new Gtk::Label());
 	m_priority_label								->set_markup			("<b>priority</b>");
@@ -382,103 +320,180 @@
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*m_state, 													2, 3,49,50, Gtk::AttachOptions::SHRINK);
 
-	m_need_save_resume_label 				= Gtk::manage			(new Gtk::Label());
-	m_need_save_resume_label				->set_markup			("<b>need save resume</b>");
-	m_need_save_resume 							= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_need_save_resume_label, 				0, 1,50,51, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_need_save_resume, 							2, 3,50,51, Gtk::AttachOptions::SHRINK);
+m_next_announce_label 					= Gtk::manage			(new Gtk::Label());
+m_next_announce_label						->set_markup			("<b>announce</b>");
+m_next_announce 								= Gtk::manage			(new Gtk::Label("0"));
+m_times_table_layout									->attach					(*m_next_announce_label, 						0, 1, 3, 4, Gtk::AttachOptions::SHRINK);
+m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+m_times_table_layout									->attach					(*m_next_announce, 									2, 3, 3, 4, Gtk::AttachOptions::SHRINK);
+
+m_announce_interval_label				= Gtk::manage			(new Gtk::Label());
+m_announce_interval_label				->set_markup			("<b>interval</b>");
+m_announce_interval 						= Gtk::manage			(new Gtk::Label());
+m_times_table_layout									->attach					(*m_announce_interval_label, 				0, 1, 4, 5, Gtk::AttachOptions::SHRINK);
+m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+m_times_table_layout									->attach					(*m_announce_interval, 							2, 3, 4, 5, Gtk::AttachOptions::SHRINK);
+
+	m_added_time_label 							= Gtk::manage			(new Gtk::Label());
+	m_added_time_label							->set_markup			("<b>added time</b>");
+	m_added_time 										= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_added_time_label, 							0, 1,16,17, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_added_time, 										2, 3,16,17, Gtk::AttachOptions::SHRINK);
+
+	m_completed_time_label 					= Gtk::manage			(new Gtk::Label());
+	m_completed_time_label					->set_markup			("<b>completed time</b>");
+	m_completed_time 								= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_completed_time_label, 					0, 1,17,18, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_completed_time, 								2, 3,17,18, Gtk::AttachOptions::SHRINK);
+
+	m_last_seen_complete_label 			= Gtk::manage			(new Gtk::Label());
+	m_last_seen_complete_label			->set_markup			("<b>last seen complete</b>");
+	m_last_seen_complete 						= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_last_seen_complete_label, 			0, 1,18,19, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_last_seen_complete, 						2, 3,18,19, Gtk::AttachOptions::SHRINK);
+
+	m_time_since_upload_label 			= Gtk::manage			(new Gtk::Label());
+	m_time_since_upload_label				->set_markup			("<b>time since upload</b>");
+	m_time_since_upload 						= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_time_since_upload_label, 				0, 1,41,42, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_time_since_upload, 							2, 3,41,42, Gtk::AttachOptions::SHRINK);
+
+	m_time_since_download_label 		= Gtk::manage			(new Gtk::Label());
+	m_time_since_download_label			->set_markup			("<b>time since download</b>");
+	m_time_since_download 					= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_time_since_download_label, 			0, 1,42,43, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_time_since_download, 						2, 3,42,43, Gtk::AttachOptions::SHRINK);
+
+	m_active_time_label 						= Gtk::manage			(new Gtk::Label());
+	m_active_time_label							->set_markup			("<b>active time</b>");
+	m_active_time 									= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_active_time_label, 							0, 1,43,44, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_active_time, 										2, 3,43,44, Gtk::AttachOptions::SHRINK);
+
+	m_finished_time_label 					= Gtk::manage			(new Gtk::Label());
+	m_finished_time_label						->set_markup			("<b>finished time</b>");
+	m_finished_time 								= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_finished_time_label, 						0, 1,44,45, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_finished_time, 									2, 3,44,45, Gtk::AttachOptions::SHRINK);
+
+	m_seeding_time_label 						= Gtk::manage			(new Gtk::Label());
+	m_seeding_time_label						->set_markup			("<b>seeding time</b>");
+	m_seeding_time 									= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_seeding_time_label, 						0, 1,45,46, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_seeding_time, 									2, 3,45,46, Gtk::AttachOptions::SHRINK);
+
+	m_last_scrape_label 						= Gtk::manage			(new Gtk::Label());
+	m_last_scrape_label							->set_markup			("<b>last scrape</b>");
+	m_last_scrape 									= Gtk::manage			(new Gtk::Label());
+	m_times_table_layout									->attach					(*m_last_scrape_label, 							0, 1,47,48, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_times_table_layout									->attach					(*m_last_scrape, 										2, 3,47,48, Gtk::AttachOptions::SHRINK);
 
 	m_ip_filter_applies_label 			= Gtk::manage			(new Gtk::Label());
 	m_ip_filter_applies_label				->set_markup			("<b>ip filter applies</b>");
 	m_ip_filter_applies 						= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_ip_filter_applies_label, 				0, 1,51,52, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_ip_filter_applies, 							2, 3,51,52, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout						->attach					(*m_ip_filter_applies_label, 				0, 1,51,52, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout						->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout						->attach					(*m_ip_filter_applies, 							2, 3,51,52, Gtk::AttachOptions::SHRINK);
 
 	m_upload_mode_label 						= Gtk::manage			(new Gtk::Label());
 	m_upload_mode_label							->set_markup			("<b>upload mode</b>");
 	m_upload_mode 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_upload_mode_label, 							0, 1,52,53, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_upload_mode, 										2, 3,52,53, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_upload_mode_label, 							0, 1,52,53, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_upload_mode, 										2, 3,52,53, Gtk::AttachOptions::SHRINK);
 
 	m_share_mode_label 							= Gtk::manage			(new Gtk::Label());
 	m_share_mode_label							->set_markup			("<b>share mode</b>");
 	m_share_mode 										= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_share_mode_label, 							0, 1,53,54, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_share_mode, 										2, 3,53,54, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_share_mode_label, 							0, 1,53,54, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_share_mode, 										2, 3,53,54, Gtk::AttachOptions::SHRINK);
 
 	m_super_seeding_label 					= Gtk::manage			(new Gtk::Label());
 	m_super_seeding_label						->set_markup			("<b>super seeding</b>");
 	m_super_seeding 								= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_super_seeding_label, 						0, 1,54,55, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_super_seeding, 									2, 3,54,55, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_super_seeding_label, 						0, 1,54,55, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_super_seeding, 									2, 3,54,55, Gtk::AttachOptions::SHRINK);
 
 	m_paused_label 									= Gtk::manage			(new Gtk::Label());
 	m_paused_label									->set_markup			("<b>paused</b>");
 	m_paused 												= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_paused_label, 									0, 1,55,56, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_paused, 												2, 3,55,56, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_paused_label, 									0, 1,55,56, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_paused, 												2, 3,55,56, Gtk::AttachOptions::SHRINK);
 
 	m_auto_managed_label 						= Gtk::manage			(new Gtk::Label());
 	m_auto_managed_label						->set_markup			("<b>auto managed</b>");
 	m_auto_managed 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_auto_managed_label, 						0, 1,56,57, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_auto_managed, 									2, 3,56,57, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_auto_managed_label, 						0, 1,56,57, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_auto_managed, 									2, 3,56,57, Gtk::AttachOptions::SHRINK);
 
 	m_sequential_download_label 		= Gtk::manage			(new Gtk::Label());
 	m_sequential_download_label			->set_markup			("<b>sequential download</b>");
 	m_sequential_download 					= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_sequential_download_label, 			0, 1,57,58, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_sequential_download, 						2, 3,57,58, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_sequential_download_label, 			0, 1,57,58, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_sequential_download, 						2, 3,57,58, Gtk::AttachOptions::SHRINK);
 
 	m_is_seeding_label 							= Gtk::manage			(new Gtk::Label());
 	m_is_seeding_label							->set_markup			("<b>is seeding</b>");
 	m_is_seeding 										= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_is_seeding_label, 							0, 1,58,59, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_is_seeding, 										2, 3,58,59, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_is_seeding_label, 							0, 1,58,59, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_is_seeding, 										2, 3,58,59, Gtk::AttachOptions::SHRINK);
 
 	m_is_finished_label 						= Gtk::manage			(new Gtk::Label());
 	m_is_finished_label							->set_markup			("<b>is finished</b>");
 	m_is_finished 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_is_finished_label, 							0, 1,59,60, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_is_finished, 										2, 3,59,60, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_is_finished_label, 							0, 1,59,60, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_is_finished, 										2, 3,59,60, Gtk::AttachOptions::SHRINK);
 
 	m_has_metadata_label 						= Gtk::manage			(new Gtk::Label());
 	m_has_metadata_label						->set_markup			("<b>has metadata</b>");
 	m_has_metadata 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_has_metadata_label, 						0, 1,60,61, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_has_metadata, 									2, 3,60,61, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_has_metadata_label, 						0, 1,60,61, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_has_metadata, 									2, 3,60,61, Gtk::AttachOptions::SHRINK);
 
 	m_has_incoming_label 						= Gtk::manage			(new Gtk::Label());
 	m_has_incoming_label						->set_markup			("<b>has incoming</b>");
 	m_has_incoming 									= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_has_incoming_label, 						0, 1,61,62, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_has_incoming, 									2, 3,61,62, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_has_incoming_label, 						0, 1,61,62, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_has_incoming, 									2, 3,61,62, Gtk::AttachOptions::SHRINK);
 
 	m_seed_mode_label 							= Gtk::manage			(new Gtk::Label());
 	m_seed_mode_label								->set_markup			("<b>seed mode</b>");
 	m_seed_mode 										= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_seed_mode_label, 								0, 1,62,63, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_seed_mode, 											2, 3,62,63, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_seed_mode_label, 								0, 1,62,63, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_seed_mode, 											2, 3,62,63, Gtk::AttachOptions::SHRINK);
 
 	m_moving_storage_label 					= Gtk::manage			(new Gtk::Label());
 	m_moving_storage_label					->set_markup			("<b>moving storage</b>");
 	m_moving_storage 								= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_moving_storage_label, 					0, 1,63,64, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_moving_storage, 								2, 3,63,64, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_moving_storage_label, 					0, 1,63,64, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_moving_storage, 								2, 3,63,64, Gtk::AttachOptions::SHRINK);
+
+	m_need_save_resume_label 				= Gtk::manage			(new Gtk::Label());
+	m_need_save_resume_label				->set_markup			("<b>need save resume</b>");
+	m_need_save_resume 							= Gtk::manage			(new Gtk::Label());
+	m_bools_table_layout									->attach					(*m_need_save_resume_label, 				0, 1,50,51, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+	m_bools_table_layout									->attach					(*m_need_save_resume, 							2, 3,50,51, Gtk::AttachOptions::SHRINK);
 
 	m_info_hash_label 							= Gtk::manage			(new Gtk::Label());
 	m_info_hash_label								->set_markup			("<b>info hash</b>");
@@ -490,33 +505,25 @@
 	m_current_tracker_label 				= Gtk::manage			(new Gtk::Label());
 	m_current_tracker_label					->set_markup			("<b>tracker</b>");
 	m_current_tracker 							= Gtk::manage			(new Gtk::Label());
-	m_table_layout									->attach					(*m_current_tracker_label, 					0, 1, 65, 66, Gtk::AttachOptions::SHRINK);
+	m_table_layout									->attach					(*m_current_tracker_label, 					0, 1,65,66, Gtk::AttachOptions::SHRINK);
 	m_table_layout									->attach					(*(new Gtk::VSeparator()), 					1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-	m_table_layout									->attach					(*m_current_tracker, 								2, 3, 65, 66, Gtk::AttachOptions::SHRINK);
-/*
-Gtk::ScrolledWindow* scrolled_window = Gtk::manage( new
-Gtk::ScrolledWindow() ) ;
-scrolled_window->set_policy( Gtk::POLICY_NEVER,
-Gtk::POLICY_AUTOMATIC ) ;
-scrolled_window->show() ;
-scrolled_window->add( *m_stat_box ) ;*/
+	m_table_layout									->attach					(*m_current_tracker, 								2, 3,65,66, Gtk::AttachOptions::SHRINK);
 
-	m_stat_box											->pack_start			(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-	m_stat_box											->pack_start			(*m_table_layout, Gtk::PACK_SHRINK);
-	m_notebook											->append_page			(*m_graph, "graph");
-	m_notebook											->append_page			(*m_stat_box, "info");
-	m_notebook											->append_page			(*m_files_box, 				"files");
-	m_notebook											->append_page			(*m_peers_box, 				"peers");
-	m_notebook											->append_page			(*m_trackers_box, 		"trackers");
-	//m_notebook											->append_page			(*m_preferences_box, 	"preferences");
-	this														->pack_end				(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
+	m_stat_box											->pack_start			(*(new Gtk::HSeparator()), 																Gtk::PACK_SHRINK);
+	m_stat_box											->pack_start			(*m_table_layout, 																				Gtk::PACK_SHRINK);
+	m_bools_box											->pack_start			(*(new Gtk::HSeparator()), 																Gtk::PACK_SHRINK);
+	m_bools_box											->pack_start			(*m_bools_table_layout, 																	Gtk::PACK_SHRINK);
+	m_times_box											->pack_start			(*(new Gtk::HSeparator()), 																Gtk::PACK_SHRINK);
+	m_times_box											->pack_start			(*m_times_table_layout, 																	Gtk::PACK_SHRINK);
+	m_notebook											->append_page			(*m_graph, 																												 "graph");
+	m_notebook											->append_page			(*m_stat_box, 																											"info");
+	m_notebook											->append_page			(*m_times_box, 																								   	 "times");
+	m_notebook											->append_page			(*m_bools_box, 																								   	 "bools");
+	m_notebook											->append_page			(*m_files_box, 																										 "files");
+	m_notebook											->append_page			(*m_peers_box, 																										 "peers");
+	m_notebook											->append_page			(*m_trackers_box, 																							"trackers");
+	this														->pack_end				(*m_notebook, 															   Gtk::PACK_EXPAND_WIDGET,	 5);
 
-	/*m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-	m_stat_box->pack_start(*m_table_layout, Gtk::PACK_SHRINK);
-
-
-
-	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);*/
 }
 
 /**

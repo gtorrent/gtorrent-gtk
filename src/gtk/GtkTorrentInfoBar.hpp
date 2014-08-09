@@ -27,15 +27,17 @@ class GtkTorrentInfoBar : public Gtk::Box
 		Gtk::Box 			*m_overview_box;
 		GtkGraph 			*m_graph;
 		Gtk::Box 			*m_stat_box;
+		Gtk::Box 			*m_times_box;
+		Gtk::Box 			*m_bools_box;
 		Gtk::Box 			*m_piece_box;
 		GtkPiece 			*m_progress;
 		Gtk::Box 			*m_files_box;
 		Gtk::Box 			*m_peers_box;
 		Gtk::Box 			*m_trackers_box;
-		Gtk::Box 			*m_preferences_box;
-		Gtk::Box 			*m_player_box;
 
 		Gtk::Table 		*m_table_layout;
+		Gtk::Table 		*m_bools_table_layout;
+		Gtk::Table 		*m_times_table_layout;
 
 		Gtk::Label 		*m_down_total_label;
 		Gtk::Label 		*m_down_total;
