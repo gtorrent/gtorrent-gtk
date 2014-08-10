@@ -52,4 +52,14 @@ public:
 
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
+
+	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_settings    = Gtk::manage(new Gtk::Button());
+
 };

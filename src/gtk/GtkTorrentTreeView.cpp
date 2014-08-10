@@ -1,4 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
+#include "GtkMainWindow.hpp"
 
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
@@ -9,11 +10,12 @@
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar)
+GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
-
+	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
+//	set_activate_on_single_click();
 	this->set_model(m_liststore);
 	this->setupColumns();
 	this->set_hexpand();
@@ -65,7 +67,6 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->add(*rcSep2);
 		m_rcMenu->add(*rcmItem6);
 		m_rcMenu->add(*rcmItemSeq);
-
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
 	}
@@ -77,6 +78,8 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		Gdk::Event((GdkEvent*)event).put();
 	}
 	m_infobar->updateInfo(getFirstSelected());
+	onSelectionChanged();
+
 	return true;
 }
 
@@ -373,5 +376,29 @@ void GtkTorrentTreeView::reloadColors()
 	m_colors["Checking..."]             = pair<string, string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
 	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
 	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
+
+}
+
+void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
+{
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	char pausedTorrents = 0, startedTorrents = 0;
+
+	if(selectedIndices().empty())
+	{
+		m_parent->btn_pause ->hide();
+		m_parent->btn_resume->hide();
+		return;
+	}
+
+	for (auto i : selectedIndices())
+	{
+		pausedTorrents  +=  t[i]->isPaused();
+		startedTorrents += !t[i]->isPaused();
+		if(pausedTorrents && startedTorrents) break;
+	}
+
+	m_parent->btn_pause ->set_visible(startedTorrents != 0);
+	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
 }

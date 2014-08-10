@@ -17,7 +17,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
 
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
-	m_treeview = Gtk::manage(new GtkTorrentTreeView(m_infobar));
+	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
 	//swin->get_vscrollbar()->hide(); // works, but then you can't use the scrollwheel
 	m_swin->add(*m_treeview);
@@ -31,14 +31,6 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_show_close_button(true);
 	header->set_title("gTorrent");
 
-	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_connect     = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_settings    = Gtk::manage(new Gtk::Button());
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
@@ -65,14 +57,13 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*btn_add_link);
 	header->add(*btn_connect);
 	header->add(*separator0);
-	header->add(*btn_pause);
 	header->add(*btn_resume);
+	header->add(*btn_pause);
 	header->add(*btn_remove);
 	header->add(*separator1);
 	header->add(*btn_properties);
 	header->add(*separator2);
 	header->pack_end(*btn_settings);
-
 	// Let's add some DnD goodness
 	vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back(Gtk::TargetEntry("STRING"));
@@ -86,6 +77,7 @@ GtkMainWindow::GtkMainWindow() :
 	set_titlebar(*header);
 	add(*panel);
 	show_all();
+	btn_pause->hide();
 	m_infobar->set_visible(false);
 
 	// for some reason, the treeview start with its first element selected
