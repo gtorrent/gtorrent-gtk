@@ -88,6 +88,10 @@ GtkMainWindow::GtkMainWindow() :
 	show_all();
 	m_infobar->set_visible(false);
 
+	// for some reason, the treeview start with its first element selected
+	m_treeview->get_selection()->unselect_all();
+
+
 	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
 		gt::Settings::getOptionAsInt("FileAssociation") == -1)
 	{
