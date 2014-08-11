@@ -11,6 +11,8 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 {
 	m_notebook 		= Gtk::manage(new Gtk::Notebook());
 	m_info_box		= Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_gfx_box		= Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+
 	m_piece_box 	= Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
 	m_title = Gtk::manage(new Gtk::Label());
@@ -23,8 +25,8 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
 	m_progress->set_size_request(0, 32);
 
-	m_info_box->add(*m_piece_box);
-	m_info_box->add(*m_graph);
+	m_gfx_box->add(*m_piece_box);
+	m_gfx_box->add(*m_graph);
 
 	m_info_table_layout	= Gtk::manage(new Gtk::Table(23, 2, false));
 	m_info_table_layout ->set_col_spacings(5);
@@ -193,7 +195,13 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_info_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_info_box->pack_start(*m_info_table_layout, Gtk::PACK_SHRINK);
 
-	m_notebook->append_page(*m_info_box, 	 "^-^");
+	m_information_layout	= Gtk::manage(new Gtk::Table(2, 1, false));
+	m_information_layout ->set_col_spacings(5);
+
+	m_information_layout ->attach(*m_gfx_box, 0, 1, 0, 1, Gtk::AttachOptions::SHRINK);
+	m_information_layout ->attach(*m_info_box, 1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+
+	m_notebook->append_page(*m_information_layout, 	 "^-^");
 
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }

@@ -15,16 +15,15 @@
 class GtkTorrentInfoBar : public Gtk::Box
 {
 private:
-	GtkBlockBar *m_progress;
-	Gtk::Label *m_title;
-	GtkGraph *m_graph;
+	GtkBlockBar 	*m_progress;
+	Gtk::Label 		*m_title;
+	GtkGraph 			*m_graph;
 	Gtk::Notebook *m_notebook;
-	Gtk::Box *m_info_box;
-
-	Gtk::Box *m_piece_box;
-
+	Gtk::Box 			*m_info_box;
+	Gtk::Box 			*m_gfx_box;
+	Gtk::Box 			*m_piece_box;
 	Gtk::Table 		*m_info_table_layout;
-
+	Gtk::Table 		*m_information_layout;
 	Gtk::Label 		*m_eta_label;
 	Gtk::Label 		*m_eta;
 	Gtk::Label 		*m_active_time_label;

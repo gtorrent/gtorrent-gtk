@@ -31,8 +31,8 @@ Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
  */
 void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
-	minimum_width = 100;
-	natural_width = 500;
+	minimum_width = 512;
+	natural_width = 512;
 }
 
 /**
@@ -49,8 +49,8 @@ void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
  */
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
-	minimum_height = 50;
-	natural_height = 358;
+	minimum_height = 256;
+	natural_height = 256;
 }
 
 /**
