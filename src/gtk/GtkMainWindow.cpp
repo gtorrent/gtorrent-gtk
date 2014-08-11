@@ -2,14 +2,11 @@
 #include "Settings.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
-<<<<<<< HEAD
 #include <gtkmm/scrollbar.h>
-=======
 #include <Application.hpp>
 #include <gtkmm/stock.h>
 #include <glibmm.h>
 #include <gtkmm/image.h>
->>>>>>> 010e2683af90a7393c22c752337708ee4be63808
 
 /**
 * Sets up the main window.
@@ -23,7 +20,6 @@ GtkMainWindow::GtkMainWindow() :
 	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
 
-<<<<<<< HEAD
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
@@ -32,12 +28,9 @@ GtkMainWindow::GtkMainWindow() :
 	panel->pack1(*m_swin);
 	panel->pack2(*m_infobar);
 
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
-=======
 	this->set_icon_from_file("gtorrent.png");
 
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
->>>>>>> 010e2683af90a7393c22c752337708ee4be63808
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
