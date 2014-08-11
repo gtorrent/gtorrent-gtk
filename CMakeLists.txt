@@ -62,6 +62,7 @@ CONFIGURE_FILE (
 	IMMEDIATE @ONLY)
 
 file(COPY assets/gtorrent.png DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets/settings.glade DESTINATION ${CMAKE_BINARY_DIR})
 
 ADD_CUSTOM_TARGET (uninstall
 	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)

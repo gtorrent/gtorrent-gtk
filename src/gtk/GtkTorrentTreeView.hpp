@@ -16,6 +16,7 @@
 #include "GtkTorrentInfoBar.hpp"
 
 // Gtk Torrent Columns Section
+class GtkMainWindow;
 
 class GtkTorrentColumns : public Gtk::TreeModel::ColumnRecord
 {
@@ -66,11 +67,13 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
-	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	GtkTorrentInfoBar *m_infobar;
+	GtkMainWindow *m_parent;
+
+	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
 	Gtk::CheckMenuItem *rcmItemSeq;
+	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
 
 	void setupColumns();
 	vector<unsigned> selectedIndices();
@@ -81,17 +84,17 @@ private:
 	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
 	/* Event handlers for the torrent view context menu */
-	void         stopView_onClick();
-	void         openView_onClick();
-	void        startView_onClick();
-	void       removeView_onClick();
-	void     priorityView_onClick();
-	void     propertyView_onClick();
-	void  sequentialChange_onRealize();
-	void sequentialChange_onClick();
+	void           stopView_onClick();
+	void           openView_onClick();
+	void          startView_onClick();
+	void         removeView_onClick();
+	void       priorityView_onClick();
+	void       propertyView_onClick();
+	void   sequentialChange_onClick();
+	void sequentialChange_onRealize();
 
 public:
-	GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar);
+	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 
 	void addCell(shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
@@ -99,5 +102,8 @@ public:
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
 	void reloadColors();
+	void onSelectionChanged();
 	shared_ptr<gt::Torrent> getFirstSelected();
+	void loadColumns();
+	void saveColumns();
 };

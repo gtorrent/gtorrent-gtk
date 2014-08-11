@@ -14,7 +14,7 @@
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
-private:
+public:
 	GtkBlockBar 	*m_progress;
 	Gtk::Label 		*m_title;
 	Gtk::Label 		*m_title_label;
@@ -89,7 +89,7 @@ private:
 	Gtk::Label 		*m_num_peers;
 	Gtk::Label 		*m_distributed_copies_label;
 	Gtk::Label 		*m_distributed_copies;
-public:
 	GtkTorrentInfoBar();
 	void updateInfo(shared_ptr<gt::Torrent> selected);
+	void updateState(shared_ptr<gt::Torrent> selected);
 };

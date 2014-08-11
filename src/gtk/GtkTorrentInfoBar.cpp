@@ -206,25 +206,34 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	this->pack_end(*m_information_layout, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
+// TODO: Should replace every place where a torrent index is required with a torrent pointer, smells like everything would break if
+// the user tried to sort the torrents.
+
 /**
 * Updates the torrent info bar.
 */
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	static shared_ptr<gt::Torrent> previous = nullptr;
+	int selectedIndex = 0;
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
-	bool selectionExists = false;
-	unsigned selectedIndex;
+	if(selected)
+		set_visible(true);
+	else
+		set_visible(false);
+
 	for(unsigned i = 0; i < t.size(); ++i)
-	{
-		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
 		if(selected == t[i])
-		{
 			selectedIndex = i;
-			selectionExists = true;
-		}
-	}
-	if(selectionExists)
+
+	if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+		m_progress->setBlocks(t[selectedIndex]->getPieces());
+
+	m_title->set_text(t[selectedIndex]->getName());
+	m_graph->select(selectedIndex);
+
+	if(previous != selected)
 	{
 		this->set_visible(true);
 		if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
@@ -255,6 +264,22 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 		m_seed_rank ->set_text(t[selectedIndex] ->getSeedRankString());
 		m_distributed_copies ->set_text(t[selectedIndex] ->getDistributedCopiesString());
 	}
-	else
-		this->set_visible(false);
+	previous = selected;
+}
+
+void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
+{
+	int selectedIndex = 0;
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	for(unsigned i = 0; i < t.size(); ++i)
+		if(selected == t[i])
+			selectedIndex = i;
+	if(t[selectedIndex]->getHandle().status().has_metadata)
+		m_progress->setBlocks(t[selectedIndex]->getPieces());
+	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
+
+	for(unsigned i = 0; i < t.size(); ++i)
+		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
+
 }
