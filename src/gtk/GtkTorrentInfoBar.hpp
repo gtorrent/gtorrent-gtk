@@ -17,6 +17,7 @@ class GtkTorrentInfoBar : public Gtk::Box
 private:
 	GtkBlockBar 	*m_progress;
 	Gtk::Label 		*m_title;
+	Gtk::Label 		*m_title_label;
 	GtkGraph 			*m_graph;
 	Gtk::Notebook *m_notebook;
 	Gtk::Box 			*m_info_box;
