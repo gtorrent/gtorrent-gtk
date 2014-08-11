@@ -20,6 +20,8 @@ private:
 	GtkGraph *m_graph;
 	Gtk::Notebook *m_notebook;
 	Gtk::Box *m_stat_box;
+	Gtk::Box *m_graph_box;
+
 	Gtk::Box *m_piece_box;
 	Gtk::Box 			*m_network_box;
 
@@ -63,9 +65,6 @@ private:
 	Gtk::Label 		*m_has_metadata;
 	Gtk::Label 		*m_has_incoming_label;
 	Gtk::Label 		*m_has_incoming;
-
-	Gtk::Table 		*m_network_table_layout;
-
 	Gtk::Label 		*m_state_label;
 	Gtk::Label 		*m_state;
 	Gtk::Label 		*m_current_tracker_label;

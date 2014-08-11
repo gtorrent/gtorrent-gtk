@@ -50,7 +50,7 @@ void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = 50;
-	natural_height = 100;
+	natural_height = 358;
 }
 
 /**
