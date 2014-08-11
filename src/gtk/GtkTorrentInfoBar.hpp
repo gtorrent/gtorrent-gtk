@@ -19,11 +19,9 @@ private:
 	Gtk::Label *m_title;
 	GtkGraph *m_graph;
 	Gtk::Notebook *m_notebook;
-	Gtk::Box *m_stat_box;
-	Gtk::Box *m_graph_box;
+	Gtk::Box *m_info_box;
 
 	Gtk::Box *m_piece_box;
-	Gtk::Box 			*m_network_box;
 
 	Gtk::Table 		*m_info_table_layout;
 
