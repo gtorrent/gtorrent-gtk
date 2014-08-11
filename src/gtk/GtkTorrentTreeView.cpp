@@ -113,17 +113,18 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column(         "#", m_cols.m_col_queue);
-	append_column(       "Age", m_cols.m_col_age);
-	append_column(       "ETA", m_cols.m_col_eta);
-	append_column(      "Name", m_cols.m_col_name);
-	append_column(      "Seed", m_cols.m_col_seeders);
-	append_column(     "Leech", m_cols.m_col_leechers);
-	append_column(  "Up Speed", m_cols.m_col_ul_speed);
-	append_column("Down Speed", m_cols.m_col_dl_speed);
-	append_column(      "Size", m_cols.m_col_size);
-	append_column(   "Remains", m_cols.m_col_remaining);
-	append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	// append_column returns number of columns in TreeView, so -1 to get index
+	get_column(append_column("#",          m_cols.m_col_queue)     - 1)->set_fixed_width(20);
+	get_column(append_column("Age",        m_cols.m_col_age)       - 1)->set_fixed_width(50);
+	get_column(append_column("ETA",        m_cols.m_col_eta)       - 1)->set_fixed_width(90);
+	get_column(append_column("Name",       m_cols.m_col_name)      - 1)->set_fixed_width(250);
+	get_column(append_column("Seed",       m_cols.m_col_seeders)   - 1)->set_fixed_width(45);
+	get_column(append_column("Leech",      m_cols.m_col_leechers)  - 1)->set_fixed_width(45);
+	get_column(append_column("Up Speed",   m_cols.m_col_ul_speed)  - 1)->set_fixed_width(95);
+	get_column(append_column("Down Speed", m_cols.m_col_dl_speed)  - 1)->set_fixed_width(95);
+	get_column(append_column("Size",       m_cols.m_col_size)      - 1)->set_fixed_width(75);
+	get_column(append_column("Remains",    m_cols.m_col_remaining) - 1)->set_fixed_width(75);
+	get_column(append_column("Ratio",      m_cols.m_col_dl_ratio)  - 1)->set_fixed_width(55);
 
 	for (auto & c : this->get_columns())
 	{
@@ -147,9 +148,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(120);
+		//c->set_fixed_width(120);
 	}
-	this->get_column(0)->set_fixed_width(48);
+	//this->get_column(0)->set_fixed_width(48);
 }
 
 /**
