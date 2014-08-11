@@ -51,8 +51,8 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		rcmItem4->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::openView_onClick));
 
 		/* Maybe an onHover or smth for this one. */
-		rcmItem5->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
-		rcmItem6->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
+		rcmItem5->signal_activate() .connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
+		rcmItem6->signal_activate() .connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
 		rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
 		rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
 

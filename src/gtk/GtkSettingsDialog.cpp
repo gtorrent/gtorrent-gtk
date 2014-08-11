@@ -28,6 +28,7 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(    "notokaybutt", notokbutt);
 	builder->get_widget(    "uplimitspin", uplimit);
 	builder->get_widget(    "savepathbox", savepathbox);
+	builder->get_widget(   "useragentbox", useragentbox);
 	builder->get_widget(   "dhtlimitspin", dhtlimit);
 	builder->get_widget(  "downlimitspin", downlimit);
 	builder->get_widget(  "cachesizespin", cachesize);
@@ -93,8 +94,11 @@ int GtkSettingsDialog::run()
 	upcolorbutt  ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
 	downcolorbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
 	gridbutt     ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphGridColor"]));
+
 	savepathbox->set_text(gt::Settings::settings["SavePath"]);
 	statuscombo->set_active(0);
+	useragentbox->set_text(gt::Settings::settings["UserAgent"]);
+
 	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"] == "Yes");
 	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"] == "Yes");
 	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"] == "Yes");

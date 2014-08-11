@@ -93,7 +93,7 @@ GtkMainWindow::GtkMainWindow() :
 		gt::Settings::setOption("FileAssociation", code);
 		delete dialog;
 	}
-	cout << endl;
+
 	d = new GtkSettingsDialog(this);
 }
 
