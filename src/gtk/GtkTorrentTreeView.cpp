@@ -19,6 +19,20 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar 
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
+
+	this->set_model(m_liststore);
+	this->setupColumns();
+
+	m_colors["Paused"]                  = pair<string, string>("#ff00ff", "#00ff00");
+	m_colors["Queued for checking"]     = pair<string, string>("#ff00ff", "#00ff00");
+	m_colors["Downloading metadata..."] = pair<string, string>("#ffff00", "#0000ff");
+	m_colors["Finished"]                = pair<string, string>("#0f0f0f", "#f0f0f0");
+	m_colors["Allocating..."]           = pair<string, string>("#ff0ff0", "#00f00f");
+	m_colors["Resuming..."]             = pair<string, string>("#00ffff", "#ff0000");
+	m_colors["Checking..."]             = pair<string, string>("#f00f0f", "#0ff0f0");
+	m_colors["Seeding"]                 = pair<string, string>("#123456", "#789ABC");
+	m_colors["Downloading"]             = pair<string, string>("#00fe00", "#789ABC");
+
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
 }
