@@ -42,13 +42,13 @@ GtkMainWindow::GtkMainWindow() :
 	btn_remove     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
 	btn_settings   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
 
-	btn_add_link   ->set_image_from_icon_name("edit-paste");
-	btn_add_torrent->set_image_from_icon_name("gtk-add");
-	btn_connect    ->set_image_from_icon_name("gtk-directory");
-	btn_pause      ->set_image_from_icon_name("media-playback-pause");
-	btn_properties ->set_image_from_icon_name("gtk-properties");
-	btn_remove     ->set_image_from_icon_name("gtk-cancel");
-	btn_resume     ->set_image_from_icon_name("media-playback-start");
+	btn_add_link   ->set_image_from_icon_name("emblem-shared-symbolic");
+	btn_add_torrent->set_image_from_icon_name("list-add-symbolic");
+	btn_connect    ->set_image_from_icon_name("folder-symbolic");
+	btn_pause      ->set_image_from_icon_name("media-playback-pause-symbolic");
+	btn_properties ->set_image_from_icon_name("preferences-system-symbolic");
+	btn_remove     ->set_image_from_icon_name("dialog-error-symbolic");
+	btn_resume     ->set_image_from_icon_name("media-playback-start-symbolic");
 	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
 
 	//TODO:align properties button to right of top bar
