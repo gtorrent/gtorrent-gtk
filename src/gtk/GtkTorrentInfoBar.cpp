@@ -51,11 +51,15 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
+// TODO: Should replace every place where a torrent index is required with a torrent pointer, smells like everything would break if
+// the user tried to sort the torrents.
+
 /**
 * Updates the torrent info bar.
 */
 void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 {
+	static shared_ptr<gt::Torrent> previous = nullptr;
 	int selectedIndex = 0;
 	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
@@ -73,14 +77,26 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 
 	m_title->set_text(t[selectedIndex]->getName());
 	m_graph->select(selectedIndex);
-	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
-	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
 
+	if(previous != selected)
+	{
+		m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+		m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
+	}
+	previous = selected;
 }
 
 void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
 {
+	int selectedIndex = 0;
 	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	for(unsigned i = 0; i < t.size(); ++i)
+		if(selected == t[i])
+			selectedIndex = i;
+	if(t[selectedIndex]->getHandle().status().has_metadata)
+		m_progress->setBlocks(t[selectedIndex]->getPieces());
+	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
 
 	for(unsigned i = 0; i < t.size(); ++i)
 		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());

@@ -14,11 +14,10 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar 
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
-//	set_activate_on_single_click();
-	this->set_model(m_liststore);
-	this->setupColumns();
-	this->set_hexpand();
-	this->set_vexpand();
+	set_model(m_liststore);
+	setupColumns();
+	set_hexpand();
+	set_vexpand();
 	reloadColors();
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
