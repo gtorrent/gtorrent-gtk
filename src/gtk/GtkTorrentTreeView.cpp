@@ -34,9 +34,9 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	if(event->button == 3) // if right-click
 	{
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
 		rcmItemSeq                     = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
-		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
+		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
+		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Pause"));
 		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
 		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
 		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
@@ -50,8 +50,8 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
 		rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
 
-		m_rcMenu->add(*rcmItem1);
 		m_rcMenu->add(*rcmItemSeq);
+		m_rcMenu->add(*rcmItem1);
 		m_rcMenu->add(*rcmItem2);
 		m_rcMenu->add(*rcmItem3);
 		m_rcMenu->add(*rcSep1);

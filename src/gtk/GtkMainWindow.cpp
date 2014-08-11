@@ -53,8 +53,8 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*btn_add_torrent);
 	header->add(*btn_add_link);
 	header->add(*separator);
-	header->add(*btn_pause);
 	header->add(*btn_resume);
+	header->add(*btn_pause);
 	header->add(*btn_remove);
 	header->pack_end(*btn_settings);
 
