@@ -97,72 +97,72 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_all_time_upload_label 				= Gtk::manage			(new Gtk::Label());
 	m_all_time_upload_label					->set_markup			("<b>all time upload</b>");
 	m_all_time_upload 							= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_all_time_upload_label, 					 0, 1, 9,10, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 9,10, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_all_time_upload, 								 2, 3, 9,10, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_all_time_upload_label, 					 0, 1, 9, 10, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 9, 10, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_all_time_upload, 								 2, 3, 9, 10, Gtk::AttachOptions::SHRINK);
 
 	m_progress_ppm_label 						= Gtk::manage			(new Gtk::Label());
 	m_progress_ppm_label						->set_markup			("<b>progress ppm</b>");
 	m_progress_ppm 									= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_progress_ppm_label, 						 0, 1,10,11, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,10,11, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_progress_ppm, 									 2, 3,10,11, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_progress_ppm_label, 						 0, 1, 10, 11, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 10, 11, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_progress_ppm, 									 2, 3, 10, 11, Gtk::AttachOptions::SHRINK);
 
 	m_paused_label 									= Gtk::manage			(new Gtk::Label());
 	m_paused_label									->set_markup			("<b>paused</b>");
 	m_paused 												= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_paused_label, 									 0, 1,11,12, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,11,12, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_paused, 												 2, 3,11,12, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_paused_label, 									 0, 1, 11, 12, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 11, 12, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_paused, 												 2, 3, 11, 12, Gtk::AttachOptions::SHRINK);
 
 	m_is_finished_label 						= Gtk::manage			(new Gtk::Label());
 	m_is_finished_label							->set_markup			("<b>is finished</b>");
 	m_is_finished 									= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_is_finished_label, 							 0, 1,12,13, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,12,13, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_is_finished, 										 2, 3,12,13, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_is_finished_label, 							 0, 1, 12, 13, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 12, 13, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_is_finished, 										 2, 3, 12, 13, Gtk::AttachOptions::SHRINK);
 
 	m_is_seeding_label 							= Gtk::manage			(new Gtk::Label());
 	m_is_seeding_label							->set_markup			("<b>is seeding</b>");
 	m_is_seeding 										= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_is_seeding_label, 							 0, 1,13,14, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,13,14, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_is_seeding, 										 2, 3,13,14, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_is_seeding_label, 							 0, 1, 13, 14, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 13, 14, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_is_seeding, 										 2, 3, 13, 14, Gtk::AttachOptions::SHRINK);
 
 	m_auto_managed_label 						= Gtk::manage			(new Gtk::Label());
 	m_auto_managed_label						->set_markup			("<b>auto managed</b>");
 	m_auto_managed 									= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_auto_managed_label, 						 0, 1,14,15, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,14,15, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_auto_managed, 									 2, 3,14,15, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_auto_managed_label, 						 0, 1, 14, 15, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 14, 15, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_auto_managed, 									 2, 3, 14, 15, Gtk::AttachOptions::SHRINK);
 
 	m_sequential_download_label 		= Gtk::manage			(new Gtk::Label());
 	m_sequential_download_label			->set_markup			("<b>sequential download</b>");
 	m_sequential_download 					= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_sequential_download_label, 			 0, 1,15,16, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,15,16, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_sequential_download, 						 2, 3,15,16, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_sequential_download_label, 			 0, 1, 15, 16, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 15, 16, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_sequential_download, 						 2, 3, 15, 16, Gtk::AttachOptions::SHRINK);
 
 	m_ip_filter_applies_label 			= Gtk::manage			(new Gtk::Label());
 	m_ip_filter_applies_label				->set_markup			("<b>ip filter applies</b>");
 	m_ip_filter_applies 						= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_ip_filter_applies_label, 				 0, 1,16,17, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,16,17, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_ip_filter_applies, 							 2, 3,16,17, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_ip_filter_applies_label, 				 0, 1, 16, 17, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 16, 17, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_ip_filter_applies, 							 2, 3, 16, 17, Gtk::AttachOptions::SHRINK);
 
 	m_has_metadata_label 						= Gtk::manage			(new Gtk::Label());
 	m_has_metadata_label						->set_markup			("<b>has metadata</b>");
 	m_has_metadata 									= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_has_metadata_label, 						 0, 1,17,18, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,17,18, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_has_metadata, 									 2, 3,17,18, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_has_metadata_label, 						 0, 1, 17, 18, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 17, 18, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_has_metadata, 									 2, 3, 17, 18, Gtk::AttachOptions::SHRINK);
 
 	m_has_incoming_label 						= Gtk::manage			(new Gtk::Label());
 	m_has_incoming_label						->set_markup			("<b>has incoming</b>");
 	m_has_incoming 									= Gtk::manage			(new Gtk::Label());
-	m_info_table_layout							->attach					(*m_has_incoming_label, 						 0, 1,18,19, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2,18,19, Gtk::AttachOptions::SHRINK);
-	m_info_table_layout							->attach					(*m_has_incoming, 									 2, 3,18,19, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_has_incoming_label, 						 0, 1, 18, 19, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*(new Gtk::VSeparator()), 					 1, 2, 18, 19, Gtk::AttachOptions::SHRINK);
+	m_info_table_layout							->attach					(*m_has_incoming, 									 2, 3, 18, 19, Gtk::AttachOptions::SHRINK);
 
 	m_network_table_layout 						= Gtk::manage			(new Gtk::Table(13, 2, false));
 	m_network_table_layout						->set_col_spacings(5);
@@ -233,30 +233,30 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_num_seeds_label 							= Gtk::manage			(new Gtk::Label());
 	m_num_seeds_label								->set_markup			("<b>seeds</b>");
 	m_num_seeds 										= Gtk::manage			(new Gtk::Label());
-	m_network_table_layout							->attach			(*m_num_seeds_label, 								 0, 1, 9,10, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2, 9,10, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*m_num_seeds, 											 2, 3, 9,10, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_seeds_label, 								 0, 1, 9, 10, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2, 9, 10, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_seeds, 											 2, 3, 9, 10, Gtk::AttachOptions::SHRINK);
 
 	m_num_incomplete_label 					= Gtk::manage			(new Gtk::Label());
 	m_num_incomplete_label					->set_markup			("<b>incomplete</b>");
 	m_num_incomplete 								= Gtk::manage			(new Gtk::Label());
-	m_network_table_layout							->attach			(*m_num_incomplete_label, 					 0, 1,10,11, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2,10,11, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*m_num_incomplete, 								 2, 3,10,11, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_incomplete_label, 					 0, 1, 10, 11, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2, 10, 11, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_incomplete, 								 2, 3, 10, 11, Gtk::AttachOptions::SHRINK);
 
 	m_num_peers_label 							= Gtk::manage			(new Gtk::Label());
 	m_num_peers_label								->set_markup			("<b>peers</b>");
 	m_num_peers 										= Gtk::manage			(new Gtk::Label());
-	m_network_table_layout							->attach			(*m_num_peers_label, 								 0, 1,11,12, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2,11,12, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*m_num_peers, 											 2, 3,11,12, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_peers_label, 								 0, 1, 11, 12, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2, 11, 12, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_num_peers, 											 2, 3, 11, 12, Gtk::AttachOptions::SHRINK);
 
 	m_distributed_copies_label 			= Gtk::manage			(new Gtk::Label());
 	m_distributed_copies_label			->set_markup			("<b>distributed copies</b>");
 	m_distributed_copies 						= Gtk::manage			(new Gtk::Label());
-	m_network_table_layout							->attach			(*m_distributed_copies_label, 			 0, 1,12,13, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2,12,13, Gtk::AttachOptions::SHRINK);
-	m_network_table_layout							->attach			(*m_distributed_copies, 						 2, 3,12,13, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_distributed_copies_label, 			 0, 1, 12, 13, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*(new Gtk::VSeparator()), 					 1, 2, 12, 13, Gtk::AttachOptions::SHRINK);
+	m_network_table_layout							->attach			(*m_distributed_copies, 						 2, 3, 12, 13, Gtk::AttachOptions::SHRINK);
 
 	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_stat_box->pack_start(*m_info_table_layout, Gtk::PACK_SHRINK);
@@ -264,7 +264,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_network_box->pack_start(*m_network_table_layout, Gtk::PACK_SHRINK);
 	m_notebook->append_page(*m_graph, 			 "Graph");
 	m_notebook->append_page(*m_stat_box, 			"Info");
-	m_notebook->append_page(*m_network_box,"Network");
+	m_notebook->append_page(*m_network_box, "Network");
 
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }

@@ -52,14 +52,14 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	gt::Settings::settings["DefaultReciprocationRate"]  = gt::Settings::settings["DefaultReciprocationRate"]  .empty() ?   "14" : gt::Settings::settings["DefaultReciprocationRate"];
 	gt::Settings::settings["CacheExpiry"]               = gt::Settings::settings["CacheExpiry"]               .empty() ?   "10" : gt::Settings::settings["CacheExpiry"];
 	decreci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DecreaseReciprocationRate"]),  0, 100, 10, 10, 10);
-	increci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["IncreaseReciprocationRate"]),  0, 100, 10, 10, 10); 
-	defaultreci->get_adjustment()->configure(std::stoi(gt::Settings::settings["DefaultReciprocationRate"]),   0, 100, 10, 10, 10); 
+	increci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["IncreaseReciprocationRate"]),  0, 100, 10, 10, 10);
+	defaultreci->get_adjustment()->configure(std::stoi(gt::Settings::settings["DefaultReciprocationRate"]),   0, 100, 10, 10, 10);
 	uplimit    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["GlobalUploadLimit"]),         -1, 0x7FFFFFF, 10, 10, 10);
-	dhtlimit   ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DHTUploadLimit"]),            -1, 0x7FFFFFF, 10, 10, 10); 
-	downlimit  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["GlobalDownloadLimit"]),       -1, 0x7FFFFFF, 10, 10, 10); 
-	cachesize  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheSize"]),                 -1, 0x7FFFFFF, 10, 10, 10); 
-	cachechunk ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CachedChunks"]),              -1, 0x7FFFFFF, 10, 10, 10); 
-	cacheexpiry->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheExpiry"]),               -1, 0x7FFFFFF, 10, 10, 10); 
+	dhtlimit   ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DHTUploadLimit"]),            -1, 0x7FFFFFF, 10, 10, 10);
+	downlimit  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["GlobalDownloadLimit"]),       -1, 0x7FFFFFF, 10, 10, 10);
+	cachesize  ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheSize"]),                 -1, 0x7FFFFFF, 10, 10, 10);
+	cachechunk ->get_adjustment()->configure(std::stoi(gt::Settings::settings["CachedChunks"]),              -1, 0x7FFFFFF, 10, 10, 10);
+	cacheexpiry->get_adjustment()->configure(std::stoi(gt::Settings::settings["CacheExpiry"]),               -1, 0x7FFFFFF, 10, 10, 10);
 	okbutt       ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOkClicked));
 	notokbutt    ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onnotOkClicked));
 	statuscombo  ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onStatusChanged));
@@ -70,15 +70,15 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	downcolorbutt->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownColorSet));
 	upcolorbutt  ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpColorSet));
 	gridbutt     ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onGridColorSet));
-	uplimit      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpLimitChanged)); 
-	increci      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onIncreciChanged)); 
+	uplimit      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpLimitChanged));
+	increci      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onIncreciChanged));
 	decreci      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDecreciChanged));
-	dhtlimit     ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDHTLimitChanged)); 
-	downlimit    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownLimitChanged)); 
-	cachesize    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheSizeChanged)); 
-	cachechunk   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheChunkChanged)); 
-	cacheexpiry  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheExpiryChanged)); 
-	defaultreci  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDefaultReciChanged)); 
+	dhtlimit     ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDHTLimitChanged));
+	downlimit    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownLimitChanged));
+	cachesize    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheSizeChanged));
+	cachechunk   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheChunkChanged));
+	cacheexpiry  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheExpiryChanged));
+	defaultreci  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDefaultReciChanged));
 
 }
 
@@ -108,7 +108,7 @@ void GtkSettingsDialog::onOkClicked()
 	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings
 	dial->hide();
 }
-	
+
 void GtkSettingsDialog::onnotOkClicked()
 {
 	gt::Settings::settings = backup;
@@ -211,9 +211,9 @@ void GtkSettingsDialog::onForegroundSet()
 {
 	char colorstring[16] = {0};
 	sprintf(colorstring, "#%02X%02X%02X",
-			forebutt->get_rgba().get_red_u()   / 256,
-			forebutt->get_rgba().get_green_u() / 256,
-			forebutt->get_rgba().get_blue_u()  / 256);
+	        forebutt->get_rgba().get_red_u()   / 256,
+	        forebutt->get_rgba().get_green_u() / 256,
+	        forebutt->get_rgba().get_blue_u()  / 256);
 	std::cout << colorstring << std::endl;
 	switch(statuscombo->get_active_row_number())
 	{
@@ -253,9 +253,9 @@ void GtkSettingsDialog::onBackgroundSet()
 {
 	char colorstring[16] = {0};
 	sprintf(colorstring, "#%02X%02X%02X",
-			backbutt->get_rgba().get_red_u()   / 256,
-			backbutt->get_rgba().get_green_u() / 256,
-			backbutt->get_rgba().get_blue_u()  / 256);
+	        backbutt->get_rgba().get_red_u()   / 256,
+	        backbutt->get_rgba().get_green_u() / 256,
+	        backbutt->get_rgba().get_blue_u()  / 256);
 	switch(statuscombo->get_active_row_number())
 	{
 	case 0:
@@ -294,9 +294,9 @@ void GtkSettingsDialog::onGridColorSet()
 {
 	char colorstring[16] = {0};
 	sprintf(colorstring, "#%02X%02X%02X",
-			gridbutt->get_rgba().get_red_u()   / 256,
-			gridbutt->get_rgba().get_green_u() / 256,
-			gridbutt->get_rgba().get_blue_u()  / 256);
+	        gridbutt->get_rgba().get_red_u()   / 256,
+	        gridbutt->get_rgba().get_green_u() / 256,
+	        gridbutt->get_rgba().get_blue_u()  / 256);
 	gt::Settings::settings["GraphGridColor"] = colorstring;
 }
 
@@ -304,9 +304,9 @@ void GtkSettingsDialog::onDownColorSet()
 {
 	char colorstring[16] = {0};
 	sprintf(colorstring, "#%02X%02X%02X",
-			downcolorbutt->get_rgba().get_red_u()   / 256,
-			downcolorbutt->get_rgba().get_green_u() / 256,
-			downcolorbutt->get_rgba().get_blue_u()  / 256);
+	        downcolorbutt->get_rgba().get_red_u()   / 256,
+	        downcolorbutt->get_rgba().get_green_u() / 256,
+	        downcolorbutt->get_rgba().get_blue_u()  / 256);
 	gt::Settings::settings["GraphDownloadCurveColor"] = colorstring;
 }
 
@@ -314,9 +314,9 @@ void GtkSettingsDialog::onUpColorSet()
 {
 	char colorstring[16] = {0};
 	sprintf(colorstring, "#%02X%02X%02X",
-			upcolorbutt->get_rgba().get_red_u()   / 256,
-			upcolorbutt->get_rgba().get_green_u() / 256,
-			upcolorbutt->get_rgba().get_blue_u()  / 256);
+	        upcolorbutt->get_rgba().get_red_u()   / 256,
+	        upcolorbutt->get_rgba().get_green_u() / 256,
+	        upcolorbutt->get_rgba().get_blue_u()  / 256);
 	gt::Settings::settings["GraphUploadCurveColor"] = colorstring;
 }
 

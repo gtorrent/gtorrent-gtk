@@ -39,7 +39,7 @@ void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width)
  * Gets the preferred height for the speed graph widget for this particular width.
  */
 void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
-													int& minimum_height, int& natural_height) const
+        int& minimum_height, int& natural_height) const
 {
 	get_preferred_height(minimum_height, natural_height);
 }
@@ -57,7 +57,7 @@ void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_heig
  * Gets the preferred width for the speed graph widget for this particular height.
  */
 void GtkGraph::get_preferred_width_for_height_vfunc(int /* height */,
-													int& minimum_width, int& natural_width) const
+        int& minimum_width, int& natural_width) const
 {
 	get_preferred_width(minimum_width, natural_width);
 }
@@ -260,7 +260,7 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 {
 	double oldy;
 	if(q.empty()) return;
-	
+
 	oldy = height + (q.front() * height / maxValue);
 	cr->move_to(0, oldy);
 	q.pop();
@@ -285,7 +285,7 @@ void GtkGraph::draw(queue<double> q, double height, double increment, double max
 void GtkGraph::resize(unsigned size)
 {
 	m_maxSize = size;
-	for(auto &q : m_history)
+	for(auto & q : m_history)
 	{
 		while(q.first.size() > m_maxSize)
 			q.first.pop();

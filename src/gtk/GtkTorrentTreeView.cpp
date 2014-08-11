@@ -133,7 +133,7 @@ void GtkTorrentTreeView::setupColumns()
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
 	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 
-	for (auto &c : this->get_columns())
+	for (auto & c : this->get_columns())
 	{
 		Gtk::Button *butt = c->get_button();
 		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentColumns_onClick));

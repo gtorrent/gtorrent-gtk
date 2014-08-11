@@ -32,7 +32,7 @@ public:
 	GtkSettingsDialog(GtkMainWindow *Parent = nullptr);
 	void onOkClicked();
 	int run();
-	
+
 	void onnotOkClicked();
 	void onUpLimitChanged();
 	void onDownLimitChanged();
