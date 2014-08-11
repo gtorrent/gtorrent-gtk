@@ -93,7 +93,7 @@ GtkMainWindow::GtkMainWindow() :
 		gt::Settings::setOption("FileAssociation", code);
 		delete dialog;
 	}
-
+	cout << endl;
 	d = new GtkSettingsDialog(this);
 }
 
@@ -132,7 +132,6 @@ bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
 	m_infobar->updateState(m_treeview->getFirstSelected());
-
 	shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 		m_treeview->addCell(t);

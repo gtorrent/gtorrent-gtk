@@ -233,6 +233,7 @@ void GtkTorrentTreeView::updateCells()
 
 		++i;
 	}
+
 }
 
 /**
@@ -410,18 +411,18 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 }
 
 // columns are saved in a single settings, looking like this:
-// ColumnsProperties = #|48,Age|120,Up Speed|120,
+// ColumnsProperties = #|48|h,Age|120|v,Up Speed|120|v,
 // Each element will be added from right to left.
 // the list is formatted in that way:
 // [Column0][Column1][Column...][ColumnN]
 // Each column is formatted that way:
-// [sTitle]|[iWidth],
+// [sTitle]|[iWidth]|[h],
 // If the title is unknown, the whole element is ignored.
 void GtkTorrentTreeView::saveColumns()
 {
 	string cStates;
 	for(auto &c : get_columns())
-		cStates += c->get_title() + '|' + to_string(c->get_width()) + ',';
+		cStates += c->get_title() + '|' + to_string(c->get_width()) + '|' + ((c->get_visible()) ? 'v' : 'h') + ',';
 	gt::Settings::settings["ColumnsProperties"] = cStates;
 }
 
@@ -429,26 +430,38 @@ void GtkTorrentTreeView::saveColumns()
 void GtkTorrentTreeView::loadColumns()
 {
 	vector<string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
+	vector<Gtk::TreeModelColumnBase*> cols
+	{
+		&m_cols.m_col_queue,
+		&m_cols.m_col_age,
+		&m_cols.m_col_eta,
+		&m_cols.m_col_name,
+		&m_cols.m_col_seeders,
+		&m_cols.m_col_leechers,
+		&m_cols.m_col_ul_speed,
+		&m_cols.m_col_dl_speed,
+		&m_cols.m_col_size,
+		&m_cols.m_col_remaining,
+		&m_cols.m_col_dl_ratio
+	};
 	string tmp = gt::Settings::settings["ColumnsProperties"];
 	do
 	{
 		string title = tmp.substr(0, tmp.find('|'));
 		tmp = tmp.substr(tmp.find('|') + 1);
-		int width = stoi(tmp.substr(0, tmp.find(',')));
+		int width = stoi(tmp.substr(0, tmp.find('|')));
+		tmp = tmp.substr(tmp.find('|') + 1);
+		bool hidden = tmp.substr(0, tmp.find(','))[0] == 'h';
 		tmp = tmp.substr(tmp.find(',') + 1);
-		if(find(titles.begin(), titles.end(), title) == titles.end()) continue;
-		// Sorry but I've spent 1h reading the docs and couldn't find another way.
-		if(title == titles[0]) 		 get_column(append_column(titles[ 0], m_cols.m_col_queue) - 1)    ->set_fixed_width(width);
-		else if(title == titles[ 1]) get_column(append_column(titles[ 1], m_cols.m_col_age) - 1)      ->set_fixed_width(width);
-		else if(title == titles[ 2]) get_column(append_column(titles[ 2], m_cols.m_col_eta) - 1)      ->set_fixed_width(width);
-		else if(title == titles[ 3]) get_column(append_column(titles[ 3], m_cols.m_col_name) - 1)     ->set_fixed_width(width);
-		else if(title == titles[ 4]) get_column(append_column(titles[ 4], m_cols.m_col_seeders) - 1)  ->set_fixed_width(width);
-		else if(title == titles[ 5]) get_column(append_column(titles[ 5], m_cols.m_col_leechers) - 1) ->set_fixed_width(width);
-		else if(title == titles[ 6]) get_column(append_column(titles[ 6], m_cols.m_col_ul_speed) - 1) ->set_fixed_width(width);
-		else if(title == titles[ 7]) get_column(append_column(titles[ 7], m_cols.m_col_dl_speed) - 1) ->set_fixed_width(width);
-		else if(title == titles[ 8]) get_column(append_column(titles[ 8], m_cols.m_col_size) - 1)     ->set_fixed_width(width);
-		else if(title == titles[ 9]) get_column(append_column(titles[ 9], m_cols.m_col_remaining) - 1)->set_fixed_width(width);
-		else if(title == titles[10]) get_column(append_column(titles[10], m_cols.m_col_dl_ratio) - 1) ->set_fixed_width(width);
-
+		int index = find(titles.begin(), titles.end(), title) - titles.begin();
+		if(index == 11) continue;
+		else
+		{
+			auto k = (index == 1 || index == 5 || index == 6)
+				? get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<unsigned>     *>(cols[index])) - 1)
+				: get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
+			k->set_fixed_width(width);
+			k->set_visible(!hidden);
+		}
 	} while (tmp != "");
 }
