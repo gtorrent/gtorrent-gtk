@@ -41,13 +41,13 @@ GtkMainWindow::GtkMainWindow() :
 	btn_resume     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
 	btn_remove     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
 	btn_settings   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
+	btn_properties ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
 
-	btn_add_link   ->set_image_from_icon_name("emblem-shared-symbolic");
+	btn_add_link   ->set_image_from_icon_name("insert-link-symbolic");
 	btn_add_torrent->set_image_from_icon_name("list-add-symbolic");
-	btn_connect    ->set_image_from_icon_name("folder-symbolic");
 	btn_pause      ->set_image_from_icon_name("media-playback-pause-symbolic");
 	btn_properties ->set_image_from_icon_name("preferences-system-symbolic");
-	btn_remove     ->set_image_from_icon_name("dialog-error-symbolic");
+	btn_remove     ->set_image_from_icon_name("edit-delete-symbolic");
 	btn_resume     ->set_image_from_icon_name("media-playback-start-symbolic");
 	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
 
@@ -55,7 +55,6 @@ GtkMainWindow::GtkMainWindow() :
 	//btn_properties->set_alignment(1.0f,0.0f);
 	header->add(*btn_add_torrent);
 	header->add(*btn_add_link);
-	header->add(*btn_connect);
 	header->add(*separator0);
 	header->add(*btn_resume);
 	header->add(*btn_pause);
@@ -200,6 +199,7 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 void GtkMainWindow::onPauseBtnClicked()
 {
 	m_treeview->setSelectedPaused(true);
+	m_treeview->onSelectionChanged();
 }
 
 /**
@@ -208,6 +208,7 @@ void GtkMainWindow::onPauseBtnClicked()
 void GtkMainWindow::onResumeBtnClicked()
 {
 	m_treeview->setSelectedPaused(false);
+	m_treeview->onSelectionChanged();
 }
 
 /**
@@ -223,6 +224,7 @@ void GtkMainWindow::onRemoveBtnClicked()
 */
 void GtkMainWindow::onPropertiesBtnClicked()
 {
+
 }
 
 /**
@@ -230,6 +232,7 @@ void GtkMainWindow::onPropertiesBtnClicked()
 */
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
+	m_treeview->saveColumns();
 	m_core->shutdown();
 	return false;
 }

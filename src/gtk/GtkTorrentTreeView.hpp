@@ -93,9 +93,6 @@ private:
 	void   sequentialChange_onClick();
 	void sequentialChange_onRealize();
 
-//	void onSelectionChanged(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
-	void onSelectionChanged();
-
 public:
 	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 
@@ -105,5 +102,8 @@ public:
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
 	void reloadColors();
+	void onSelectionChanged();
 	shared_ptr<gt::Torrent> getFirstSelected();
+	void loadColumns();
+	void saveColumns();
 };

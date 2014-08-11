@@ -105,7 +105,7 @@ int GtkSettingsDialog::run()
 void GtkSettingsDialog::onOkClicked()
 {
 	gt::Settings::settings["SavePath"]        = savepathbox->get_text();
-
+	gt::Settings::settings["UserAgent"]       = useragentbox->get_text();
 	gt::Settings::settings["ShowLegend"]      = (showtoggle   ->get_active()) ? "Yes" : "No";
 	gt::Settings::settings["AnonymousMode"]   = (anontoggle   ->get_active()) ? "Yes" : "No";
 	gt::Settings::settings["PieceSuggestion"] = (suggesttoggle->get_active()) ? "Yes" : "No";

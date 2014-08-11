@@ -1,6 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
 #include "GtkMainWindow.hpp"
-
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
 #include <Log.hpp>
@@ -123,17 +122,22 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column(         "#", m_cols.m_col_queue);
-	append_column(       "Age", m_cols.m_col_age);
-	append_column(       "ETA", m_cols.m_col_eta);
-	append_column(      "Name", m_cols.m_col_name);
-	append_column(      "Seed", m_cols.m_col_seeders);
-	append_column(     "Leech", m_cols.m_col_leechers);
-	append_column(  "Up Speed", m_cols.m_col_ul_speed);
-	append_column("Down Speed", m_cols.m_col_dl_speed);
-	append_column(      "Size", m_cols.m_col_size);
-	append_column(   "Remains", m_cols.m_col_remaining);
-	append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	if(gt::Settings::settings["ColumnsProperties"] != "")
+		loadColumns();
+	else
+	{
+		append_column(         "#", m_cols.m_col_queue);
+		append_column(       "Age", m_cols.m_col_age);
+		append_column(       "ETA", m_cols.m_col_eta);
+		append_column(      "Name", m_cols.m_col_name);
+		append_column(      "Seed", m_cols.m_col_seeders);
+		append_column(     "Leech", m_cols.m_col_leechers);
+		append_column(  "Up Speed", m_cols.m_col_ul_speed);
+		append_column("Down Speed", m_cols.m_col_dl_speed);
+		append_column(      "Size", m_cols.m_col_size);
+		append_column(   "Remains", m_cols.m_col_remaining);
+		append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	}
 
 	for (auto & c : this->get_columns())
 	{
@@ -157,7 +161,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(120);
+		if(gt::Settings::settings["ColumnsProperties"] == "")
+			c->set_fixed_width(120);
+
 	}
 	this->get_column(0)->set_fixed_width(48);
 }
@@ -401,4 +407,48 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
+}
+
+// columns are saved in a single settings, looking like this:
+// ColumnsProperties = #|48,Age|120,Up Speed|120,
+// Each element will be added from right to left.
+// the list is formatted in that way:
+// [Column0][Column1][Column...][ColumnN]
+// Each column is formatted that way:
+// [sTitle]|[iWidth],
+// If the title is unknown, the whole element is ignored.
+void GtkTorrentTreeView::saveColumns()
+{
+	string cStates;
+	for(auto &c : get_columns())
+		cStates += c->get_title() + '|' + to_string(c->get_width()) + ',';
+	gt::Settings::settings["ColumnsProperties"] = cStates;
+}
+
+// This is where it gets tricky/ugly.
+void GtkTorrentTreeView::loadColumns()
+{
+	vector<string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
+	string tmp = gt::Settings::settings["ColumnsProperties"];
+	do
+	{
+		string title = tmp.substr(0, tmp.find('|'));
+		tmp = tmp.substr(tmp.find('|') + 1);
+		int width = stoi(tmp.substr(0, tmp.find(',')));
+		tmp = tmp.substr(tmp.find(',') + 1);
+		if(find(titles.begin(), titles.end(), title) == titles.end()) continue;
+		// Sorry but I've spent 1h reading the docs and couldn't find another way.
+		if(title == titles[0]) 		 get_column(append_column(titles[ 0], m_cols.m_col_queue) - 1)    ->set_fixed_width(width);
+		else if(title == titles[ 1]) get_column(append_column(titles[ 1], m_cols.m_col_age) - 1)      ->set_fixed_width(width);
+		else if(title == titles[ 2]) get_column(append_column(titles[ 2], m_cols.m_col_eta) - 1)      ->set_fixed_width(width);
+		else if(title == titles[ 3]) get_column(append_column(titles[ 3], m_cols.m_col_name) - 1)     ->set_fixed_width(width);
+		else if(title == titles[ 4]) get_column(append_column(titles[ 4], m_cols.m_col_seeders) - 1)  ->set_fixed_width(width);
+		else if(title == titles[ 5]) get_column(append_column(titles[ 5], m_cols.m_col_leechers) - 1) ->set_fixed_width(width);
+		else if(title == titles[ 6]) get_column(append_column(titles[ 6], m_cols.m_col_ul_speed) - 1) ->set_fixed_width(width);
+		else if(title == titles[ 7]) get_column(append_column(titles[ 7], m_cols.m_col_dl_speed) - 1) ->set_fixed_width(width);
+		else if(title == titles[ 8]) get_column(append_column(titles[ 8], m_cols.m_col_size) - 1)     ->set_fixed_width(width);
+		else if(title == titles[ 9]) get_column(append_column(titles[ 9], m_cols.m_col_remaining) - 1)->set_fixed_width(width);
+		else if(title == titles[10]) get_column(append_column(titles[10], m_cols.m_col_dl_ratio) - 1) ->set_fixed_width(width);
+
+	} while (tmp != "");
 }
