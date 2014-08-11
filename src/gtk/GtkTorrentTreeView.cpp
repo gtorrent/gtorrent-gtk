@@ -131,7 +131,7 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_reorderable();
 		c->set_fixed_width(80);
 	}
-	this->get_column(0)->set_fixed_width(320);
+	this->get_column(0)->set_fixed_width(512);
 }
 
 /**
