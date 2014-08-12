@@ -25,7 +25,7 @@ before_install:
         # Update repositories to not be shit.
         - sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe"
         # gtk 3.12
-        - sudo add-apt-repository ppa:gnome3-team/gnome3-staging
+        - yes "" | sudo add-apt-repository ppa:gnome3-team/gnome3-staging
         - sudo apt-get clean
         - sudo apt-get update
         # Update dependancies
