@@ -11,8 +11,12 @@ GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
 	//TODO:This needs to be refactored
-	this->set_position(Gtk::WIN_POS_CENTER);
-	this->set_default_size(800, 500);
+	set_position(Gtk::WIN_POS_CENTER);
+	set_default_size(800, 500);
+	magtxt->set_visible();
+	magPop->add(*magtxt);
+	btn_add_link->set_popover(*magPop);
+
 	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
 
@@ -177,18 +181,19 @@ void GtkMainWindow::onAddBtnClicked()
 */
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
-	GtkAddMagnetLinkWindow d;
-	d.set_transient_for(*this);
-	int r = d.run();
-
-	switch (r)
+	if(magPop->get_visible())
 	{
-	case Gtk::RESPONSE_OK:
-		shared_ptr<gt::Torrent> t = m_core->addTorrent(d.getMagnetURL());
+		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
+		string link = clip->wait_for_text();
+		if(gt::Core::isMagnetLink(link))
+			magtxt->set_text(link);
+	}
+	else
+	{
+		shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
-			m_treeview->addCell(t);
-		//TODO Add error dialogue if torrent add is unsuccessful
-		break;
+			m_treeview->addCell(t);		
+		magtxt->set_text("");
 	}
 }
 
