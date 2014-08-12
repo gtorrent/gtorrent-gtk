@@ -25,7 +25,7 @@ before_install:
         # Update repositories to not be shit.
         - sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe"
         # gtk 3.12 | oh god I have no idea what im doing
-        - yes "" | sudo add-apt-repository "deb http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/ trusty main universe"
+        - yes "" | sudo add-apt-repository "deb http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/ trusty main"
         - sudo apt-get clean
         - sudo apt-get update
         # Update dependancies
