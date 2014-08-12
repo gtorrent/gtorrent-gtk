@@ -450,10 +450,11 @@ void GtkTorrentTreeView::loadColumns()
 		else
 		{
 			auto k = (index == 1 || index == 5 || index == 6)
-				? get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<unsigned>     *>(cols[index])) - 1)
-				: get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
+			         ? get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<unsigned>     *>(cols[index])) - 1)
+			         : get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
 			k->set_fixed_width(width);
 			k->set_visible(!hidden);
 		}
-	} while (tmp != "");
+	}
+	while (tmp != "");
 }

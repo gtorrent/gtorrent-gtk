@@ -8,8 +8,8 @@
 class GtkAssociationDialog : public Gtk::Dialog
 {
 private:
-    Gtk::CheckButton *m_magnetChk;
-    Gtk::CheckButton *m_torrentChk;
+	Gtk::CheckButton *m_magnetChk;
+	Gtk::CheckButton *m_torrentChk;
 public:
 	GtkAssociationDialog(GtkMainWindow &Parent);
 	void PlsFindMeAName(Gtk::Button *butt);
