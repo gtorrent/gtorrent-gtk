@@ -66,7 +66,10 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 	if(selected)
 		set_visible(true);
 	else
+	{
 		set_visible(false);
+		return;
+	}
 
 	for(unsigned i = 0; i < t.size(); ++i)
 		if(selected == t[i])
@@ -88,6 +91,7 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 
 void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
 {
+	if(!selected) return updateInfo(selected);
 	int selectedIndex = 0;
 	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(unsigned i = 0; i < t.size(); ++i)
