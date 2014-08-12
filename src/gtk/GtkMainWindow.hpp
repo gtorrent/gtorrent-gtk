@@ -12,6 +12,7 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <gtorrent/Core.hpp>
 
@@ -46,8 +47,18 @@ class GtkMainWindow : public Gtk::Window
 public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
+	Gtk::ScrolledWindow *m_swin;
 	GtkMainWindow();
 
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
+
+	Gtk::Button *btn_add_link    = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_add_torrent = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_pause       = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_properties  = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_remove      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_resume      = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_settings    = Gtk::manage(new Gtk::Button());
+
 };

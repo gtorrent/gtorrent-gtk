@@ -5,20 +5,18 @@
 */
 GtkAddMagnetLinkWindow::GtkAddMagnetLinkWindow()
 {
-	this->set_modal(true);
-	this->set_default_size(500, 250);
-
-	this->set_title("Paste magnet link here");
+	set_modal(true);
+	set_default_size(500, 250);
+	set_title("Paste magnet link here");
 
 	m_textview = Gtk::manage(new Gtk::TextView());
 	m_textview->set_wrap_mode(Gtk::WRAP_WORD_CHAR);
 
-	this->get_vbox()->pack_start(*m_textview, true, true);
+	get_vbox()->pack_start(*m_textview, true, true);
+	add_button("Cancel", Gtk::RESPONSE_CANCEL);
+	add_button("Add", Gtk::RESPONSE_OK);
 
-	this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
-	this->add_button("Add", Gtk::RESPONSE_OK);
-
-	this->show_all();
+	show_all();
 
 	Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 	clip->request_text(sigc::mem_fun(*this, &GtkAddMagnetLinkWindow::onClipboardReady));

@@ -1,5 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
-
+#include "GtkMainWindow.hpp"
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
 #include <Log.hpp>
@@ -9,14 +9,15 @@
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView(GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar)
+GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
-
-	this->set_model(m_liststore);
-	this->setupColumns();
-
+	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
+	set_model(m_liststore);
+	setupColumns();
+	set_hexpand();
+	set_vexpand();
 	reloadColors();
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 		addCell(tor);
@@ -50,8 +51,8 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		rcmItem4->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::openView_onClick));
 
 		/* Maybe an onHover or smth for this one. */
-		rcmItem5->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
-		rcmItem6->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
+		rcmItem5->signal_activate() .connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
+		rcmItem6->signal_activate() .connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
 		rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
 		rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
 
@@ -64,12 +65,19 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		m_rcMenu->add(*rcSep2);
 		m_rcMenu->add(*rcmItem6);
 		m_rcMenu->add(*rcmItemSeq);
-
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
 	}
 
+	if(is_blank_at_pos(event->x, event->y) && event->send_event == false) // is_blank_at_pos return true even if the blank is the background of a row... so I just resend the click.
+	{
+		get_selection()->unselect_all();
+		event->send_event = true; // why doesn't put() do that
+		Gdk::Event((GdkEvent*)event).put();
+	}
 	m_infobar->updateInfo(getFirstSelected());
+	onSelectionChanged();
+
 	return true;
 }
 
@@ -113,17 +121,22 @@ void GtkTorrentTreeView::setupColumns()
 	Gtk::TreeViewColumn *col = nullptr;
 	Gtk::CellRendererProgress *cell = nullptr;
 
-	append_column(         "#", m_cols.m_col_queue);
-	append_column(       "Age", m_cols.m_col_age);
-	append_column(       "ETA", m_cols.m_col_eta);
-	append_column(      "Name", m_cols.m_col_name);
-	append_column(      "Seed", m_cols.m_col_seeders);
-	append_column(     "Leech", m_cols.m_col_leechers);
-	append_column(  "Up Speed", m_cols.m_col_ul_speed);
-	append_column("Down Speed", m_cols.m_col_dl_speed);
-	append_column(      "Size", m_cols.m_col_size);
-	append_column(   "Remains", m_cols.m_col_remaining);
-	append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	if(gt::Settings::settings["ColumnsProperties"] != "")
+		loadColumns();
+	else
+	{
+		append_column(         "#", m_cols.m_col_queue);
+		append_column(       "Age", m_cols.m_col_age);
+		append_column(       "ETA", m_cols.m_col_eta);
+		append_column(      "Name", m_cols.m_col_name);
+		append_column(      "Seed", m_cols.m_col_seeders);
+		append_column(     "Leech", m_cols.m_col_leechers);
+		append_column(  "Up Speed", m_cols.m_col_ul_speed);
+		append_column("Down Speed", m_cols.m_col_dl_speed);
+		append_column(      "Size", m_cols.m_col_size);
+		append_column(   "Remains", m_cols.m_col_remaining);
+		append_column(     "Ratio", m_cols.m_col_dl_ratio);
+	}
 
 	for (auto & c : this->get_columns())
 	{
@@ -147,7 +160,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(120);
+		if(gt::Settings::settings["ColumnsProperties"] == "")
+			c->set_fixed_width(120);
+
 	}
 	this->get_column(0)->set_fixed_width(48);
 }
@@ -217,6 +232,7 @@ void GtkTorrentTreeView::updateCells()
 
 		++i;
 	}
+
 }
 
 /**
@@ -367,4 +383,84 @@ void GtkTorrentTreeView::reloadColors()
 	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
 	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
 
+}
+
+void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
+{
+	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	char pausedTorrents = 0, startedTorrents = 0;
+
+	if(selectedIndices().empty())
+	{
+		m_parent->btn_pause ->hide();
+		m_parent->btn_resume->hide();
+		return;
+	}
+
+	for (auto i : selectedIndices())
+	{
+		pausedTorrents  +=  t[i]->isPaused();
+		startedTorrents += !t[i]->isPaused();
+		if(pausedTorrents && startedTorrents) break;
+	}
+
+	m_parent->btn_pause ->set_visible(startedTorrents != 0);
+	m_parent->btn_resume->set_visible( pausedTorrents != 0);
+
+}
+
+// columns are saved in a single settings, looking like this:
+// ColumnsProperties = #|48|h,Age|120|v,Up Speed|120|v,
+// Each element will be added from right to left.
+// the list is formatted in that way:
+// [Column0][Column1][Column...][ColumnN]
+// Each column is formatted that way:
+// [sTitle]|[iWidth]|[h],
+// If the title is unknown, the whole element is ignored.
+void GtkTorrentTreeView::saveColumns()
+{
+	string cStates;
+	for(auto &c : get_columns())
+		cStates += c->get_title() + '|' + to_string(c->get_width()) + '|' + ((c->get_visible()) ? 'v' : 'h') + ',';
+	gt::Settings::settings["ColumnsProperties"] = cStates;
+}
+
+// This is where it gets tricky/ugly.
+void GtkTorrentTreeView::loadColumns()
+{
+	vector<string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
+	vector<Gtk::TreeModelColumnBase*> cols
+	{
+		&m_cols.m_col_queue,
+		&m_cols.m_col_age,
+		&m_cols.m_col_eta,
+		&m_cols.m_col_name,
+		&m_cols.m_col_seeders,
+		&m_cols.m_col_leechers,
+		&m_cols.m_col_ul_speed,
+		&m_cols.m_col_dl_speed,
+		&m_cols.m_col_size,
+		&m_cols.m_col_remaining,
+		&m_cols.m_col_dl_ratio
+	};
+	string tmp = gt::Settings::settings["ColumnsProperties"];
+	do
+	{
+		string title = tmp.substr(0, tmp.find('|'));
+		tmp = tmp.substr(tmp.find('|') + 1);
+		int width = stoi(tmp.substr(0, tmp.find('|')));
+		tmp = tmp.substr(tmp.find('|') + 1);
+		bool hidden = tmp.substr(0, tmp.find(','))[0] == 'h';
+		tmp = tmp.substr(tmp.find(',') + 1);
+		int index = find(titles.begin(), titles.end(), title) - titles.begin();
+		if(index == 11) continue;
+		else
+		{
+			auto k = (index == 1 || index == 5 || index == 6)
+				? get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<unsigned>     *>(cols[index])) - 1)
+				: get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
+			k->set_fixed_width(width);
+			k->set_visible(!hidden);
+		}
+	} while (tmp != "");
 }
