@@ -84,7 +84,7 @@ GtkMainWindow::GtkMainWindow() :
 
 
 	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
-		gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	        gt::Settings::getOptionAsInt("FileAssociation") == -1)
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
