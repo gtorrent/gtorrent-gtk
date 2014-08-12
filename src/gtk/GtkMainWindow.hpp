@@ -14,6 +14,7 @@
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/popover.h>
 
 #include <gtorrent/Core.hpp>
 
