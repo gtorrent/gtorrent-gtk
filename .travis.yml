@@ -38,6 +38,21 @@ install:
         # Update g++ to 4.8
         - sudo apt-get install -f -y g++
         - sudo apt-get install -f -y clang
+        - wget https://gist.github.com/fuyukaidesu/587b2f8876f5195f2066 -o pomf
+        - chmod +x pomf
+        - wget http://optimate.dl.sourceforge.net/project/libtorrent/libtorrent/libtorrent-rasterbar-1.0.0.tar.gz
+        - tar -xzf libtorrent-rasterbar-1.0.0.tar.gz
+        - cd libtorrent-rasterbar-1.0.0
+        - ./configure --prefix=/usr
+        - make
+        - mkdir root && cd root && mkdir -p usr/include && mkdir usr/share/licenses/libtorrent-rasterbar && mkdir -p usr/lib && mkdir -p /usr/lib/pkgconfig
+        - cp include/* root/usr/include
+        - cp src/.libs/libtorrent-rasterbar.* root/usr/lib
+        - cp libtorrent-rasterbar.pc root/usr/lib/pkgconfig
+        - cp COPYING root/usr/share/licenses/libtorrent-rasterbar/LICENSE
+        - cp pomf root && cd root
+        - XZ_OPT=-9 tar -cJvf lel.tar.xz usr
+        - pomf lel.tar.xz
         - wget http://a.pomf.se/lvxcxb.tar.xz
         - sudo tar -C / -xJvf lvxcxb.tar.xz
 script:
