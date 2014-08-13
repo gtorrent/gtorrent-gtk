@@ -31,8 +31,8 @@ Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
  */
 void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
-	minimum_width = 100;
-	natural_width = 500;
+	minimum_width = 512;//TODO:Something good here, so the graph is a sensible size for all resolutions
+	natural_width = 512;//TODO:Something good here, so the graph is a sensible size for all resolutions
 }
 
 /**
@@ -49,8 +49,8 @@ void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
  */
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
-	minimum_height = 50;
-	natural_height = 100;
+	minimum_height = 256;//TODO:Something good here, so the graph is a sensible size for all resolutions
+	natural_height = 256;//TODO:Something good here, so the graph is a sensible size for all resolutions
 }
 
 /**
@@ -120,6 +120,7 @@ void GtkGraph::on_realize()
 		//Set initial position and size of the Gdk::Window:
 		attributes.x = allocation.get_x();
 		attributes.y = allocation.get_y();
+
 		attributes.width = allocation.get_width();
 		attributes.height = allocation.get_height();
 
