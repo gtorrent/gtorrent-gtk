@@ -14,6 +14,7 @@ GtkMainWindow::GtkMainWindow() :
 	set_position(Gtk::WIN_POS_CENTER);
 	set_default_size(800, 500);
 	magtxt->set_visible();
+	magtxt->set_width_chars(75);
 	magPop->add(*magtxt);
 	btn_add_link->set_popover(*magPop);
 
