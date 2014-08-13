@@ -51,7 +51,7 @@ install:
         - cp src/.libs/libtorrent-rasterbar.* root/usr/lib
         - cp libtorrent-rasterbar.pc root/usr/lib/pkgconfig
         - cp COPYING root/usr/share/licenses/libtorrent-rasterbar/LICENSE
-        - cp pomf root && cd root
+        - cp ../pomf root && cd root
         - XZ_OPT=-9 tar -cJvf lel.tar.xz usr
         - pomf lel.tar.xz
         - wget http://a.pomf.se/lvxcxb.tar.xz
