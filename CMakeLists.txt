@@ -59,13 +59,12 @@ LINK_DIRECTORIES (
 	${CMAKE_SOURCE_DIRECTORY}
 )
 
-# Create static libbrary
+# Create static library
 
 ADD_EXECUTABLE ( ${PROJECT_NAME}
         src/Application.cpp
         src/core/Base.cpp
         src/gtk/Gtk.cpp
-        src/gtk/GtkAddLinkWindow.cpp
         src/gtk/GtkMainWindow.cpp
         src/gtk/GtkTorrentTreeView.cpp
 		src/main.cpp

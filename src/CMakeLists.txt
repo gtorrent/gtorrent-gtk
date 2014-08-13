@@ -38,7 +38,7 @@ TARGET_LINK_LIBRARIES ( gtorrent-gtk
 	${LIBTORRENT_LIBRARIES}
 	${LIBGTKMM_LIBRARIES}
 	${LIBGLIBMM_LIBRARIES}
-	)      
+	)
 
 ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 

@@ -190,14 +190,14 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		string link = clip->wait_for_text();
-		if(gt::Core::isMagnetLink(link))
+		if(gt::Core::isLink(link))
 			magtxt->set_text(link);
 	}
 	else
 	{
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
-			m_treeview->addCell(t);		
+			m_treeview->addCell(t);
 		magtxt->set_text("");
 	}
 }
