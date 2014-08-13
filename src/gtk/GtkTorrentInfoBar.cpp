@@ -27,25 +27,9 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_stat_box->add(*m_piece_box);
 
-	m_table_layout = Gtk::manage(new Gtk::Table(3, 2, false));
-	m_table_layout->set_col_spacings(5);
-
-	m_down_total_label = Gtk::manage(new Gtk::Label());
-	m_down_total_label->set_markup("<b>Downloaded</b>");
-	m_down_total = Gtk::manage(new Gtk::Label("0"));
-	m_table_layout->attach(*m_down_total_label, 0, 1, 0, 1, Gtk::AttachOptions::SHRINK);
-	m_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-	m_table_layout->attach(*m_down_total, 2, 3, 0, 1, Gtk::AttachOptions::SHRINK);
-
-	m_up_total_label = Gtk::manage(new Gtk::Label());
-	m_up_total_label->set_markup("<b>Uploaded</b>");
-	m_up_total = Gtk::manage(new Gtk::Label("0"));
-	m_table_layout->attach(*m_up_total_label, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-	m_table_layout->attach(*m_up_total, 2, 3, 1, 2, Gtk::AttachOptions::SHRINK);
-
+	m_status_box = Gtk::manage(new GtkStatusBox());
 	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-	m_stat_box->pack_start(*m_table_layout, Gtk::PACK_SHRINK);
+	m_stat_box->pack_start(*m_status_box, Gtk::PACK_EXPAND_WIDGET);
 	m_notebook->append_page(*m_graph, "Info Graph");
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
@@ -82,10 +66,7 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 	m_graph->select(selectedIndex);
 
 	if(previous != selected)
-	{
-		m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
-		m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
-	}
+        m_status_box->update(t[selectedIndex]);
 	previous = selected;
 }
 
@@ -99,8 +80,8 @@ void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
 			selectedIndex = i;
 	if(t[selectedIndex]->getHandle().status().has_metadata)
 		m_progress->setBlocks(t[selectedIndex]->getPieces());
-	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
-	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
+
+    m_status_box->update(t[selectedIndex]);
 
 	for(unsigned i = 0; i < t.size(); ++i)
 		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());

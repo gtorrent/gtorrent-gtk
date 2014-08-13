@@ -11,23 +11,22 @@
 #include "../Application.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
+#include "GtkStatusBox.hpp"
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
-public:
+private:
 	GtkBlockBar *m_progress;
 	Gtk::Label *m_title;
 	GtkGraph *m_graph;
 	Gtk::Notebook *m_notebook;
 	Gtk::Box *m_stat_box;
-	Gtk::Box *m_piece_box;
+    Gtk::Box *m_piece_box;
+    GtkStatusBox *m_status_box;
 
-	Gtk::Table *m_table_layout;
-	Gtk::Label *m_down_total_label;
-	Gtk::Label *m_down_total;
-	Gtk::Label *m_up_total_label;
-	Gtk::Label *m_up_total;
 
+
+public:
 	GtkTorrentInfoBar();
 	void updateInfo(shared_ptr<gt::Torrent> selected);
 	void updateState(shared_ptr<gt::Torrent> selected);
