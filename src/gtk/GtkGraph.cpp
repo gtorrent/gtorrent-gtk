@@ -49,8 +49,8 @@ void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
  */
 void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
-	minimum_height = 256;//TODO:Something good here, so the graph is a sensible size for all resolutions
-	natural_height = 256;//TODO:Something good here, so the graph is a sensible size for all resolutions
+	minimum_height = 278;//TODO:Something good here, so the graph is a sensible size for all resolutions
+	natural_height = 278;//TODO:Something good here, so the graph is a sensible size for all resolutions
 }
 
 /**
@@ -186,7 +186,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if(gt::Settings::settings["ShowLegend"] != "No")
 		{
 			label = "Upload";
-			cr->move_to(10, height / 2 - 15);
+			cr->move_to(0, height - 21);
 			cr->text_path(label);
 			cr->fill();
 			cr->stroke();
@@ -199,7 +199,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if(gt::Settings::settings["ShowLegend"] != "No")
 		{
 			label = "Download";
-			cr->move_to(10, height / 2 - 30);
+			cr->move_to(0, height - 36);
 			cr->text_path(label);
 			cr->fill();
 			cr->stroke();
@@ -215,7 +215,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 
 		if(order > 100)
-			label = to_string(maxValue / (1024 * 1000)) + "MB/s";
+			label = to_string(maxValue / (1024 * 1024)) + "MB/s";
 		else
 			label = to_string(maxValue / 1024) + "KB/s";
 
@@ -229,7 +229,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 
 		if(order > 100)
-			label = to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
+			label = to_string(maxValue / (2 * 1024 * 1024)) + "MB/s";
 		else
 			label = to_string(maxValue / (2 * 1024)) + "KB/s";
 		cr->move_to(0, height / 2 + 10);
@@ -237,10 +237,11 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->fill();
 		cr->stroke();
 
+		/*
 		cr->move_to(0, height);
 		cr->line_to(width, height);
 		cr->stroke();
-
+		*/
 		if(order > 100)
 			label = "0MB/s";
 		else

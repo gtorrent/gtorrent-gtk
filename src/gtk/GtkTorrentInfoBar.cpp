@@ -20,7 +20,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
 	m_progress->set_size_request(0, 32);
 
-	m_gfx_box->add(*m_piece_box);
+	//m_gfx_box->add(*m_piece_box);
 	m_gfx_box->add(*m_graph);
 
 	m_info_table_layout	= Gtk::manage(new Gtk::Table(24, 2, false));
@@ -197,11 +197,13 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_info_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_info_box->pack_start(*m_info_table_layout, Gtk::PACK_SHRINK);
 
-	m_information_layout	= Gtk::manage(new Gtk::Table(2, 1, false));
+	m_information_layout	= Gtk::manage(new Gtk::Table(2, 2, false));
 	m_information_layout ->set_col_spacings(5);
 
 	m_information_layout ->attach(*m_gfx_box, 0, 1, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_information_layout ->attach(*m_info_box, 1, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+
+	m_information_layout ->attach(*m_piece_box, 0, 2, 1, 2, Gtk::AttachOptions::SHRINK);
 
 	this->pack_end(*m_information_layout, Gtk::PACK_EXPAND_WIDGET, 5);
 }
