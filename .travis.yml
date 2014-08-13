@@ -23,7 +23,8 @@ before_install:
         # Debugging
         - lsb_release -sc
         # Update repositories to not be shit.
-        - sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe"
+        - sudo add-apt-repository -y "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe"
+        - sudo add-apt-repository -y "deb http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/ trusty main"
         - sudo apt-get update
         # Update dependencies
         #- scripts/deps.sh
