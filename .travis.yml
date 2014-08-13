@@ -46,7 +46,8 @@ install:
         - ./configure --prefix=/usr
         - make
         - mkdir root && cd root && mkdir -p usr/include && mkdir -p usr/share/licenses/libtorrent-rasterbar && mkdir -p usr/lib && mkdir -p /usr/lib/pkgconfig
-        - cp include/* root/usr/include
+        - ls
+        - cp -r include root/usr/include
         - cp src/.libs/libtorrent-rasterbar.* root/usr/lib
         - cp libtorrent-rasterbar.pc root/usr/lib/pkgconfig
         - cp COPYING root/usr/share/licenses/libtorrent-rasterbar/LICENSE
