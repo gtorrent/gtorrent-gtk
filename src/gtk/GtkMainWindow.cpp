@@ -112,7 +112,7 @@ GtkMainWindow::GtkMainWindow() :
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
 	string sel_data = selection_data.get_data_as_string();
-	if(m_core->isLink(sel_data))
+	if(m_core->isMagnetLink(sel_data))
 	{
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
 		if (t)//Checks if t is not null
@@ -190,7 +190,7 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		string link = clip->wait_for_text();
-		if(gt::Core::isLink(link))
+		if(gt::Core::isMagnetLink(link))
 			magtxt->set_text(link);
 	}
 	else
