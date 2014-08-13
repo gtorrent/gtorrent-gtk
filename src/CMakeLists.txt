@@ -21,7 +21,6 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	Application.cpp
 	core/Base.cpp
 	gtk/Gtk.cpp
-	gtk/GtkAddMagnetLinkWindow.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
 	gtk/GtkTorrentTreeView.cpp

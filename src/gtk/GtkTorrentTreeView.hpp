@@ -40,26 +40,28 @@ public:
 		add(m_col_dl_ratio);
 		add(m_col_background);
 		add(m_col_foreground);
+		add(m_col_torrent);
 	}
 
-	Gtk::TreeModelColumn<unsigned int>  m_col_queue;
-	Gtk::TreeModelColumn<unsigned int>  m_col_seeders;
-	Gtk::TreeModelColumn<unsigned int>  m_col_leechers;
-	Gtk::TreeModelColumn<unsigned int>  m_col_percent;
-	Gtk::TreeModelColumn<unsigned int>  m_col_empty;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_speed;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_speed;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_total;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_total;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_remaining;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_ratio;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_background;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_foreground;
+	Gtk::TreeModelColumn<unsigned int>            m_col_queue;
+	Gtk::TreeModelColumn<unsigned int>            m_col_seeders;
+	Gtk::TreeModelColumn<unsigned int>            m_col_leechers;
+	Gtk::TreeModelColumn<unsigned int>            m_col_percent;
+	Gtk::TreeModelColumn<unsigned int>            m_col_empty;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_percent_text;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_age;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_eta;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_name;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_ul_speed;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_speed;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_ul_total;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_total;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_size;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_remaining;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_ratio;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_background;
+	Gtk::TreeModelColumn<Glib::ustring>           m_col_foreground;
+	Gtk::TreeModelColumn<shared_ptr<gt::Torrent>> m_col_torrent;
 };
 
 // Gtk Torrent Tree View Section
