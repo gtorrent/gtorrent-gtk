@@ -31,18 +31,15 @@ class GtkMainWindow : public Gtk::Window
 	GtkSettingsDialog *d = nullptr;
 
 	Gtk::HeaderBar *header;
-	// Gtk::Statusbar *status;
 
 	// Signal Responders
 
-	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
 	void onPauseBtnClicked();
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
-	void onPropertiesBtnClicked();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:

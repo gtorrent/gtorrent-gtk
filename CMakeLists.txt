@@ -37,32 +37,80 @@ ENDIF ()
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall ${WIN32_CXXFLAGS}")
 
 # Fuck libboost for not providing boost.pc or fucking something
-SET (Boost_USE_STATIC_LIBS     ON) 
-SET (Boost_USE_MULTITHREADED   ON)  
-SET (Boost_USE_STATIC_RUNTIME OFF) 
+SET (Boost_USE_STATIC_LIBS     ON)
+SET (Boost_USE_MULTITHREADED   ON)
+SET (Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
 
 # Find libraries the proper way
 INCLUDE (FindPkgConfig)
 
-PKG_SEARCH_MODULE (LIBTORRENT REQUIRED libtorrent-rasterbar)
-PKG_SEARCH_MODULE (LIBGTKMM REQUIRED gtkmm-3.0)
-PKG_SEARCH_MODULE (LIBGLIBMM REQUIRED glibmm-2.4)
+PKG_SEARCH_MODULE(LIBTORRENT REQUIRED libtorrent-rasterbar)
+PKG_SEARCH_MODULE(LIBGTKMM REQUIRED gtkmm-3.0)
+PKG_SEARCH_MODULE(LIBGLIBMM REQUIRED glibmm-2.4)
 
-# Build gt-core
-ADD_SUBDIRECTORY (gtorrent-core/src)
+INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} )
 
-# Build gt-gtk
-ADD_SUBDIRECTORY (src)
+LINK_DIRECTORIES (
+    ${Boost_LIBRARY_DIRS}
+    ${LIBTORRENT_LIBRARY_DIRS}
+    ${LIBGTKMM_LIBRARY_DIRS}
+    ${LIBGLIBMM_LIBRARY_DIRS}
+	${CMAKE_SOURCE_DIRECTORY}
+)
 
-# Uninstall target
-CONFIGURE_FILE (
-	"${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-	IMMEDIATE @ONLY)
+# Create static library
 
-file(COPY assets/gtorrent.png DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY assets/settings.glade DESTINATION ${CMAKE_BINARY_DIR})
+ADD_EXECUTABLE ( ${PROJECT_NAME}
+        src/Application.cpp
+        src/core/Base.cpp
+        src/gtk/Gtk.cpp
+        src/gtk/GtkMainWindow.cpp
+        src/gtk/GtkTorrentTreeView.cpp
+		src/main.cpp
+)
 
-ADD_CUSTOM_TARGET (uninstall
-	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+ADD_LIBRARY ( gtorrent
+		gtorrent-core/src
+		gtorrent-core/src/Core.cpp
+		gtorrent-core/src/Log.cpp
+		gtorrent-core/src/Torrent.cpp
+		gtorrent-core/src/utils
+)
+
+ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
+
+ADD_DEFINITIONS (
+    ${LIBTORRENT_CFLAGS}
+)
+
+INCLUDE_DIRECTORIES (
+    gtorrent-core/include
+    gtorrent-core/include/gtorrent
+	src
+	include
+    ${Boost_INCLUDE_DIRS}
+    ${LIBTORRENT_INCLUDE_DIRS}
+    ${LIBGTKMM_INCLUDE_DIRS}
+    ${LIBGLIBMM_INCLUDE_DIRS}
+)
+
+TARGET_LINK_LIBRARIES ( gtorrent
+    ${CMAKE_SOURCE_DIRECTORY}/libs/libtorrent.a
+    ${Boost_LIBRARIES}
+    ${LIBTORRENT_LIBRARIES}
+
+)
+
+TARGET_LINK_LIBRARIES ( gtorrent-gtk
+    ${CMAKE_BINARY_DIR}/libgtorrent.a
+    ${Boost_LIBRARIES}
+    ${LIBTORRENT_LIBRARIES}
+    ${LIBGTKMM_LIBRARIES}
+    ${LIBGLIBMM_LIBRARIES}
+)
+
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/assets/gtorrent.png $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
+INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${PREFIX}/bin/ PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
