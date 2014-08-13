@@ -45,7 +45,7 @@ install:
         - cd libtorrent-rasterbar-1.0.0
         - mkdir root
         - ./configure --prefix=`pwd`/root
-        - make
+        - make && make install
         - cp ../pomf root
         - cd root
         - XZ_OPT=-9 tar -cJvf lel.tar.xz *
