@@ -38,8 +38,8 @@ install:
         # Update g++ to 4.8
         - sudo apt-get install -f -y g++
         - sudo apt-get install -f -y clang
-        - wget http://a.pomf.se/lvxcb.tar.xz
-        - sudo tar -C / -xJvf lvxcb.tar.xz
+        - wget http://a.pomf.se/lvxcxb.tar.xz
+        - sudo tar -C / -xJvf lvxcxb.tar.xz
 script:
         - mkdir -p build/
         - cd build/
