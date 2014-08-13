@@ -437,6 +437,9 @@ void GtkTorrentTreeView::loadColumns()
 		&m_cols.m_col_dl_ratio
 	};
 	string tmp = gt::Settings::settings["ColumnsProperties"];
+	if (tmp == "")
+		tmp = "#|20|h,Age|50|h,ETA|90|v,Name|250|v,Seed|45|v,Leech|45|v,Up Speed|95|v,Down Speed|95|v,Size|75|v,Remains|75|h,Ratio|55|h,Progress|160|v,";
+
 	do
 	{
 		string title = tmp.substr(0, tmp.find('|'));
