@@ -60,8 +60,6 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 		rcmItem2->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::stopView_onClick));
 		rcmItem3->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::removeView_onClick));
 		rcmItem4->signal_activate().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::openView_onClick));
-
-		/* Maybe an onHover or smth for this one. */
 		rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
 		rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
 
@@ -172,6 +170,8 @@ void GtkTorrentTreeView::setupColumns()
 			c->set_fixed_width(120);
 
 	}
+	if(gt::Settings::settings["ColumnsProperties"] == "")
+		get_column(0)->set_fixed_width(48);
 }
 
 /**
@@ -196,6 +196,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_dl_ratio]   = t->getTotalRatioString();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
+	//row[m_cols.m_col_torrent]    =  t;
 
 }
 
@@ -204,9 +205,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 */
 void GtkTorrentTreeView::removeCell(unsigned index)
 {
-	stringstream strIndex;
-	strIndex << "0:" << index;
-	m_liststore->erase(m_liststore->get_iter(strIndex.str()));
+	m_liststore->erase(m_liststore->get_iter("0:" + to_string(index)));
 }
 
 /**
@@ -214,7 +213,7 @@ void GtkTorrentTreeView::removeCell(unsigned index)
 */
 void GtkTorrentTreeView::updateCells()
 {
-	unsigned int i = 0;
+	int i = 0;
 	for (auto & c : m_liststore->children())
 	{
 		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
@@ -232,14 +231,8 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_eta]        = t->getTimeRemainingString();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
-
-// TODO: Handle with events
-
-		//m_cells[i]->property_text() = t->getStateString();
-
-		++i;
+		//c[m_cols.m_col_torrent]    = t;
 	}
-
 }
 
 /**
@@ -290,6 +283,8 @@ void GtkTorrentTreeView::removeSelected()
 		Application::getSingleton()->getCore()->removeTorrent(t[i]);
 		removeCell(i);
 	}
+	m_parent->onSecTick();
+	m_infobar->updateInfo(getFirstSelected());
 }
 
 /**
@@ -451,6 +446,9 @@ void GtkTorrentTreeView::loadColumns()
 		&m_cols.m_col_dl_ratio
 	};
 	string tmp = gt::Settings::settings["ColumnsProperties"];
+	if (tmp == "")
+		tmp = "#|20|h,Age|50|h,ETA|90|v,Name|250|v,Seed|45|v,Leech|45|v,Up Speed|95|v,Down Speed|95|v,Size|75|v,Remains|75|h,Ratio|55|h,Progress|160|v,";
+
 	do
 	{
 		string title = tmp.substr(0, tmp.find('|'));

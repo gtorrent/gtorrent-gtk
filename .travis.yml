@@ -24,6 +24,8 @@ before_install:
         - lsb_release -sc
         # Update repositories to not be shit.
         - sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ trusty main universe"
+        # gtk 3.12 | oh god I have no idea what im doing
+        - yes "" | sudo add-apt-repository "deb http://ppa.launchpad.net/gnome3-team/gnome3-staging/ubuntu/ trusty main"
         - sudo apt-get clean
         - sudo apt-get update
         # Update dependancies
@@ -32,7 +34,7 @@ before_install:
 
 install:
         # Install dependancies
-        - sudo apt-get install -f -y libgtkmm-3.0-dev libglibmm-2.4-dev libtorrent-rasterbar-dev libboost-all-dev  
+        - sudo apt-get install -f -y --force-yes libgtkmm-3.0-dev libglibmm-2.4-dev libtorrent-rasterbar-dev libboost-all-dev  
         # Update g++ to 4.8
         - sudo apt-get install -f -y g++
         - sudo apt-get install -f -y clang
