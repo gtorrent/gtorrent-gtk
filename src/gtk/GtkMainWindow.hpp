@@ -42,7 +42,7 @@ class GtkMainWindow : public Gtk::Window
 	void onResumeBtnClicked();
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
-	void onPropertiesBtnClicked();
+	//void onPropertiesBtnClicked();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
@@ -61,7 +61,7 @@ public:
 	// thx prince
 	Gtk::Button *btn_add_torrent  = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_pause        = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_properties   = Gtk::manage(new Gtk::Button());
+	//Gtk::Button *btn_properties   = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
