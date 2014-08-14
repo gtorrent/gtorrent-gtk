@@ -37,13 +37,13 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	vector<pair<queue<double>, queue<double>>> m_history;
+	std::vector<std::pair<std::queue<double>, std::queue<double>>> m_history;
 	unsigned m_selected;
 	unsigned m_maxSize;
-	double max(queue<double> q);
-	inline double max(queue<double> q1, queue<double> q2)
+	double max(std::queue<double> q);
+	inline double max(std::queue<double> q1, std::queue<double> q2)
 	{
 		return max(q1) > max(q2) ? max(q1) : max(q2);
 	}
-	void draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr);
+	void draw(std::queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr);
 };
