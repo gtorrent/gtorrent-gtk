@@ -211,7 +211,7 @@ void GtkTorrentTreeView::updateCells()
 		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 		string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
 
-        c[m_cols.m_col_queue]      = i++;
+		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();

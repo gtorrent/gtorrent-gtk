@@ -193,7 +193,7 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 		shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
-			m_treeview->addCell(t);		
+			m_treeview->addCell(t);
 		magtxt->set_text("");
 	}
 }
