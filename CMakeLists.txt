@@ -22,15 +22,13 @@ CONFIGURE_FILE (src/utils/Version.hpp.in Version.hpp @ONLY)
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 # Options
-OPTION (HAVE_WINDEBUG "Enable -mwindows for debugging purposes" ON)
+OPTION (WIN_DEBUG "Disable -mwindows for debugging purposes" OFF) #Disables CXXFLAG -mwindows in order to allow console output
 
-# Windows debug
-IF (WIN32 AND HAVE_WINDEBUG)
-	SET (WIN32_CXXFLAGS "-mwindows" ) #Prevents process from automatically spawning a console window.
+# adds Windows flag necessary to prevent console window spawning and allows override to disable this for debugging purposes
+IF (WIN32 AND (NOT WIN_DEBUG))
+	SET (WIN32_CXXFLAGS "-mwindows" ) #Prevents process from automatically spawning a console window for Windows release builds.
 ELSE ()
-	# NOTE This might not be the best way, it could overwrite previous WIN32_CXXFLAGS if ever set.
-	# LOOK HERE FUTURE YOU IF YOU HAVE PROBLEMS WITH WINDOWS COMPILING!! -- nyanpasu
-	SET (WIN32_CXXFLAGS "")
+	SET (WIN32_CXXFLAGS "") #Initializes WIN32_CXXFLAGS as blank for other platforms and for Windows debug builds. 
 ENDIF ()
 
 # Set compiler flags
