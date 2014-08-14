@@ -124,19 +124,11 @@ GtkStatusBox::GtkStatusBox()
 	m_general->attach(*m_pieces, 4, 5, 1, 2, Gtk::AttachOptions::SHRINK);
 
     // Line 3
-    Gtk::Label *m_lifetime_label = Gtk::manage(new Gtk::Label());
-	m_lifetime_label->set_markup("<b>Total Size:</b>");
-	m_lifetime = Gtk::manage(new Gtk::Label());
-	m_general->attach(*m_lifetime_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
-	m_general->attach(*m_lifetime, 1, 2, 2, 3, Gtk::AttachOptions::SHRINK);
-
-    m_general->attach(*(new Gtk::VSeparator()), 2, 3, 2, 3, Gtk::AttachOptions::EXPAND);
-
     Gtk::Label *m_hash_label = Gtk::manage(new Gtk::Label());
-	m_hash_label->set_markup("<b>Pieces:</b>");
+	m_hash_label->set_markup("<b>Hash:</b>");
 	m_hash = Gtk::manage(new Gtk::Label());
-	m_general->attach(*m_hash_label, 3, 4, 2, 3, Gtk::AttachOptions::SHRINK);
-	m_general->attach(*m_hash, 4, 5, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general->attach(*m_hash_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general->attach(*m_hash, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
 
 
     // Box setup
@@ -157,26 +149,25 @@ GtkStatusBox::GtkStatusBox()
 
 void GtkStatusBox::update(shared_ptr<gt::Torrent> selected)
 {
-    m_time_elapsed->set_text(std::to_string(selected->getActiveTime()));
-    m_remaining->set_text(std::to_string(selected->getEta()));
+    m_time_elapsed->set_text(selected->getTextActiveTime());
+    m_remaining->set_text(selected->getTextEta());
     m_share_ratio->set_text(std::to_string(selected->getTotalRatio()));
 
-    m_downloaded->set_text(std::to_string(selected->getTotalDownloaded()));
-    m_download_speed->set_text(std::to_string(selected->getDownloadRate()));
-    m_down_limit->set_text(std::to_string(0));
+    m_downloaded->set_text(selected->getTextTotalDownloaded());
+    m_download_speed->set_text(selected->getTextDownloadRate());
+    m_down_limit->set_text("");
 
-    m_uploaded->set_text(std::to_string(selected->getTotalUploaded()));
-    m_upload_speed->set_text(std::to_string(selected->getUploadRate()));
-    m_up_limit->set_text(std::to_string(0));
+    m_uploaded->set_text(selected->getTextTotalUploaded());
+    m_upload_speed->set_text(selected->getTextUploadRate());
+    m_up_limit->set_text("");
 
-    m_tracker_url->set_text(std::to_string(0));
-    m_tracker_status->set_text(std::to_string(0));
+    m_tracker_url->set_text(selected->getCurrentTrackerURL());
+    m_tracker_status->set_text("");
 
-    m_save_as->set_text(std::to_string(0));
+    m_save_as->set_text(selected->getSavePath());
 
-    m_total_size->set_text(std::to_string(0));
-    m_pieces->set_text(std::to_string(0));
+    m_total_size->set_text(selected->getTextSize());
+    m_pieces->set_text(std::to_string(selected->getPieces().size()));
 
-    m_lifetime->set_text(std::to_string(0));
-    m_hash->set_text(std::to_string(0));
+    m_hash->set_text("");
 }
