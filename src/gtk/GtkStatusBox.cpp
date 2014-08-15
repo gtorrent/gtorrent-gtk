@@ -147,7 +147,7 @@ GtkStatusBox::GtkStatusBox()
 
 }
 
-void GtkStatusBox::update(shared_ptr<gt::Torrent> selected)
+void GtkStatusBox::update(std::shared_ptr<gt::Torrent> selected)
 {
     m_time_elapsed->set_text(selected->getTextActiveTime());
     m_remaining->set_text(selected->getTextEta());

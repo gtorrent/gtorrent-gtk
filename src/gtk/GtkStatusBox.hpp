@@ -39,5 +39,5 @@ class GtkStatusBox : public Gtk::Box
 
     public:
     GtkStatusBox();
-    void update(shared_ptr<gt::Torrent> selected);
+    void update(std::shared_ptr<gt::Torrent> selected);
 };
