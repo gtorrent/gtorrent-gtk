@@ -66,7 +66,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	m_graph->select(selectedIndex);
 
 	if(previous != selected)
-        m_status_box->update(t[selectedIndex]);
+		m_status_box->update(t[selectedIndex]);
 	previous = selected;
 }
 
@@ -81,7 +81,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	if(t[selectedIndex]->getHandle().status().has_metadata)
 		m_progress->setBlocks(t[selectedIndex]->getPieces());
 
-    m_status_box->update(t[selectedIndex]);
+	m_status_box->update(t[selectedIndex]);
 
 	for(unsigned i = 0; i < t.size(); ++i)
 		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
