@@ -62,20 +62,20 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_transfer_table_layout->attach(*m_down_speed_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*m_down_speed, 2, 3, 2, 3, Gtk::AttachOptions::SHRINK);
-
+/*
 	m_down_limit_label = Gtk::manage(new Gtk::Label());
 	m_down_limit_label->set_markup("<b>Down Limit</b>");
 	m_down_limit = Gtk::manage(new Gtk::Label("0"));
 	m_transfer_table_layout->attach(*m_down_limit_label, 0, 1, 3, 4, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 3, 4, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*m_down_limit, 2, 3, 3, 4, Gtk::AttachOptions::SHRINK);
-
+*/
 	m_status_label = Gtk::manage(new Gtk::Label());
 	m_status_label->set_markup("<b>Status</b>");
 	m_status = Gtk::manage(new Gtk::Label("0"));
-	m_transfer_table_layout->attach(*m_status_label, 0, 1, 4, 5, Gtk::AttachOptions::SHRINK);
-	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 4, 5, Gtk::AttachOptions::SHRINK);
-	m_transfer_table_layout->attach(*m_status, 2, 3, 4, 5, Gtk::AttachOptions::SHRINK);
+	m_transfer_table_layout->attach(*m_status_label, 0, 1, 3, 4, Gtk::AttachOptions::SHRINK);
+	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 3, 4, Gtk::AttachOptions::SHRINK);
+	m_transfer_table_layout->attach(*m_status, 2, 3, 3, 4, Gtk::AttachOptions::SHRINK);
 
 
 	m_remaining_label = Gtk::manage(new Gtk::Label());
@@ -98,7 +98,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_transfer_table_layout->attach(*m_up_speed_label, 4, 5, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 5, 6, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*m_up_speed, 6, 7, 2, 3, Gtk::AttachOptions::SHRINK);
-
+/*
 	m_up_limit_label = Gtk::manage(new Gtk::Label());
 	m_up_limit_label->set_markup("<b>Up Limit</b>");
 	m_up_limit = Gtk::manage(new Gtk::Label("0"));
@@ -113,7 +113,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_transfer_table_layout->attach(*m_wasted_label, 9, 10, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 10, 11, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*m_wasted, 11, 12, 0, 1, Gtk::AttachOptions::SHRINK);
-
+*/
 	m_seeds_label = Gtk::manage(new Gtk::Label());
 	m_seeds_label->set_markup("<b>Seeds</b>");
 	m_seeds = Gtk::manage(new Gtk::Label("0"));
@@ -121,12 +121,12 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 10, 11, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*m_seeds, 11, 12, 1, 2, Gtk::AttachOptions::SHRINK);
 
-	m_leachers_label = Gtk::manage(new Gtk::Label());
-	m_leachers_label->set_markup("<b>Leachers</b>");
-	m_leachers = Gtk::manage(new Gtk::Label("0"));
-	m_transfer_table_layout->attach(*m_leachers_label, 9, 10, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_peers_label = Gtk::manage(new Gtk::Label());
+	m_peers_label->set_markup("<b>Peers</b>");
+	m_peers = Gtk::manage(new Gtk::Label("0"));
+	m_transfer_table_layout->attach(*m_peers_label, 9, 10, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_transfer_table_layout->attach(*(new Gtk::VSeparator()), 10, 11, 2, 3, Gtk::AttachOptions::SHRINK);
-	m_transfer_table_layout->attach(*m_leachers, 11, 12, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_transfer_table_layout->attach(*m_peers, 11, 12, 2, 3, Gtk::AttachOptions::SHRINK);
 
 	m_share_ratio_label = Gtk::manage(new Gtk::Label());
 	m_share_ratio_label->set_markup("<b>Share Ratio</b>");
@@ -154,26 +154,33 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_general_table_layout->attach(*m_save_as, 2, 3, 0, 1, Gtk::AttachOptions::SHRINK);
 
 	m_total_size_label = Gtk::manage(new Gtk::Label());
-	m_total_size_label->set_markup("<b>Total Size</b>");
+	m_total_size_label->set_markup("<b>Size</b>");
 	m_total_size = Gtk::manage(new Gtk::Label("0"));
 	m_general_table_layout->attach(*m_total_size_label, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*m_total_size, 2, 3, 1, 2, Gtk::AttachOptions::SHRINK);
 
+	m_total_downloaded_label = Gtk::manage(new Gtk::Label());
+	m_total_downloaded_label->set_markup("<b>Downloaded</b>");
+	m_total_downloaded = Gtk::manage(new Gtk::Label("0"));
+	m_general_table_layout->attach(*m_total_downloaded_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general_table_layout->attach(*m_total_downloaded, 2, 3, 2, 3, Gtk::AttachOptions::SHRINK);
+/*
 	m_created_on_label = Gtk::manage(new Gtk::Label());
 	m_created_on_label->set_markup("<b>Created On</b>");
 	m_created_on = Gtk::manage(new Gtk::Label("0"));
 	m_general_table_layout->attach(*m_created_on_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 2, 3, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*m_created_on, 2, 3, 2, 3, Gtk::AttachOptions::SHRINK);
-
+*/
 	m_hash_label = Gtk::manage(new Gtk::Label());
 	m_hash_label->set_markup("<b>Hash</b>");
 	m_hash = Gtk::manage(new Gtk::Label("0"));
 	m_general_table_layout->attach(*m_hash_label, 0, 1, 3, 4, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 3, 4, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*m_hash, 2, 3, 3, 4, Gtk::AttachOptions::SHRINK);
-
+/*
 	m_comment_label = Gtk::manage(new Gtk::Label());
 	m_comment_label->set_markup("<b>Comment</b>");
 	m_comment = Gtk::manage(new Gtk::Label("0"));
@@ -181,13 +188,19 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_general_table_layout->attach(*(new Gtk::VSeparator()), 1, 2, 4, 5, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*m_comment, 2, 3, 4, 5, Gtk::AttachOptions::SHRINK);
 
-
 	m_pieces_label = Gtk::manage(new Gtk::Label());
-	m_pieces_label->set_markup("<b>Pieces</b>");
+	m_pieces_label->set_markup("<b>Total Pieces</b>");
 	m_pieces = Gtk::manage(new Gtk::Label("0"));
 	m_general_table_layout->attach(*m_pieces_label, 4, 5, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*(new Gtk::VSeparator()), 5, 6, 1, 2, Gtk::AttachOptions::SHRINK);
 	m_general_table_layout->attach(*m_pieces, 6, 7, 1, 2, Gtk::AttachOptions::SHRINK);
+*/
+	m_downloaded_pieces_label = Gtk::manage(new Gtk::Label());
+	m_downloaded_pieces_label->set_markup("<b>Downloaded Pieces</b>");
+	m_downloaded_pieces = Gtk::manage(new Gtk::Label("0"));
+	m_general_table_layout->attach(*m_downloaded_pieces_label, 4, 5, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general_table_layout->attach(*(new Gtk::VSeparator()), 5, 6, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general_table_layout->attach(*m_downloaded_pieces, 6, 7, 2, 3, Gtk::AttachOptions::SHRINK);
 
 	m_general_box->add(*m_general_table_layout);
 
@@ -215,7 +228,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_trackers_table_layout->attach(*(new Gtk::VSeparator()), 7, 8, 0, 1, Gtk::AttachOptions::SHRINK);
 
 	m_tracker_peers_label = Gtk::manage(new Gtk::Label());
-	m_tracker_peers_label->set_markup("<b>Leechers</b>");
+	m_tracker_peers_label->set_markup("<b>Peers</b>");
 	m_trackers_table_layout->attach(*m_tracker_peers_label, 8, 9, 0, 1, Gtk::AttachOptions::SHRINK);
 	m_trackers_table_layout->attach(*(new Gtk::VSeparator()), 9, 10, 0, 1, Gtk::AttachOptions::SHRINK);
 
@@ -417,9 +430,16 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		//m_up_limit->set_text(t[selectedIndex]->getTextActiveTime());
 
 		//m_wasted->set_text(t[selectedIndex]->getTextActiveTime());
-		//m_seeds->set_text(libtorrent::to_string(t[selectedIndex]->getTotalSeeders()));
-		//m_leachers->set_text(libtorrent::to_string(t[selectedIndex]->getTotalPeers()));
+		m_seeds->set_text(t[selectedIndex]->getTextTotalSeeders());
+		m_peers->set_text(t[selectedIndex]->getTextTotalPeers());
 		m_share_ratio->set_text(t[selectedIndex]->getTextTotalRatio());
+
+		m_save_as->set_text(t[selectedIndex]->getSavePath());
+m_total_size->set_text(t[selectedIndex]->getTextSize());
+m_hash->set_text(t[selectedIndex]->getTextHash());
+m_total_downloaded->set_text(t[selectedIndex]->getTextTotalDownloaded());
+
+m_downloaded_pieces->set_text(t[selectedIndex]->getTextDownloadedPieces());
 
 		m_log->set_text(getLog());
 
@@ -440,18 +460,25 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	m_time_elapsed->set_text(t[selectedIndex]->getTextActiveTime());
 	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
 	m_down_speed->set_text(t[selectedIndex]->getTextDownloadRate());
-	//m_down_limit->set_text(t[selectedIndex]->getTextActiveTime());
+	//m_down_limit->set_text(downlimit);
 	m_status->set_text(t[selectedIndex]->getTextState());
 
 	m_remaining->set_text(t[selectedIndex]->getTextEta());
 	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
 	m_up_speed->set_text(t[selectedIndex]->getTextUploadRate());
-	//m_up_limit->set_text(t[selectedIndex]->getTextActiveTime());
+	//m_up_limit->set_text(uplimit);
 
 	//m_wasted->set_text(t[selectedIndex]->getTextActiveTime());
-	//m_seeds->set_text(libtorrent::to_string(t[selectedIndex]->getTotalSeeders()));
-	//m_leachers->set_text(libtorrent::to_string(t[selectedIndex]->getTotalPeers()));
+	m_seeds->set_text(t[selectedIndex]->getTextTotalSeeders());
+	m_peers->set_text(t[selectedIndex]->getTextTotalPeers());
 	m_share_ratio->set_text(t[selectedIndex]->getTextTotalRatio());
+
+m_save_as->set_text(t[selectedIndex]->getSavePath());
+m_total_size->set_text(t[selectedIndex]->getTextSize());
+m_total_downloaded->set_text(t[selectedIndex]->getTextTotalDownloaded());
+
+//m_pieces->set_text(t[selectedIndex]->getTextPieces());
+m_downloaded_pieces->set_text(t[selectedIndex]->getTextDownloadedPieces());
 
 m_log->set_text(getLog());
 

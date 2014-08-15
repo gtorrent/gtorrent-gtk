@@ -128,7 +128,7 @@ void GtkTorrentTreeView::setupColumns()
 		append_column(       "ETA", m_cols.m_col_eta);
 		append_column(      "Name", m_cols.m_col_name);
 		append_column(      "Seed", m_cols.m_col_seeders);
-		append_column(     "Leech", m_cols.m_col_leechers);
+		append_column(     "Leech", m_cols.m_col_peers);
 		append_column(  "Up Speed", m_cols.m_col_ul_speed);
 		append_column("Down Speed", m_cols.m_col_dl_speed);
 		append_column(      "Size", m_cols.m_col_size);
@@ -182,7 +182,7 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_eta]        = t->getTextEta();
 	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
+	row[m_cols.m_col_peers]   = t->getTotalPeers();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
@@ -215,7 +215,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
-		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
+		c[m_cols.m_col_peers]   = t->getTotalPeers();
 		c[m_cols.m_col_name]       = t->getName();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
@@ -431,7 +431,7 @@ void GtkTorrentTreeView::loadColumns()
 		&m_cols.m_col_eta,
 		&m_cols.m_col_name,
 		&m_cols.m_col_seeders,
-		&m_cols.m_col_leechers,
+		&m_cols.m_col_peers,
 		&m_cols.m_col_ul_speed,
 		&m_cols.m_col_dl_speed,
 		&m_cols.m_col_size,

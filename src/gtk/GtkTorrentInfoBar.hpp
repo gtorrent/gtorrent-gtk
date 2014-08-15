@@ -57,8 +57,8 @@ public:
 	Gtk::Label *m_wasted;
 	Gtk::Label *m_seeds_label;
 	Gtk::Label *m_seeds;
-	Gtk::Label *m_leachers_label;
-	Gtk::Label *m_leachers;
+	Gtk::Label *m_peers_label;
+	Gtk::Label *m_peers;
 	Gtk::Label *m_share_ratio_label;
 	Gtk::Label *m_share_ratio;
 
@@ -68,14 +68,16 @@ public:
 	Gtk::Label *m_save_as;
 	Gtk::Label *m_total_size_label;
 	Gtk::Label *m_total_size;
+	Gtk::Label *m_total_downloaded_label;
+	Gtk::Label *m_total_downloaded;
 	Gtk::Label *m_created_on_label;
 	Gtk::Label *m_created_on;
 	Gtk::Label *m_hash_label;
 	Gtk::Label *m_hash;
 	Gtk::Label *m_comment_label;
 	Gtk::Label *m_comment;
-	Gtk::Label *m_pieces_label;
-	Gtk::Label *m_pieces;
+	Gtk::Label *m_downloaded_pieces_label;
+	Gtk::Label *m_downloaded_pieces;
 	Gtk::Table *m_trackers_table_layout;
 
 	Gtk::Label *m_name_label;

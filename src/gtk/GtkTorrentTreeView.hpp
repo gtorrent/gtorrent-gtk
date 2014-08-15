@@ -28,7 +28,7 @@ public:
 		add(m_col_age);
 		add(m_col_eta);
 		add(m_col_seeders);
-		add(m_col_leechers);
+		add(m_col_peers);
 		add(m_col_ul_speed);
 		add(m_col_dl_speed);
 		add(m_col_percent);
@@ -45,7 +45,7 @@ public:
 
 	Gtk::TreeModelColumn<unsigned int>            m_col_queue;
 	Gtk::TreeModelColumn<unsigned int>            m_col_seeders;
-	Gtk::TreeModelColumn<unsigned int>            m_col_leechers;
+	Gtk::TreeModelColumn<unsigned int>            m_col_peers;
 	Gtk::TreeModelColumn<unsigned int>            m_col_percent;
 	Gtk::TreeModelColumn<unsigned int>            m_col_empty;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_percent_text;
