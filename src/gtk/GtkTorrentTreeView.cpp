@@ -385,13 +385,6 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	char pausedTorrents = 0, startedTorrents = 0;
 
-	if(selectedIndices().empty())
-	{
-		m_parent->btn_pause ->hide();
-		m_parent->btn_resume->hide();
-		return;
-	}
-
 	for (auto i : selectedIndices())
 	{
 		pausedTorrents  +=  t[i]->isPaused();
@@ -402,6 +395,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
+	m_parent->btn_remove->set_visible(!selectedIndices().empty());
+	m_parent->separator1->set_visible(m_parent->btn_remove->get_visible());
 }
 
 // columns are saved in a single settings, looking like this:

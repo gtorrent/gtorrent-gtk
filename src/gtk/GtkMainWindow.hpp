@@ -65,5 +65,6 @@ public:
 	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
+	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 
 };
