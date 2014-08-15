@@ -208,8 +208,10 @@ void GtkTorrentTreeView::updateCells()
 	int i = 0;
 	for (auto & c : m_liststore->children())
 	{
-		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i++];
+		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
+
+		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
