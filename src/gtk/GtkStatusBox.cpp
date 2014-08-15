@@ -128,7 +128,7 @@ GtkStatusBox::GtkStatusBox()
 	m_hash_label->set_markup("<b>Hash:</b>");
 	m_hash = Gtk::manage(new Gtk::Label());
 	m_general->attach(*m_hash_label, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
-	m_general->attach(*m_hash, 0, 1, 2, 3, Gtk::AttachOptions::SHRINK);
+	m_general->attach(*m_hash, 1, 2, 2, 3, Gtk::AttachOptions::SHRINK);
 
 
     // Box setup
