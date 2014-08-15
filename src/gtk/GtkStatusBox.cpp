@@ -6,7 +6,13 @@
 
 GtkStatusBox::GtkStatusBox()
 {
-	set_column_spacing(10);
+    set_margin_left    (5);
+    set_margin_right   (5);
+    set_margin_top     (5);
+    set_margin_bottom  (5);
+    set_halign         (Gtk::Align::ALIGN_CENTER);
+    set_valign         (Gtk::Align::ALIGN_CENTER);
+	set_column_spacing (10);
 
 	m_transfer.set_markup("<big>\nTransfer</big>");
 	m_transfer.set_alignment(0.0, 0.5);
