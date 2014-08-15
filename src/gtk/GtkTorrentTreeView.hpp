@@ -61,7 +61,7 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_ratio;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_background;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_foreground;
-	Gtk::TreeModelColumn<shared_ptr<gt::Torrent>> m_col_torrent;
+	Gtk::TreeModelColumn<std::shared_ptr<gt::Torrent>> m_col_torrent;
 };
 
 // Gtk Torrent Tree View Section
@@ -75,10 +75,10 @@ private:
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
 	Gtk::CheckMenuItem *rcmItemSeq;
-	std::map<string, pair<string, string>> m_colors; // Associates a state with a background and foreground color.
+	std::map<std::string, std::pair<std::string, std::string>> m_colors; // Associates a state with a background and foreground color.
 
 	void setupColumns();
-	vector<unsigned> selectedIndices();
+	std::vector<unsigned> selectedIndices();
 
 	/* Event handlers for clicks on the controls */
 	bool				  onKeyPress(GdkEventKey *event);
@@ -99,14 +99,14 @@ private:
 public:
 	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 
-	void addCell(shared_ptr<gt::Torrent> &t);
+	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
 	void updateCells();
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
 	void reloadColors();
 	void onSelectionChanged();
-	shared_ptr<gt::Torrent> getFirstSelected();
+	std::shared_ptr<gt::Torrent> getFirstSelected();
 	void loadColumns();
 	void saveColumns();
 };

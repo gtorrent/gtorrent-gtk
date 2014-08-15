@@ -20,9 +20,9 @@ GuiGtk::GuiGtk(int argc, char **argv)
 
 	GtkMainWindow mainWindow;
 
-	string binpath = argv[0];
+	std::string binpath = argv[0];
 	binpath = binpath.substr(0, binpath.find_last_of(gt::Platform::getFileSeparator()));
-	string iconpath = binpath + gt::Platform::getFileSeparator() + "gtorrent.png";
+	std::string iconpath = binpath + gt::Platform::getFileSeparator() + "gtorrent.png";
 	if (exists (iconpath))
 		mainWindow.set_icon_from_file(iconpath);
 

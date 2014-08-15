@@ -69,7 +69,7 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*separator2);
 	header->pack_end(*btn_settings);
 	// Let's add some DnD goodness
-	vector<Gtk::TargetEntry> listTargets;
+	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back(Gtk::TargetEntry("STRING"));
 	listTargets.push_back(Gtk::TargetEntry("text/plain"));
 	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
@@ -107,22 +107,22 @@ GtkMainWindow::GtkMainWindow() :
 */
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
-	string sel_data = selection_data.get_data_as_string();
+	std::string sel_data = selection_data.get_data_as_string();
 	if(m_core->isMagnetLink(sel_data))
 	{
-		shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
+		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
 		if (t)//Checks if t is not null
 			m_treeview->addCell(t);
 	}
 	else
 	{
-		string fn = Glib::filename_from_uri(sel_data);
+		std::string fn = Glib::filename_from_uri(sel_data);
 		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
 		bool want_uncertain = true;
-		string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
+		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
 		{
-			shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
+			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
 			if (t)//Checks if t is not null
 				m_treeview->addCell(t);
 			//TODO Add error dialogue if torrent add is unsuccessful
@@ -137,7 +137,7 @@ bool GtkMainWindow::onSecTick()
 {
 	m_treeview->updateCells();
 	m_infobar->updateState(m_treeview->getFirstSelected());
-	shared_ptr<gt::Torrent> t = m_core->update();
+	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 		m_treeview->addCell(t);
 	m_swin->get_vscrollbar()->set_child_visible(false);
@@ -168,7 +168,7 @@ void GtkMainWindow::onAddBtnClicked()
 	case Gtk::RESPONSE_OK:
 		for (auto & f : fc.get_filenames())
 		{
-			shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
+			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
 				m_treeview->addCell(t);
 			//TODO Add error dialogue if torrent add is unsuccessful
@@ -185,13 +185,13 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	if(magPop->get_visible())
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
-		string link = clip->wait_for_text();
+		std::string link = clip->wait_for_text();
 		if(gt::Core::isMagnetLink(link))
 			magtxt->set_text(link);
 	}
 	else
 	{
-		shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
+		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
 			m_treeview->addCell(t);
 		magtxt->set_text("");

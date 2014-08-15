@@ -57,11 +57,11 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 /**
 * Updates the torrent info bar.
 */
-void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
+void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
-	static shared_ptr<gt::Torrent> previous = nullptr;
+	static std::shared_ptr<gt::Torrent> previous = nullptr;
 	int selectedIndex = 0;
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
 	if(selected)
 		set_visible(true);
@@ -89,11 +89,11 @@ void GtkTorrentInfoBar::updateInfo(shared_ptr<gt::Torrent> selected)
 	previous = selected;
 }
 
-void GtkTorrentInfoBar::updateState(shared_ptr<gt::Torrent> selected)
+void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 {
 	if(!selected) return updateInfo(selected);
 	int selectedIndex = 0;
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(unsigned i = 0; i < t.size(); ++i)
 		if(selected == t[i])
 			selectedIndex = i;
