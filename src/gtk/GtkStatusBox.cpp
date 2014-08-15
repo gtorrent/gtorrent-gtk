@@ -169,5 +169,5 @@ void GtkStatusBox::update(shared_ptr<gt::Torrent> selected)
     m_total_size->set_text(selected->getTextSize());
     m_pieces->set_text(std::to_string(selected->getPieces().size()));
 
-    m_hash->set_text("");
+    m_hash->set_text(selected->getFormattedHash());
 }
