@@ -435,7 +435,19 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 		m_progress->setBlocks(t[selectedIndex]->getPieces());
 	m_time_elapsed->set_text(t[selectedIndex]->getTextActiveTime());
 	m_down_total->set_text(t[selectedIndex]->getTextTotalDownloaded());
+	m_down_speed->set_text(t[selectedIndex]->getTextDownloadRate());
+	//m_down_limit->set_text(t[selectedIndex]->getTextActiveTime());
+	m_status->set_text(t[selectedIndex]->getTextState());
+
+	m_remaining->set_text(t[selectedIndex]->getTextEta());
 	m_up_total->set_text(t[selectedIndex]->getTextTotalUploaded());
+	m_up_speed->set_text(t[selectedIndex]->getTextUploadRate());
+	//m_up_limit->set_text(t[selectedIndex]->getTextActiveTime());
+
+	//m_wasted->set_text(t[selectedIndex]->getTextActiveTime());
+	//m_seeds->set_text(libtorrent::to_string(t[selectedIndex]->getTotalSeeders()));
+	//m_leachers->set_text(libtorrent::to_string(t[selectedIndex]->getTotalPeers()));
+	m_share_ratio->set_text(t[selectedIndex]->getTextTotalRatio());
 
 	for(unsigned i = 0; i < t.size(); ++i)
 		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
