@@ -29,6 +29,6 @@ public:
 	Gtk::Label *m_up_total;
 
 	GtkTorrentInfoBar();
-	void updateInfo(shared_ptr<gt::Torrent> selected);
-	void updateState(shared_ptr<gt::Torrent> selected);
+	void updateInfo(std::shared_ptr<gt::Torrent> selected);
+	void updateState(std::shared_ptr<gt::Torrent> selected);
 };
