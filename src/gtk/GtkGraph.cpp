@@ -181,7 +181,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		//Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
 
-		string label;
+		std::string label;
 		if(gt::Settings::settings["ShowLegend"] != "No")
 		{
 			label = "Upload";
@@ -214,9 +214,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 
 		if(order > 100)
-			label = to_string(maxValue / (1024 * 1000)) + "MB/s";
+			label = std::to_string(maxValue / (1024 * 1000)) + "MB/s";
 		else
-			label = to_string(maxValue / 1024) + "KB/s";
+			label = std::to_string(maxValue / 1024) + "KB/s";
 
 		cr->move_to(0, 10);
 		cr->text_path(label);
@@ -228,9 +228,9 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 
 		if(order > 100)
-			label = to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
+			label = std::to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
 		else
-			label = to_string(maxValue / (2 * 1024)) + "KB/s";
+			label = std::to_string(maxValue / (2 * 1024)) + "KB/s";
 		cr->move_to(0, height / 2 + 10);
 		cr->text_path(label);
 		cr->fill();
@@ -256,7 +256,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 /**
  * Draws a curve for the speed graph.
  */
-void GtkGraph::draw(queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
+void GtkGraph::draw(std::queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	double oldy;
 	if(q.empty()) return;
@@ -300,7 +300,7 @@ void GtkGraph::resize(unsigned size)
 void GtkGraph::add(unsigned index, double upload, double download)
 {
 	// we want our vector to always have the same size as t
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 	m_history.resize(t.size());
 
 	if(upload == NAN)
@@ -319,7 +319,7 @@ void GtkGraph::add(unsigned index, double upload, double download)
 /**
  * Returns the maximum value of a queue or 0.
  */
-double GtkGraph::max(queue<double> q)// q passed by value on purpose
+double GtkGraph::max(std::queue<double> q)// q passed by value on purpose
 {
 	double max = 0;
 	while(!q.empty())

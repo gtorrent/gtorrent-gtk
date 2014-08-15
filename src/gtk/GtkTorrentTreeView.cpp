@@ -169,14 +169,14 @@ void GtkTorrentTreeView::setupColumns()
 /**
 * Sets up the cells in the torrent tree view.
 */
-void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
+void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 {
 	if (t == NULL)
 		return;
 
 	Gtk::TreeModel::Row row      = *(m_liststore->append());
-	// if there's a % in the state string, then the torrent is downloading
-	string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
+	// if there's a % in the state std::string, then the torrent is downloading
+	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_eta]        = t->getTextEta();
@@ -197,7 +197,7 @@ void GtkTorrentTreeView::addCell(shared_ptr<gt::Torrent> &t)
 */
 void GtkTorrentTreeView::removeCell(unsigned index)
 {
-	m_liststore->erase(m_liststore->get_iter("0:" + to_string(index)));
+	m_liststore->erase(m_liststore->get_iter("0:" + std::to_string(index)));
 }
 
 /**
@@ -208,8 +208,10 @@ void GtkTorrentTreeView::updateCells()
 	int i = 0;
 	for (auto & c : m_liststore->children())
 	{
-		shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i++];
-		string fgbg = t->getTextState().find('%') == string::npos ? t->getTextState() : "Downloading";
+		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
+		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
+
+		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
@@ -229,12 +231,12 @@ void GtkTorrentTreeView::updateCells()
 /**
 * Gets the selected cells in the torrent tree view.
 */
-vector<unsigned> GtkTorrentTreeView::selectedIndices()
+std::vector<unsigned> GtkTorrentTreeView::selectedIndices()
 {
 	Glib::RefPtr<Gtk::TreeSelection> sel = this->get_selection();
 	sel->set_mode(Gtk::SelectionMode::SELECTION_MULTIPLE);
-	vector<Gtk::TreeModel::Path> path = sel->get_selected_rows();
-	vector<unsigned> indices;
+	std::vector<Gtk::TreeModel::Path> path = sel->get_selected_rows();
+	std::vector<unsigned> indices;
 	for (auto val : path)
 		indices.push_back(val[0]); // we only get the first index because our tree is 1 node deep
 	return indices;
@@ -243,9 +245,9 @@ vector<unsigned> GtkTorrentTreeView::selectedIndices()
 /**
 * Gets the first selected cell in the torrent tree view.
 */
-shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
+std::shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	if(selectedIndices().size() < 1)
 		return nullptr;
 	else
@@ -257,7 +259,7 @@ shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 		t[i]->setPaused(isPaused);// the pause button switches the status
 
@@ -268,7 +270,7 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 */
 void GtkTorrentTreeView::removeSelected()
 {
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for (auto i : selectedIndices())
 	{
 		Application::getSingleton()->getCore()->removeTorrent(t[i]);
@@ -291,7 +293,7 @@ void GtkTorrentTreeView::stopView_onClick()
 */
 void GtkTorrentTreeView::openView_onClick()
 {
-	shared_ptr<gt::Torrent> t = getFirstSelected();
+	std::shared_ptr<gt::Torrent> t = getFirstSelected();
 
 	if(t == nullptr || !t->hasMetadata())
 		return;
@@ -336,7 +338,7 @@ void GtkTorrentTreeView::propertyView_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
 	for (auto i : selectedIndices())
 		t[i]->setSequentialDownload(rcmItemSeq->get_active());
@@ -347,7 +349,7 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
-	vector<shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
 
 	if(selectedIndices().size() > 0)
 	{
@@ -366,21 +368,21 @@ void GtkTorrentTreeView::sequentialChange_onRealize()
 
 void GtkTorrentTreeView::reloadColors()
 {
-	m_colors["Paused"]                  = pair<string, string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
-	m_colors["Queued for checking"]     = pair<string, string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
-	m_colors["Downloading metadata..."] = pair<string, string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
-	m_colors["Finished"]                = pair<string, string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
-	m_colors["Allocating..."]           = pair<string, string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
-	m_colors["Resuming..."]             = pair<string, string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
-	m_colors["Checking..."]             = pair<string, string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
-	m_colors["Seeding"]                 = pair<string, string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
-	m_colors["Downloading"]             = pair<string, string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
+	m_colors["Paused"]                  = std::pair<std::string, std::string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
+	m_colors["Queued for checking"]     = std::pair<std::string, std::string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
+	m_colors["Downloading metadata..."] = std::pair<std::string, std::string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
+	m_colors["Finished"]                = std::pair<std::string, std::string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
+	m_colors["Allocating..."]           = std::pair<std::string, std::string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
+	m_colors["Resuming..."]             = std::pair<std::string, std::string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
+	m_colors["Checking..."]             = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
+	m_colors["Seeding"]                 = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
+	m_colors["Downloading"]             = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
 
 }
 
 void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
 {
-	vector<shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	char pausedTorrents = 0, startedTorrents = 0;
 
 	if(selectedIndices().empty())
@@ -412,17 +414,17 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 // If the title is unknown, the whole element is ignored.
 void GtkTorrentTreeView::saveColumns()
 {
-	string cStates;
+	std::string cStates;
 	for(auto &c : get_columns())
-		cStates += c->get_title() + '|' + to_string(c->get_width()) + '|' + ((c->get_visible()) ? 'v' : 'h') + ',';
+		cStates += c->get_title() + '|' + std::to_string(c->get_width()) + '|' + ((c->get_visible()) ? 'v' : 'h') + ',';
 	gt::Settings::settings["ColumnsProperties"] = cStates;
 }
 
 // This is where it gets tricky/ugly.
 void GtkTorrentTreeView::loadColumns()
 {
-	vector<string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
-	vector<Gtk::TreeModelColumnBase*> cols
+	std::vector<std::string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
+	std::vector<Gtk::TreeModelColumnBase*> cols
 	{
 		&m_cols.m_col_queue,
 		&m_cols.m_col_age,
@@ -436,13 +438,13 @@ void GtkTorrentTreeView::loadColumns()
 		&m_cols.m_col_remaining,
 		&m_cols.m_col_dl_ratio
 	};
-	string tmp = gt::Settings::settings["ColumnsProperties"];
+	std::string tmp = gt::Settings::settings["ColumnsProperties"];
 	if (tmp == "")
 		tmp = "#|20|h,Age|50|h,ETA|90|v,Name|250|v,Seed|45|v,Leech|45|v,Up Speed|95|v,Down Speed|95|v,Size|75|v,Remains|75|h,Ratio|55|h,Progress|160|v,";
 
 	do
 	{
-		string title = tmp.substr(0, tmp.find('|'));
+		std::string title = tmp.substr(0, tmp.find('|'));
 		tmp = tmp.substr(tmp.find('|') + 1);
 		int width = stoi(tmp.substr(0, tmp.find('|')));
 		tmp = tmp.substr(tmp.find('|') + 1);
