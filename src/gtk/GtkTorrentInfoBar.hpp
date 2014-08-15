@@ -121,7 +121,10 @@ Gtk::Label *m_files_number_of_pieces_label;
 Gtk::Label *m_files_pieces_label;
 Gtk::Label *m_files_priority_label;
 
+Gtk::Label *m_log;
+std::string getLog();
 	GtkTorrentInfoBar();
+
 	void updateInfo(std::shared_ptr<gt::Torrent> selected);
 	void updateState(std::shared_ptr<gt::Torrent> selected);
 };

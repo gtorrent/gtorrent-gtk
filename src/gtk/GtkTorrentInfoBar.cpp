@@ -361,6 +361,8 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_files_box->add(*m_files_table_layout);
 
+m_log = Gtk::manage(new Gtk::Label("0"));
+m_log_box->add(*m_log);
 	m_notebook->append_page(*m_general_box, "General");
 	m_notebook->append_page(*m_trackers_box, "Trackers");
 	m_notebook->append_page(*m_peers_box, "Peers");
@@ -419,6 +421,8 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		//m_leachers->set_text(libtorrent::to_string(t[selectedIndex]->getTotalPeers()));
 		m_share_ratio->set_text(t[selectedIndex]->getTextTotalRatio());
 
+		m_log->set_text(getLog());
+
 	}
 	previous = selected;
 }
@@ -449,7 +453,17 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	//m_leachers->set_text(libtorrent::to_string(t[selectedIndex]->getTotalPeers()));
 	m_share_ratio->set_text(t[selectedIndex]->getTextTotalRatio());
 
+m_log->set_text(getLog());
+
 	for(unsigned i = 0; i < t.size(); ++i)
 		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
 
+}
+
+std::string GtkTorrentInfoBar::getLog()
+{
+	std::ifstream t("gtorrent.log");
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+	return buffer.str();
 }
