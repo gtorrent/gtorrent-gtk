@@ -389,6 +389,7 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	{
 		m_parent->btn_pause ->hide();
 		m_parent->btn_resume->hide();
+		m_parent->btn_remove->hide();
 		return;
 	}
 
@@ -401,7 +402,7 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 
 	m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	m_parent->btn_resume->set_visible( pausedTorrents != 0);
-
+	m_parent->btn_remove ->set_visible();
 }
 
 // columns are saved in a single settings, looking like this:

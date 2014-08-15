@@ -37,8 +37,8 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_title("gTorrent");
 
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
+	//Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	//Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 
 	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
@@ -82,6 +82,7 @@ GtkMainWindow::GtkMainWindow() :
 	add(*panel);
 	show_all();
 	btn_pause->hide();
+	btn_remove->hide();
 	m_infobar->set_visible(false);
 
 	// for some reason, the treeview start with its first element selected
