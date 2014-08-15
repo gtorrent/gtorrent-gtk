@@ -5,6 +5,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/listbox.h>
 #include <gtkmm/table.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <gtorrent/Torrent.hpp>
 
@@ -22,6 +23,7 @@ private:
 	Gtk::Notebook *m_notebook;
 	Gtk::Box *m_stat_box;
 	Gtk::Box *m_piece_box;
+    Gtk::ScrolledWindow *m_scroll_box;
 	GtkStatusBox *m_status_box;
 
 
