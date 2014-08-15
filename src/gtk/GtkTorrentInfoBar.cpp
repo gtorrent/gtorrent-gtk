@@ -22,7 +22,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_graph = Gtk::manage(new GtkGraph());
 
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
-	m_progress->set_size_request(0, 50);
+	m_progress->set_size_request(0, 20);
 
 
 	m_stat_box->add(*m_piece_box);
