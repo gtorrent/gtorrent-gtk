@@ -2,22 +2,13 @@
 
 #include <gtorrent/Core.hpp>
 
-#include <gtkmm/menubutton.h>
-#include <gtkmm/window.h>
-#include <gtkmm/popover.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
-
-namespace Gtk
-{
-	class HeaderBar;
-	class Window;
-	class Button;
-	class Popover;
-	class ScrolledWindow;
-	class FileChooserDialog;
-	class Paned;
-}
+#include <gtkmm/headerbar.h>
+#include <gtkmm/menubutton.h>
+#include <gtkmm/popover.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/window.h>
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
