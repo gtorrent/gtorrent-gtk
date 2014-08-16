@@ -1,14 +1,19 @@
-#include <iostream>
-
-#include <gdkmm/color.h>
-#include <gdkmm/rgba.h>
-#include <gtkmm/builder.h>
-#include <gtkmm/adjustment.h>
+#include "GtkSettingsDialog.hpp"
 
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
 
-#include "GtkSettingsDialog.hpp"
+#include <iostream>
+
+#include <gtkmm/button.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/colorbutton.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/filechooserbutton.h>
+#include <gtkmm/switch.h>
+#include <gtkmm/builder.h>
+
+#include "../Application.hpp"
 #include "GtkMainWindow.hpp"
 
 using namespace std;

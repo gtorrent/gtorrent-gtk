@@ -1,11 +1,16 @@
-#include <giomm/file.h>
-#include <gtkmm/separatormenuitem.h>
+#include "GtkTorrentTreeView.hpp"
 
 #include <gtorrent/Log.hpp>
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
 
-#include "GtkTorrentTreeView.hpp"
+#include <gtkmm/cellrendererprogress.h>
+#include <gtkmm/checkmenuitem.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/treeviewcolumn.h>
+#include <gtkmm/separatormenuitem.h>
+
+#include "../Application.hpp"
 #include "GtkMainWindow.hpp"
 
 /**
