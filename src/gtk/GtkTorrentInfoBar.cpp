@@ -1,7 +1,7 @@
-#include "GtkTorrentInfoBar.hpp"
-
 #include <gtkmm/table.h>
 #include <gtkmm/hvseparator.h>
+
+#include "GtkTorrentInfoBar.hpp"
 
 /**
 * Sets up the torrent info bar.

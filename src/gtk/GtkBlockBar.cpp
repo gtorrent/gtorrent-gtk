@@ -1,6 +1,6 @@
-#include "GtkBlockBar.hpp"
-
 #include <vector>
+
+#include "GtkBlockBar.hpp"
 
 /**
 * Sets up the block bar.

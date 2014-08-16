@@ -1,6 +1,8 @@
-#include "GtkStatusBox.hpp"
 #include <gtkmm/hvseparator.h>
+
 #include <gtorrent/Torrent.hpp>
+
+#include "GtkStatusBox.hpp"
 
 // TODO: remove all this boilerplate and replace it with initialize methods instead of doing the same thing a dozen times
 
