@@ -387,8 +387,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 
 	if(selectedIndices().empty())
 	{
-		m_parent->btn_pause ->hide();
-		m_parent->btn_resume->hide();
+		//m_parent->btn_pause ->hide();
+		//m_parent->btn_resume->hide();
 		return;
 	}
 
@@ -399,8 +399,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 		if(pausedTorrents && startedTorrents) break;
 	}
 
-	m_parent->btn_pause ->set_visible(startedTorrents != 0);
-	m_parent->btn_resume->set_visible( pausedTorrents != 0);
+	//m_parent->btn_pause ->set_visible(startedTorrents != 0);
+	//m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
 }
 

@@ -2,6 +2,7 @@
 
 #include <glibmm.h>
 #include <giomm.h>
+#include <gtkmm.h>
 #include <gtkmm/headerbar.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
@@ -60,10 +61,18 @@ public:
 	Gtk::Popover    *magPop = Gtk::manage(new Gtk::Popover(*btn_add_link)); // We may need to provide a fallback CSS for those who use old themes
 	// thx prince
 	Gtk::Button *btn_add_torrent  = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_pause        = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_properties   = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_add_rss  		= Gtk::manage(new Gtk::Button());
+
+	Gtk::Button *btn_create_torrent	= Gtk::manage(new Gtk::Button());
+
 	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
+
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_pause        = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_stop        = Gtk::manage(new Gtk::Button());
+
+	Gtk::Button *btn_up        = Gtk::manage(new Gtk::Button());
+	Gtk::Button *btn_down        = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
 
 };
