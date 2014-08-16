@@ -37,6 +37,9 @@ gTorrent
 # ctag files
 tags
 
+# youcompleteme configs
+.ycm_extra_conf
+
 gtorrent.log
 
 docs
