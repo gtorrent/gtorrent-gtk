@@ -12,6 +12,7 @@
 
 #include "../Application.hpp"
 #include "GtkMainWindow.hpp"
+#include "GtkTorrentInfoBar.hpp"
 
 /**
 * Sets up the tree view containing torrent information.
