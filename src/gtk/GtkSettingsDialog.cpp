@@ -6,6 +6,7 @@
 #include <gtkmm/adjustment.h>
 
 #include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
 
 #include "GtkSettingsDialog.hpp"
 #include "GtkMainWindow.hpp"

@@ -1,12 +1,6 @@
 #pragma once
 
-#include <sys/stat.h>
-
-#include <gtkmm/settings.h>
-#include <gtkmm/main.h>
-
 #include "../core/Base.hpp"
-#include <gtorrent/Platform.hpp>
 
 class GuiGtk : public GuiBase
 {

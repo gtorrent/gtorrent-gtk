@@ -1,14 +1,6 @@
 #pragma once
-
 #include <queue>
 #include <cmath>
-
-#include <gtkmm/widget.h>
-#include <gdkmm/general.h>
-#include <gtk/gtkwidget.h>
-#include <gtkmm/cssprovider.h>
-
-#include "../Application.hpp"
 
 class GtkGraph : public Gtk::Widget
 {

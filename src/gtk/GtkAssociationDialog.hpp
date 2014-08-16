@@ -1,9 +1,14 @@
 #pragma once
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/button.h>
-#include <gtkmm/checkbutton.h>
-#include "GtkMainWindow.hpp"
+
+namespace Gtk
+{
+        class CheckButton;
+        class Button;
+}
+
+class GtkMainWindow;
 
 class GtkAssociationDialog : public Gtk::Dialog
 {
