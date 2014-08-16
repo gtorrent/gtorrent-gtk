@@ -1,10 +1,12 @@
-#include "GtkTorrentTreeView.hpp"
-#include "GtkMainWindow.hpp"
 #include <giomm/file.h>
 #include <gtkmm/separatormenuitem.h>
-#include <Log.hpp>
-#include <Settings.hpp>
-#include <Platform.hpp>
+
+#include <gtorrent/Log.hpp>
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
+
+#include "GtkTorrentTreeView.hpp"
+#include "GtkMainWindow.hpp"
 
 /**
 * Sets up the tree view containing torrent information.

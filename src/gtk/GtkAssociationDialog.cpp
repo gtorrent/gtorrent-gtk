@@ -1,7 +1,6 @@
 #include <gtkmm/fixed.h>
 #include <gtkmm/box.h>
 
-
 #include "GtkAssociationDialog.hpp"
 
 GtkAssociationDialog::GtkAssociationDialog(GtkMainWindow &Parent) : Gtk::Dialog("File Association", Parent, true)

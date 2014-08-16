@@ -1,10 +1,13 @@
-#include "GtkSettingsDialog.hpp"
+#include <iostream>
+
 #include <gdkmm/color.h>
 #include <gdkmm/rgba.h>
-#include <iostream>
 #include <gtkmm/builder.h>
 #include <gtkmm/adjustment.h>
-#include <Settings.hpp>
+
+#include <gtorrent/Settings.hpp>
+
+#include "GtkSettingsDialog.hpp"
 #include "GtkMainWindow.hpp"
 
 using namespace std;

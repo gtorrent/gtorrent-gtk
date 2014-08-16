@@ -1,8 +1,10 @@
-#include "Platform.hpp"
-#include "Settings.hpp"
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Settings.hpp>
+
+#include <gtkmm/scrollbar.h>
+
 #include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
-#include <gtkmm/scrollbar.h>
 
 /**
 * Sets up the main window.

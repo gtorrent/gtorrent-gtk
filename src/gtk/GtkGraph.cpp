@@ -1,5 +1,6 @@
+#include <gtorrent/Settings.hpp>
+
 #include "GtkGraph.hpp"
-#include <Settings.hpp>
 
 /**
  * Sets up the speed graph.
