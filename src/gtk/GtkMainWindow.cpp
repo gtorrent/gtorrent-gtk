@@ -1,10 +1,12 @@
+#include "GtkMainWindow.hpp"
+
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
 
 #include <gtkmm/scrollbar.h>
 
+#include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
-#include "GtkMainWindow.hpp"
 
 /**
 * Sets up the main window.

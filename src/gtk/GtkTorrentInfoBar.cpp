@@ -1,7 +1,17 @@
-#include <gtkmm/table.h>
-#include <gtkmm/hvseparator.h>
-
 #include "GtkTorrentInfoBar.hpp"
+
+#include <gtkmm/box.h>
+#include <gtkmm/hvseparator.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/label.h>
+#include <gtkmm/listbox.h>
+#include <gtkmm/table.h>
+#include <gtkmm/scrolledwindow.h>
+
+#include "../Application.hpp"
+#include "GtkBlockBar.hpp"
+#include "GtkGraph.hpp"
+#include "GtkStatusBox.hpp"
 
 /**
 * Sets up the torrent info bar.
