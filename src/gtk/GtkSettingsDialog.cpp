@@ -15,6 +15,7 @@
 
 #include "../Application.hpp"
 #include "GtkMainWindow.hpp"
+#include "GtkTorrentTreeView.hpp"
 
 using namespace std;
 
