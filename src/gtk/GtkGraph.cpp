@@ -1,5 +1,10 @@
+#include <gtkmm/widget.h>
+#include <gdkmm/general.h>
+#include <gtkmm/cssprovider.h>
+
 #include <gtorrent/Settings.hpp>
 
+#include "../Application.hpp"
 #include "GtkGraph.hpp"
 
 /**

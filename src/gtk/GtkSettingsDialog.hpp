@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/button.h>
 #include <gtkmm/spinbutton.h>
@@ -9,8 +11,6 @@
 #include <gtkmm/filechooserbutton.h>
 #include <gtkmm/colorbutton.h>
 #include "../Application.hpp"
-
-#include <map>
 
 class GtkMainWindow;
 
