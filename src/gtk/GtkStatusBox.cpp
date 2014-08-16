@@ -110,25 +110,19 @@ GtkStatusBox::GtkStatusBox()
 
 void GtkStatusBox::update(std::shared_ptr<gt::Torrent> selected)
 {
-	m_time_elapsed.set_text(selected->getTextActiveTime());
-	m_remaining.set_text(selected->getTextEta());
-	m_share_ratio.set_text(std::to_string(selected->getTotalRatio()));
-
-	m_downloaded.set_text(selected->getTextTotalDownloaded());
 	m_download_speed.set_text(selected->getTextDownloadRate());
-	m_down_limit.set_text("");
+	m_hash          .set_text(selected->getFormattedHash());
+	m_pieces        .set_text(std::to_string(selected->getPieces().size()));
+	m_remaining     .set_text(selected->getTextEta());
+	m_save_as       .set_text(selected->getSavePath());
+	m_share_ratio   .set_text(std::to_string(selected->getTotalRatio()));
+	m_time_elapsed  .set_text(selected->getTextActiveTime());
+	m_total_size    .set_text(selected->getTextSize());
+	m_tracker_url   .set_text(selected->getCurrentTrackerURL());
+	m_upload_speed  .set_text(selected->getTextUploadRate());
+	m_uploaded      .set_text(selected->getTextTotalUploaded());
 
-	m_uploaded.set_text(selected->getTextTotalUploaded());
-	m_upload_speed.set_text(selected->getTextUploadRate());
-	m_up_limit.set_text("");
-
-	m_tracker_url.set_text(selected->getCurrentTrackerURL());
+	m_down_limit    .set_text("");
+	m_up_limit      .set_text("");
 	m_tracker_status.set_text("");
-
-	m_save_as.set_text(selected->getSavePath());
-
-	m_total_size.set_text(selected->getTextSize());
-	m_pieces.set_text(std::to_string(selected->getPieces().size()));
-
-	m_hash.set_text(selected->getFormattedHash());
 }
