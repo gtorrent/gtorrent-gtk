@@ -3,19 +3,15 @@
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
 
-#include <glibmm.h>
-#include <giomm.h>
-#include <gtkmm/scrollbar.h>
-#include <gtkmm/headerbar.h>
-#include <gtkmm/button.h>
-#include <gtkmm/main.h>
-#include <gtkmm/stock.h>
 #include <boost/algorithm/string.hpp>
-#include <gtkmm/paned.h>
+#include <giomm.h>
+#include <glibmm.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/popover.h>
+#include <gtkmm/main.h>
+#include <gtkmm/paned.h>
+#include <gtkmm/scrollbar.h>
+#include <gtkmm/stock.h>
 
 #include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
