@@ -2,21 +2,19 @@
 
 #include <gtorrent/Torrent.hpp>
 
-#include <gtkmm/treemodel.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
-#include <gtkmm/cellrendererprogress.h>
-#include <gtkmm/treeviewcolumn.h>
-#include <gtkmm/hvseparator.h>
-#include <gtkmm/checkmenuitem.h>
-#include <gtkmm/menuitem.h>
-#include <gtkmm/treeviewcolumn.h>
 
-#include "../Application.hpp"
-#include "GtkTorrentInfoBar.hpp"
+namespace Gtk
+{
+	class CellRendererProgress;
+	class CheckMenuItem;
+	class MenuItem;
+}
 
-// Gtk Torrent Columns Section
 class GtkMainWindow;
+class GtkTorrentInfoBar;
 
 class GtkTorrentColumns : public Gtk::TreeModel::ColumnRecord
 {
@@ -132,6 +130,7 @@ private:
 	std::vector<unsigned> selectedIndices();
 
 	/* Event handlers for clicks on the controls */
+	bool				  onKeyPress(GdkEventKey *event);
 	bool         torrentView_onClick(GdkEventButton *event);
 	bool      torrentColumns_onClick(GdkEventButton *event);
 	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);

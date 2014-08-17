@@ -1,30 +1,24 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <glibmm.h>
 #include <giomm.h>
 #include <gtkmm.h>
 #include <gtkmm/headerbar.h>
 #include <gtkmm/window.h>
+//#include <gtorrent/Core.hpp>
+
 #include <gtkmm/button.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/headerbar.h>
 #include <gtkmm/menubutton.h>
-#include <gtkmm/main.h>
-#include <gtkmm/stock.h>
-#include <boost/algorithm/string.hpp>
-#include <gtkmm/uimanager.h>
-#include <gtkmm/paned.h>
-#include <gtkmm/filechooserdialog.h>
-#include <gtkmm/hvseparator.h>
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/popover.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/window.h>
 
-#include <gtorrent/Core.hpp>
-
-#include "GtkTorrentTreeView.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include "GtkSettingsDialog.hpp"
-
-//#include <Application.hpp>
-
+class GtkTorrentInfoBar;
+class GtkTorrentTreeView;
+class GtkSettingsDialog;
 
 class GtkMainWindow : public Gtk::Window
 {

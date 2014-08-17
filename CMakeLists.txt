@@ -22,7 +22,16 @@ CONFIGURE_FILE (src/utils/Version.hpp.in Version.hpp @ONLY)
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 # Options
-OPTION (WIN_DEBUG "Disable -mwindows for debugging purposes" OFF) #Disables CXXFLAG -mwindows in order to allow console output
+OPTION (WIN_DEBUG                "Disable -mwindows for debugging purposes" OFF)
+OPTION (ENABLE_TESTEXCUTABLE     "Enable the compilation of a simple test"  OFF)
+OPTION (USE_LOGGING              "Turns logging on/off"                     ON)
+OPTION (Boost_USE_STATIC_LIBS    "Use static version of Boost libraries."   ON)
+OPTION (Boost_USE_MULTITHREADED  "Use multithreaded version of Boost."      ON)  
+OPTION (Boost_USE_STATIC_RUNTIME "Use Boost static runtime."                OFF) 
+
+IF (USE_LOGGING)
+ADD_DEFINITIONS(-DUSE_LOGGING=1)
+ENDIF()
 
 # adds Windows flag necessary to prevent console window spawning and allows override to disable this for debugging purposes
 IF (WIN32 AND (NOT WIN_DEBUG))

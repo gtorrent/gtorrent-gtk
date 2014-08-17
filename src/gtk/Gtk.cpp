@@ -1,5 +1,12 @@
-#include "Gtk.hpp"
+#include <sys/stat.h>
+
+#include <gtkmm/settings.h>
+#include <gtkmm/main.h>
+
+#include <gtorrent/Platform.hpp>
+
 #include "GtkMainWindow.hpp"
+#include "Gtk.hpp"
 
 /**
 * Checks if specified file exists

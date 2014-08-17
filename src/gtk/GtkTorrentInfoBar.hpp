@@ -1,20 +1,22 @@
 #pragma once
 
 #include <gtkmm/box.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/label.h>
-#include <gtkmm/listbox.h>
-#include <gtkmm/table.h>
-
 #include <gtorrent/Torrent.hpp>
 
-#include "../Application.hpp"
-#include "GtkBlockBar.hpp"
-#include "GtkGraph.hpp"
+namespace Gtk
+{
+	class Notebook;
+	class Label;
+	class ScrolledWindow;
+}
+
+class GtkBlockBar;
+class GtkGraph;
+class GtkStatusBox;
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
-public:
+private:
 	GtkBlockBar *m_progress;
 	Gtk::Label *m_title;
 	Gtk::Label *m_transfer_label;
@@ -113,20 +115,34 @@ public:
 	Gtk::Label *m_pieces_availability_label;
 	Gtk::Label *m_pieces_mode_label;
 
-Gtk::Table *m_files_table_layout;
+	Gtk::Table *m_files_table_layout;
 
-Gtk::Label *m_files_path_label;
-Gtk::Label *m_files_size_label;
-Gtk::Label *m_files_done_label;
-Gtk::Label *m_files_percent_label;
-Gtk::Label *m_files_number_of_pieces_label;
-Gtk::Label *m_files_pieces_label;
-Gtk::Label *m_files_priority_label;
+	Gtk::Label *m_files_path_label;
+	Gtk::Label *m_files_size_label;
+	Gtk::Label *m_files_done_label;
+	Gtk::Label *m_files_percent_label;
+	Gtk::Label *m_files_number_of_pieces_label;
+	Gtk::Label *m_files_pieces_label;
+	Gtk::Label *m_files_priority_label;
 
-Gtk::Label *m_log;
-std::string getLog();
+	Gtk::Label *m_log;
+	std::string getLog();
 	GtkTorrentInfoBar();
 
 	void updateInfo(std::shared_ptr<gt::Torrent> selected);
+	GtkBlockBar   *m_progress;
+	Gtk::Label    *m_title;
+	GtkGraph      *m_graph;
+	Gtk::Notebook *m_notebook;
+	Gtk::Box      *m_stat_box;
+	Gtk::Box      *m_piece_box;
+	Gtk::ScrolledWindow *m_scroll_box;
+	GtkStatusBox        *m_status_box;
+
+
+
+public:
+	GtkTorrentInfoBar();
+	void updateInfo (std::shared_ptr<gt::Torrent> selected);
 	void updateState(std::shared_ptr<gt::Torrent> selected);
 };

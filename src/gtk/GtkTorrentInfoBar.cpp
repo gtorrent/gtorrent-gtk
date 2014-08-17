@@ -1,7 +1,17 @@
 #include "GtkTorrentInfoBar.hpp"
 
-#include <gtkmm/table.h>
+#include <gtkmm/box.h>
 #include <gtkmm/hvseparator.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/label.h>
+#include <gtkmm/listbox.h>
+#include <gtkmm/table.h>
+#include <gtkmm/scrolledwindow.h>
+
+#include "../Application.hpp"
+#include "GtkBlockBar.hpp"
+#include "GtkGraph.hpp"
+#include "GtkStatusBox.hpp"
 
 /**
 * Sets up the torrent info bar.
@@ -29,7 +39,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_graph = Gtk::manage(new GtkGraph());
 
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
-	m_progress->set_size_request(0, 50);
+	m_progress->set_size_request(0, 20);
 
 	m_pieces_box->add(*m_piece_box);
 	m_speed_box->add(*m_graph);
@@ -374,8 +384,13 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_files_box->add(*m_files_table_layout);
 
-m_log = Gtk::manage(new Gtk::Label("0"));
-m_log_box->add(*m_log);
+	m_log = Gtk::manage(new Gtk::Label("0"));
+	m_log_box->add(*m_log);
+	m_general_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
+	m_general_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
+	m_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
+	m_status_box = Gtk::manage(new GtkStatusBox());
+	m_scroll_box->add(*m_status_box);
 	m_notebook->append_page(*m_general_box, "General");
 	m_notebook->append_page(*m_trackers_box, "Trackers");
 	m_notebook->append_page(*m_peers_box, "Peers");
@@ -383,6 +398,7 @@ m_log_box->add(*m_log);
 	m_notebook->append_page(*m_files_box, "Files");
 	m_notebook->append_page(*m_speed_box, "Speed");
 	m_notebook->append_page(*m_log_box, "Log");
+
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
@@ -395,8 +411,6 @@ m_log_box->add(*m_log);
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-	int selectedIndex = 0;
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
 	if(selected)
 	{
@@ -408,15 +422,11 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		return;
 	}
 
-	for(unsigned i = 0; i < t.size(); ++i)
-		if(selected == t[i])
-			selectedIndex = i;
+	if(selected->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+		m_progress->setBlocks(selected->getPieces());
 
-	if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
-		m_progress->setBlocks(t[selectedIndex]->getPieces());
-
-	m_title->set_text(t[selectedIndex]->getName());
-	m_graph->select(selectedIndex);
+	m_title->set_text(selected->getName());
+	m_graph->select(selected);
 
 	if(previous != selected)
 	{
@@ -446,13 +456,19 @@ m_downloaded_pieces->set_text(t[selectedIndex]->getTextDownloadedPieces());
 		m_log->set_text(getLog());
 
 	}
+
+		m_status_box->update(selected);
 	previous = selected;
 }
 
 void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 {
 	if(!selected) return updateInfo(selected);
-	int selectedIndex = 0;
+	if(selected->getHandle().status().has_metadata)
+		m_progress->setBlocks(selected->getPieces());
+
+	m_status_box->update(selected);
+
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(unsigned i = 0; i < t.size(); ++i)
 		if(selected == t[i])
@@ -484,8 +500,8 @@ m_downloaded_pieces->set_text(t[selectedIndex]->getTextDownloadedPieces());
 
 m_log->set_text(getLog());
 
-	for(unsigned i = 0; i < t.size(); ++i)
-		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
+	for(auto ptr : t)
+		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
 
 }
 

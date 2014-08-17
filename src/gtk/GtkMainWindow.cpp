@@ -1,8 +1,23 @@
-#include "Platform.hpp"
-#include "Settings.hpp"
-#include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
+
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Settings.hpp>
+
+#include <boost/algorithm/string.hpp>
+#include <giomm.h>
+#include <glibmm.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/hvseparator.h>
+#include <gtkmm/main.h>
+#include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm/stock.h>
+
+#include "../Application.hpp"
+#include "GtkAssociationDialog.hpp"
+#include "GtkTorrentTreeView.hpp"
+#include "GtkTorrentInfoBar.hpp"
+#include "GtkSettingsDialog.hpp"
 
 /**
 * Sets up the main window.

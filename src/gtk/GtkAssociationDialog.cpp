@@ -1,8 +1,11 @@
 #include <gtkmm/fixed.h>
 #include <gtkmm/box.h>
-
+#include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
 
 #include "GtkAssociationDialog.hpp"
+#include "GtkMainWindow.hpp"
 
 GtkAssociationDialog::GtkAssociationDialog(GtkMainWindow &Parent) : Gtk::Dialog("File Association", Parent, true)
 {

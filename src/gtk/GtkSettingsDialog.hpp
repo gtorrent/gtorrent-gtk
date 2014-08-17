@@ -1,16 +1,20 @@
 #pragma once
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/button.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/colorbutton.h>
-#include "../Application.hpp"
-
 #include <map>
+//#include <gtkmm.h>
+
+namespace Gtk
+{
+	class Button;
+	class Dialog;
+	class FileChooserButton;
+	class ComboBoxText;
+	class Switch;
+	class ColorButton;
+	class Entry;
+	class SpinButton;
+	class Application;
+}
 
 class GtkMainWindow;
 

@@ -1,10 +1,18 @@
 #include "GtkTorrentTreeView.hpp"
-#include "GtkMainWindow.hpp"
-#include <giomm/file.h>
+
+#include <gtorrent/Log.hpp>
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
+
+#include <gtkmm/cellrendererprogress.h>
+#include <gtkmm/checkmenuitem.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/separatormenuitem.h>
-#include <Log.hpp>
-#include <Settings.hpp>
-#include <Platform.hpp>
+
+#include "../Application.hpp"
+#include "GtkMainWindow.hpp"
+#include "GtkTorrentInfoBar.hpp"
 
 /**
 * Sets up the tree view containing torrent information.
@@ -14,6 +22,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar 
 	m_liststore = Gtk::ListStore::create(m_cols);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
+	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
 	set_model(m_liststore);
 	setupColumns();
 	set_hexpand();
@@ -521,4 +530,13 @@ void GtkTorrentTreeView::loadColumns()
 		}
 	}
 	while (tmp != "");
+}
+
+bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
+{
+	m_infobar->updateInfo(getFirstSelected());	
+	if(event->send_event) return true;
+	event->send_event = true;
+	Gdk::Event((GdkEvent*)event).put();
+	return false;
 }

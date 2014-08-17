@@ -1,11 +1,21 @@
 #include "GtkSettingsDialog.hpp"
-#include <gdkmm/color.h>
-#include <gdkmm/rgba.h>
+
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
+
 #include <iostream>
+
+#include <gtkmm/button.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/colorbutton.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/filechooserbutton.h>
+#include <gtkmm/switch.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/adjustment.h>
-#include <Settings.hpp>
+
+#include "../Application.hpp"
 #include "GtkMainWindow.hpp"
+#include "GtkTorrentTreeView.hpp"
 
 using namespace std;
 

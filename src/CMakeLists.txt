@@ -28,6 +28,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkBlockBar.cpp
 	gtk/GtkGraph.cpp
 	gtk/GtkSettingsDialog.cpp
+    gtk/GtkStatusBox.cpp
 	main.cpp
 	)
 
