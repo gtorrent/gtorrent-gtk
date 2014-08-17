@@ -1,6 +1,8 @@
 #pragma once
 
 #include <gtkmm/box.h>
+#include <gtkmm/table.h>
+
 #include <gtorrent/Torrent.hpp>
 
 namespace Gtk
@@ -12,26 +14,19 @@ namespace Gtk
 
 class GtkBlockBar;
 class GtkGraph;
-class GtkStatusBox;
+class GtkGeneralBox;
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
-private:
-	GtkBlockBar *m_progress;
-	Gtk::Label *m_title;
+public:
 	Gtk::Label *m_transfer_label;
 	Gtk::Label *m_general_label;
-	GtkGraph *m_graph;
-	Gtk::Notebook *m_notebook;
-	Gtk::Box *m_general_box;
 	Gtk::Box *m_trackers_box;
 	Gtk::Box *m_peers_box;
 	Gtk::Box *m_pieces_box;
 	Gtk::Box *m_files_box;
 	Gtk::Box *m_speed_box;
 	Gtk::Box *m_log_box;
-
-	Gtk::Box *m_piece_box;
 
 	Gtk::Table *m_transfer_table_layout;
 
@@ -127,19 +122,15 @@ private:
 
 	Gtk::Label *m_log;
 	std::string getLog();
-	GtkTorrentInfoBar();
 
-	void updateInfo(std::shared_ptr<gt::Torrent> selected);
 	GtkBlockBar   *m_progress;
 	Gtk::Label    *m_title;
 	GtkGraph      *m_graph;
 	Gtk::Notebook *m_notebook;
-	Gtk::Box      *m_stat_box;
+	Gtk::Box      *m_general_box;
 	Gtk::Box      *m_piece_box;
 	Gtk::ScrolledWindow *m_scroll_box;
-	GtkStatusBox        *m_status_box;
-
-
+	GtkGeneralBox        *m_status_box;
 
 public:
 	GtkTorrentInfoBar();

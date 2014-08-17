@@ -136,7 +136,6 @@ void GtkTorrentTreeView::setupColumns()
 		append_column(         "#", m_cols.m_col_queue);
 		append_column(      "Size", m_cols.m_col_size);
 		append_column("Selected Size", m_cols.m_col_selected_size);
-
 		append_column(   "Completed", m_cols.m_col_completed);
 		append_column(   "Downloaded", m_cols.m_col_downloaded);
 		append_column(   "Remaining", m_cols.m_col_remaining);
@@ -150,7 +149,6 @@ void GtkTorrentTreeView::setupColumns()
 		append_column(       "ETA", m_cols.m_col_eta);
 		append_column(       "Uploaded", m_cols.m_col_uploaded);
 		append_column(     "Ratio", m_cols.m_col_dl_ratio);
-
 		append_column(      	"Avail.", m_cols.m_col_avail);
 		append_column(       	 "Label", m_cols.m_col_label);
 		append_column(    	"Added On", m_cols.m_col_added_on);
@@ -191,6 +189,9 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
+		//if(gt::Settings::settings["ColumnsProperties"] == "")
+			//c->set_fixed_width(120);
+
 	}
 	if(gt::Settings::settings["ColumnsProperties"] == "")
 	{
@@ -210,7 +211,6 @@ void GtkTorrentTreeView::setupColumns()
 		get_column(13)->set_fixed_width(128);
 		get_column(14)->set_fixed_width(64);
 		get_column(15)->set_fixed_width(128);
-
 		get_column(16)->set_fixed_width(64);
 		get_column(17)->set_fixed_width(64);
 		get_column(18)->set_fixed_width(64);
@@ -227,8 +227,6 @@ void GtkTorrentTreeView::setupColumns()
 		get_column(29)->set_fixed_width(128);
 		get_column(30)->set_fixed_width(128);
 		get_column(31)->set_fixed_width(128);
-
-
 	}
 }
 
@@ -243,10 +241,8 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	Gtk::TreeModel::Row row      = *(m_liststore->append());
 	// if there's a % in the state std::string, then the torrent is downloading
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
-row[m_cols.m_col_name]       = t->getName();
-
-row[m_cols.m_col_size]       = t->getTextSize();
-
+	row[m_cols.m_col_name]       = t->getName();
+	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_eta]        = t->getTextEta();
 	row[m_cols.m_col_seeds]    = t->getTotalSeeders();
@@ -277,11 +273,9 @@ void GtkTorrentTreeView::updateCells()
 	{
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
-c[m_cols.m_col_name]       = t->getName();
-
+		c[m_cols.m_col_name]       = t->getName();
 		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_size]       = t->getTextSize();
-
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeds]    = t->getTotalSeeders();
@@ -455,8 +449,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 
 	if(selectedIndices().empty())
 	{
-		//m_parent->btn_pause ->hide();
-		//m_parent->btn_resume->hide();
+		m_parent->btn_pause ->hide();
+		m_parent->btn_resume->hide();
 		return;
 	}
 
@@ -467,8 +461,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 		if(pausedTorrents && startedTorrents) break;
 	}
 
-	//m_parent->btn_pause ->set_visible(startedTorrents != 0);
-	//m_parent->btn_resume->set_visible( pausedTorrents != 0);
+	m_parent->btn_pause ->set_visible(startedTorrents != 0);
+	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
 }
 
@@ -534,7 +528,7 @@ void GtkTorrentTreeView::loadColumns()
 
 bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 {
-	m_infobar->updateInfo(getFirstSelected());	
+	m_infobar->updateInfo(getFirstSelected());
 	if(event->send_event) return true;
 	event->send_event = true;
 	Gdk::Event((GdkEvent*)event).put();
