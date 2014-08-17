@@ -182,12 +182,45 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		if(gt::Settings::settings["ColumnsProperties"] == "")
-			c->set_fixed_width(120);
+	}
+	if(gt::Settings::settings["ColumnsProperties"] == "")
+	{
+		get_column(0) ->set_fixed_width(128);
+		get_column(1) ->set_fixed_width(32);
+		get_column(2) ->set_fixed_width(64);
+		get_column(3) ->set_fixed_width(128);
+		get_column(4) ->set_fixed_width(128);
+		get_column(5) ->set_fixed_width(128);
+		get_column(6) ->set_fixed_width(128);
+		get_column(7) ->set_fixed_width(64);
+		get_column(8) ->set_fixed_width(64);
+		get_column(9) ->set_fixed_width(64);
+		get_column(10)->set_fixed_width(64);
+		get_column(11)->set_fixed_width(128);
+		get_column(12)->set_fixed_width(128);
+		get_column(13)->set_fixed_width(128);
+		get_column(14)->set_fixed_width(64);
+		get_column(15)->set_fixed_width(128);
+
+		get_column(16)->set_fixed_width(64);
+		get_column(17)->set_fixed_width(64);
+		get_column(18)->set_fixed_width(64);
+		get_column(19)->set_fixed_width(128);
+		get_column(20)->set_fixed_width(128);
+		get_column(21)->set_fixed_width(128);
+		get_column(22)->set_fixed_width(128);
+		get_column(23)->set_fixed_width(128);
+		get_column(24)->set_fixed_width(128);
+		get_column(25)->set_fixed_width(128);
+		get_column(26)->set_fixed_width(64);
+		get_column(27)->set_fixed_width(128);
+		get_column(28)->set_fixed_width(128);
+		get_column(29)->set_fixed_width(128);
+		get_column(30)->set_fixed_width(128);
+		get_column(31)->set_fixed_width(128);
+
 
 	}
-	//if(gt::Settings::settings["ColumnsProperties"] == "")
-		//get_column(0)->set_fixed_width(48);
 }
 
 /**
