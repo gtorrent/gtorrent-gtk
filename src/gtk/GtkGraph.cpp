@@ -168,90 +168,90 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
 	cr->fill();
 
-    double increment = width / 60;
-    unsigned order;
-    if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
-        order = 1;
-    else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 100 * 1024)
-        order = 10;
-    else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 1000 * 1024)
-        order = 100;
-    else
-        order = 1000;
-    int maxValue = max(m_history[m_selected].first, m_history[m_selected].second) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
+	double increment = width / 60;
+	unsigned order;
+	if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
+		order = 1;
+	else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 100 * 1024)
+		order = 10;
+	else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 1000 * 1024)
+		order = 100;
+	else
+		order = 1000;
+	int maxValue = max(m_history[m_selected].first, m_history[m_selected].second) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
 
-    // draw curves
+	// draw curves
 
-    //Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
-    Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
+	//Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
 
-    std::string label;
-    if(gt::Settings::settings["ShowLegend"] != "No")
-    {
-        label = "Upload";
-        cr->move_to(10, height / 2 - 15);
-        cr->text_path(label);
-        cr->fill();
-        cr->stroke();
-    }
+	std::string label;
+	if(gt::Settings::settings["ShowLegend"] != "No")
+	{
+		label = "Upload";
+		cr->move_to(10, height / 2 - 15);
+		cr->text_path(label);
+		cr->fill();
+		cr->stroke();
+	}
 
-    draw(m_history[m_selected].first, height, increment, maxValue, cr);
+	draw(m_history[m_selected].first, height, increment, maxValue, cr);
 
-    Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
 
-    if(gt::Settings::settings["ShowLegend"] != "No")
-    {
-        label = "Download";
-        cr->move_to(10, height / 2 - 30);
-        cr->text_path(label);
-        cr->fill();
-        cr->stroke();
-    }
+	if(gt::Settings::settings["ShowLegend"] != "No")
+	{
+		label = "Download";
+		cr->move_to(10, height / 2 - 30);
+		cr->text_path(label);
+		cr->fill();
+		cr->stroke();
+	}
 
-    draw(m_history[m_selected].second, height, increment, maxValue, cr);
+	draw(m_history[m_selected].second, height, increment, maxValue, cr);
 
-    // draw grid
-    Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphGridColor"]));
+	// draw grid
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphGridColor"]));
 
-    cr->move_to(0, 0);
-    cr->line_to(width, 0);
-    cr->stroke();
+	cr->move_to(0, 0);
+	cr->line_to(width, 0);
+	cr->stroke();
 
-    if(order > 100)
-        label = std::to_string(maxValue / (1024 * 1000)) + "MB/s";
-    else
-        label = std::to_string(maxValue / 1024) + "KB/s";
+	if(order > 100)
+		label = std::to_string(maxValue / (1024 * 1000)) + "MB/s";
+	else
+		label = std::to_string(maxValue / 1024) + "KB/s";
 
-    cr->move_to(0, 10);
-    cr->text_path(label);
-    cr->fill();
-    cr->stroke();
+	cr->move_to(0, 10);
+	cr->text_path(label);
+	cr->fill();
+	cr->stroke();
 
-    cr->move_to(0, height / 2);
-    cr->line_to(width, height / 2);
-    cr->stroke();
+	cr->move_to(0, height / 2);
+	cr->line_to(width, height / 2);
+	cr->stroke();
 
-    if(order > 100)
-        label = std::to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
-    else
-        label = std::to_string(maxValue / (2 * 1024)) + "KB/s";
-    cr->move_to(0, height / 2 + 10);
-    cr->text_path(label);
-    cr->fill();
-    cr->stroke();
+	if(order > 100)
+		label = std::to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
+	else
+		label = std::to_string(maxValue / (2 * 1024)) + "KB/s";
+	cr->move_to(0, height / 2 + 10);
+	cr->text_path(label);
+	cr->fill();
+	cr->stroke();
 
-    cr->move_to(0, height);
-    cr->line_to(width, height);
-    cr->stroke();
+	cr->move_to(0, height);
+	cr->line_to(width, height);
+	cr->stroke();
 
-    if(order > 100)
-        label = "0MB/s";
-    else
-        label = "0KB/s";
-    cr->move_to(0, height - 5);
-    cr->text_path(label);
-    cr->fill();
-    cr->stroke();
+	if(order > 100)
+		label = "0MB/s";
+	else
+		label = "0KB/s";
+	cr->move_to(0, height - 5);
+	cr->text_path(label);
+	cr->fill();
+	cr->stroke();
 
 
 	return true;
