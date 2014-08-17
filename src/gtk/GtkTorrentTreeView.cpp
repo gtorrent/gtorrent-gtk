@@ -125,16 +125,39 @@ void GtkTorrentTreeView::setupColumns()
 	{
 		append_column(      "Name", m_cols.m_col_name);
 		append_column(         "#", m_cols.m_col_queue);
-
-		append_column(       "Age", m_cols.m_col_age);
-		append_column(       "ETA", m_cols.m_col_eta);
-		append_column(      "Seed", m_cols.m_col_seeders);
-		append_column(     "Leech", m_cols.m_col_peers);
-		append_column(  "Up Speed", m_cols.m_col_ul_speed);
-		append_column("Down Speed", m_cols.m_col_dl_speed);
 		append_column(      "Size", m_cols.m_col_size);
-		append_column(   "Remains", m_cols.m_col_remaining);
+		append_column("Selected Size", m_cols.m_col_selected_size);
+
+		append_column(   "Completed", m_cols.m_col_completed);
+		append_column(   "Downloaded", m_cols.m_col_downloaded);
+		append_column(   "Remaining", m_cols.m_col_remaining);
+		append_column(      "Done", m_cols.m_col_done);
+		append_column(      "Status", m_cols.m_col_status);
+		append_column(      "Seeds", m_cols.m_col_seeds);
+		append_column(     "Peers", m_cols.m_col_peers);
+		append_column(     "Seeds/Peers", m_cols.m_col_seeds_peers);
+		append_column("Down Speed", m_cols.m_col_dl_speed);
+		append_column(  "Up Speed", m_cols.m_col_ul_speed);
+		append_column(       "ETA", m_cols.m_col_eta);
+		append_column(       "Uploaded", m_cols.m_col_uploaded);
 		append_column(     "Ratio", m_cols.m_col_dl_ratio);
+
+		append_column(      	"Avail.", m_cols.m_col_avail);
+		append_column(       	 "Label", m_cols.m_col_label);
+		append_column(    	"Added On", m_cols.m_col_added_on);
+		append_column(	"Completed On", m_cols.m_col_completed_on);
+		append_column(     	 "Tracker", m_cols.m_col_tracker);
+		append_column(    	"Up Limit", m_cols.m_col_up_limit);
+		append_column(  	"Down Limit", m_cols.m_col_down_limit);
+		append_column(    	"Bw.Alloc", m_cols.m_col_bandwidth_allocation);
+		append_column("Tracker Status", m_cols.m_col_tracker_status);
+		append_column(       	 "Debug", m_cols.m_col_debug);
+		append_column( 	 "Last Active", m_cols.m_col_last_active);
+		append_column(     	 "Elapsed", m_cols.m_col_age);
+		append_column(  	"Source URL", m_cols.m_col_source_url);
+		append_column(     	 "Episode", m_cols.m_col_episode);
+		append_column(      	"Format", m_cols.m_col_format);
+		append_column(       	 "Codec", m_cols.m_col_codec);
 	}
 
 	for (auto & c : this->get_columns())
@@ -163,8 +186,8 @@ void GtkTorrentTreeView::setupColumns()
 			c->set_fixed_width(120);
 
 	}
-	if(gt::Settings::settings["ColumnsProperties"] == "")
-		get_column(0)->set_fixed_width(48);
+	//if(gt::Settings::settings["ColumnsProperties"] == "")
+		//get_column(0)->set_fixed_width(48);
 }
 
 /**
@@ -178,13 +201,14 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	Gtk::TreeModel::Row row      = *(m_liststore->append());
 	// if there's a % in the state std::string, then the torrent is downloading
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
+row[m_cols.m_col_name]       = t->getName();
+
+row[m_cols.m_col_size]       = t->getTextSize();
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_eta]        = t->getTextEta();
-	row[m_cols.m_col_name]       = t->getName();
-	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
+	row[m_cols.m_col_seeds]    = t->getTotalSeeders();
 	row[m_cols.m_col_peers]   = t->getTotalPeers();
-	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
@@ -211,16 +235,17 @@ void GtkTorrentTreeView::updateCells()
 	{
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
+c[m_cols.m_col_name]       = t->getName();
 
 		c[m_cols.m_col_queue]      = i++;
+		c[m_cols.m_col_size]       = t->getTextSize();
+
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
-		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
+		c[m_cols.m_col_seeds]    = t->getTotalSeeders();
 		c[m_cols.m_col_peers]   = t->getTotalPeers();
-		c[m_cols.m_col_name]       = t->getName();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
-		c[m_cols.m_col_size]       = t->getTextSize();
 		c[m_cols.m_col_dl_ratio]   = t->getTextState();
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
@@ -431,7 +456,7 @@ void GtkTorrentTreeView::loadColumns()
 		&m_cols.m_col_age,
 		&m_cols.m_col_eta,
 		&m_cols.m_col_name,
-		&m_cols.m_col_seeders,
+		&m_cols.m_col_seeds,
 		&m_cols.m_col_peers,
 		&m_cols.m_col_ul_speed,
 		&m_cols.m_col_dl_speed,

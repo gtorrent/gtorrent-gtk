@@ -122,7 +122,7 @@ helpmenu->append(*menuitem_about_gtorrent);
 
 	btn_add_link   ->set_image_from_icon_name("insert-link-symbolic");
 	btn_add_torrent->set_image_from_icon_name("list-add-symbolic");
-	btn_add_rss->set_image_from_icon_name("gtk-index");
+	btn_add_rss->set_image_from_icon_name("folder-remote-symbolic");
 
 	btn_create_torrent->set_image_from_icon_name("text-x-generic");
 
