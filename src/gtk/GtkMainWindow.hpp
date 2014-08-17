@@ -75,4 +75,6 @@ public:
 	Gtk::Button *btn_down        = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
 
+  Gtk::Statusbar *m_status_bar	= Gtk::manage(new Gtk::Statusbar());
+Gtk::Label *m_status_label;
 };
