@@ -123,10 +123,11 @@ void GtkTorrentTreeView::setupColumns()
 		loadColumns();
 	else
 	{
+		append_column(      "Name", m_cols.m_col_name);
 		append_column(         "#", m_cols.m_col_queue);
+
 		append_column(       "Age", m_cols.m_col_age);
 		append_column(       "ETA", m_cols.m_col_eta);
-		append_column(      "Name", m_cols.m_col_name);
 		append_column(      "Seed", m_cols.m_col_seeders);
 		append_column(     "Leech", m_cols.m_col_peers);
 		append_column(  "Up Speed", m_cols.m_col_ul_speed);
