@@ -57,8 +57,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-	int selectedIndex = 0;
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
 	if(selected)
 		set_visible(true);
@@ -68,35 +66,27 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		return;
 	}
 
-	for(unsigned i = 0; i < t.size(); ++i)
-		if(selected == t[i])
-			selectedIndex = i;
+	if(selected->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+		m_progress->setBlocks(selected->getPieces());
 
-	if(t[selectedIndex]->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
-		m_progress->setBlocks(t[selectedIndex]->getPieces());
-
-	m_title->set_text(t[selectedIndex]->getName());
-	m_graph->select(selectedIndex);
+	m_title->set_text(selected->getName());
+	m_graph->select(selected);
 
 	if(previous != selected)
-		m_status_box->update(t[selectedIndex]);
+		m_status_box->update(selected);
 	previous = selected;
 }
 
 void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 {
 	if(!selected) return updateInfo(selected);
-	int selectedIndex = 0;
+	if(selected->getHandle().status().has_metadata)
+		m_progress->setBlocks(selected->getPieces());
+
+	m_status_box->update(selected);
+
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	for(unsigned i = 0; i < t.size(); ++i)
-		if(selected == t[i])
-			selectedIndex = i;
-	if(t[selectedIndex]->getHandle().status().has_metadata)
-		m_progress->setBlocks(t[selectedIndex]->getPieces());
-
-	m_status_box->update(t[selectedIndex]);
-
-	for(unsigned i = 0; i < t.size(); ++i)
-		m_graph->add(i, (double)t[i]->getUploadRate(), (double)t[i]->getDownloadRate());
+	for(auto ptr : t)
+		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
 
 }

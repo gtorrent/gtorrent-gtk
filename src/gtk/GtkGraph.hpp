@@ -9,8 +9,8 @@ public:
 	virtual ~GtkGraph();
 
 	void resize(unsigned size);
-	void add(unsigned index, double upload, double download);
-	void select(unsigned s);
+    void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
+	void select(std::shared_ptr<gt::Torrent> s);
 
 protected:
 
@@ -29,8 +29,8 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	std::vector<std::pair<std::queue<double>, std::queue<double>>> m_history;
-	unsigned m_selected;
+	std::map<std::shared_ptr<gt::Torrent>, std::pair<std::queue<double>, std::queue<double>>> m_history;
+    std::shared_ptr<gt::Torrent> m_selected;
 	unsigned m_maxSize;
 	double max(std::queue<double> q);
 	inline double max(std::queue<double> q1, std::queue<double> q2)
