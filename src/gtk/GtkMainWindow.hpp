@@ -50,6 +50,8 @@ public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
 	Gtk::ScrolledWindow *m_swin;
+	Gtk::ListBox *m_labels;
+
 	GtkMainWindow();
 
 	bool onDestroy(GdkEventAny *event);
@@ -77,4 +79,7 @@ public:
 
   Gtk::Statusbar *m_status_bar	= Gtk::manage(new Gtk::Statusbar());
 Gtk::Label *m_status_label;
+
+Gtk::Table *m_main_table_layout;
+
 };

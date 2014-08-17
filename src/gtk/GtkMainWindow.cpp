@@ -100,6 +100,16 @@ GtkMainWindow::GtkMainWindow() :
 
 	//swin->get_vscrollbar()->hide(); // works, but then you can't use the scrollwheel
 	m_swin->add(*m_treeview);
+
+	//m_main_table_layout = Gtk::manage(new Gtk::Table(2, 2, false));
+	//m_main_table_layout->set_col_spacings(5);
+
+	//m_main_table_layout->attach(*m_labels, 0, 2, 0, 1, Gtk::AttachOptions::SHRINK);
+	//m_main_table_layout->attach(*m_swin, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
+	//m_main_table_layout->attach(*m_infobar, 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
+
+	//panel->add(*m_main_table_layout);
+
 	panel->pack1(*m_swin);
 	panel->pack2(*m_infobar);
 
@@ -191,7 +201,7 @@ GtkMainWindow::GtkMainWindow() :
 	//add(*panel);
 	show_all();
 	//btn_pause->hide();
-	m_infobar->set_visible(false);
+	//m_infobar->set_visible(false);
 
 
 

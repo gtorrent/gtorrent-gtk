@@ -399,10 +399,12 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 
 	if(selected)
-		set_visible(true);
+	{
+		//set_visible(true);
+	}
 	else
 	{
-		set_visible(false);
+		//set_visible(false);
 		return;
 	}
 
@@ -489,8 +491,10 @@ m_log->set_text(getLog());
 
 std::string GtkTorrentInfoBar::getLog()
 {
-	std::ifstream t("gtorrent.log");
+	// TODO: Find a less harmful way to do logging
+	/*std::ifstream t("gtorrent.log");
 	std::stringstream buffer;
 	buffer << t.rdbuf();
-	return buffer.str();
+	return buffer.str();*/
+	return "TODO";
 }
