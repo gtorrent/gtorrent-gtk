@@ -217,8 +217,8 @@ void GtkSettingsDialog::onStatusChanged()
 		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["DownloadingBackGroundColor"]));
 		break;
 	case 4:
-		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedForeGroundColor"]));
-		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedBackGroundColor"]));
+		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedCheckingForeGroundColor"]));
+		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedCheckingBackGroundColor"]));
 		break;
 	case 5:
 		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["PausedForeGroundColor"]));
@@ -235,6 +235,9 @@ void GtkSettingsDialog::onStatusChanged()
 	case 8:
 		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["FinishedForeGroundColor"]));
 		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["FinishedBackGroundColor"]));
+	case 9:
+		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedForeGroundColor"]));
+		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedBackGroundColor"]));
 	}
 }
 
@@ -245,7 +248,6 @@ void GtkSettingsDialog::onForegroundSet()
 	        forebutt->get_rgba().get_red_u()   / 256,
 	        forebutt->get_rgba().get_green_u() / 256,
 	        forebutt->get_rgba().get_blue_u()  / 256);
-	std::cout << colorstring << std::endl;
 	switch(statuscombo->get_active_row_number())
 	{
 	case 0:
@@ -261,7 +263,7 @@ void GtkSettingsDialog::onForegroundSet()
 		gt::Settings::settings["DownloadingForeGroundColor"] = colorstring;
 		break;
 	case 4:
-		gt::Settings::settings["QueuedForeGroundColor"] = colorstring;
+		gt::Settings::settings["QueuedCheckingForeGroundColor"] = colorstring;
 		break;
 	case 5:
 		gt::Settings::settings["PausedForeGroundColor"] = colorstring;
@@ -274,6 +276,9 @@ void GtkSettingsDialog::onForegroundSet()
 		break;
 	case 8:
 		gt::Settings::settings["FinishedForeGroundColor"] = colorstring;
+		break;
+	case 9:
+		gt::Settings::settings["QueuedForeGroundColor"] = colorstring;
 	}
 
 	if(parent != nullptr)
@@ -302,7 +307,7 @@ void GtkSettingsDialog::onBackgroundSet()
 		gt::Settings::settings["DownloadingBackGroundColor"] = colorstring;
 		break;
 	case 4:
-		gt::Settings::settings["QueuedBackGroundColor"     ] = colorstring;
+		gt::Settings::settings["QueuedCheckingBackGroundColor"] = colorstring;
 		break;
 	case 5:
 		gt::Settings::settings["PausedBackGroundColor"     ] = colorstring;
@@ -315,6 +320,9 @@ void GtkSettingsDialog::onBackgroundSet()
 		break;
 	case 8:
 		gt::Settings::settings["FinishedBackGroundColor"   ] = colorstring;
+		break;
+	case 9:
+		gt::Settings::settings["QueuedBackGroundColor"] = colorstring;
 	}
 
 	if(parent != nullptr)

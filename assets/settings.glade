@@ -118,11 +118,12 @@
                                       <item translatable="yes">Allocating</item>
                                       <item translatable="yes">Seeding</item>
                                       <item translatable="yes">Downloading</item>
-                                      <item translatable="yes">Queued</item>
+                                      <item translatable="yes">Queued for Checking</item>
                                       <item translatable="yes">Paused</item>
                                       <item translatable="yes">Downloading metadata</item>
                                       <item translatable="yes">Resuming</item>
                                       <item translatable="yes">Finished</item>
+                                      <item translatable="yes">Queued</item>
                                     </items>
                                   </object>
                                   <packing>
