@@ -454,15 +454,16 @@ void GtkTorrentTreeView::sequentialChange_onRealize()
 
 void GtkTorrentTreeView::reloadColors()
 {
-	m_colors["Paused"]                  = std::pair<std::string, std::string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
-	m_colors["Queued for checking"]     = std::pair<std::string, std::string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
-	m_colors["Downloading metadata..."] = std::pair<std::string, std::string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
-	m_colors["Finished"]                = std::pair<std::string, std::string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
-	m_colors["Allocating..."]           = std::pair<std::string, std::string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
-	m_colors["Resuming..."]             = std::pair<std::string, std::string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
-	m_colors["Checking..."]             = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
-	m_colors["Seeding"]                 = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
-	m_colors["Downloading"]             = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
+	m_colors["Paused"                 ] = std::pair<std::string, std::string>(gt::Settings::settings["PausedForeGroundColor"        ], gt::Settings::settings["PausedBackGroundColor"        ]);
+	m_colors["Queued for checking"    ] = std::pair<std::string, std::string>(gt::Settings::settings["QueuedCheckingForeGroundColor"], gt::Settings::settings["QueuedcheckingBackGroundColor"]);
+	m_colors["Queued"                 ] = std::pair<std::string, std::string>(gt::Settings::settings["QueuedForeGroundColor"        ], gt::Settings::settings["QueuedBackGroundColor"        ]);
+	m_colors["Downloading metadata..."] = std::pair<std::string, std::string>(gt::Settings::settings["MetadataForeGroundColor"      ], gt::Settings::settings["MetadataBackGroundColor"      ]);
+	m_colors["Finished"               ] = std::pair<std::string, std::string>(gt::Settings::settings["FinishedForeGroundColor"      ], gt::Settings::settings["FinishedBackGroundColor"      ]);
+	m_colors["Allocating..."          ] = std::pair<std::string, std::string>(gt::Settings::settings["AllocatingForeGroundColor"    ], gt::Settings::settings["AllocatingBackGroundColor"    ]);
+	m_colors["Resuming..."            ] = std::pair<std::string, std::string>(gt::Settings::settings["ResumingForeGroundColor"      ], gt::Settings::settings["ResumingBackGroundColor"      ]);
+	m_colors["Checking..."            ] = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"      ], gt::Settings::settings["CheckingBackGroundColor"      ]);
+	m_colors["Seeding"                ] = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"       ], gt::Settings::settings["SeedingBackGroundColor"       ]);
+	m_colors["Downloading"            ] = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"   ], gt::Settings::settings["DownloadingBackGroundColor"   ]);
 
 }
 
