@@ -9,5 +9,6 @@ protected:
 
 public:
 	GuiBase();
+	static void loadDefaultSettings();
 };
 

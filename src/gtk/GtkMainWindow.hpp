@@ -39,10 +39,7 @@ public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
 	Gtk::ScrolledWindow *m_swin;
-	GtkMainWindow();
 
-	bool onDestroy(GdkEventAny *event);
-	bool onSecTick();
 
 	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
 	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
@@ -56,4 +53,8 @@ public:
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
 
+
+	GtkMainWindow();
+	bool onDestroy(GdkEventAny *event);
+	bool onSecTick();
 };
