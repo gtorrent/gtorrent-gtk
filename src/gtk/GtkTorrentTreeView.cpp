@@ -241,15 +241,20 @@ void GtkTorrentTreeView::updateCells()
 /**
 * Gets the selected cells in the torrent tree view.
 */
-std::vector<unsigned> GtkTorrentTreeView::selectedIndices()
+std::vector<std::shared_ptr<gt::Torrent>> GtkTorrentTreeView::selectedTorrents()
 {
-	Glib::RefPtr<Gtk::TreeSelection> sel = this->get_selection();
-	sel->set_mode(Gtk::SelectionMode::SELECTION_MULTIPLE);
-	std::vector<Gtk::TreeModel::Path> path = sel->get_selected_rows();
-	std::vector<unsigned> indices;
-	for (auto val : path)
-		indices.push_back(val[0]); // we only get the first index because our tree is 1 node deep
-	return indices;
+	std::vector<std::shared_ptr<gt::Torrent>> torrents;
+
+	Glib::RefPtr<Gtk::TreeSelection> sel = get_selection();
+	std::vector<Gtk::TreeModel::Path> paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(get_model(), path));
+
+	for (auto i : rows)
+		torrents.push_back((*m_liststore->get_iter(i.get_path()))[m_cols.m_col_torrent]);
+	return torrents;
 }
 
 /**
@@ -257,11 +262,10 @@ std::vector<unsigned> GtkTorrentTreeView::selectedIndices()
 */
 std::shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	if(selectedIndices().size() < 1)
+	if(selectedTorrents().empty())
 		return nullptr;
 	else
-		return t[selectedIndices()[0]];
+		return selectedTorrents()[0];
 }
 
 /**
@@ -269,10 +273,8 @@ std::shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	for (auto i : selectedIndices())
-		t[i]->setPaused(isPaused);// the pause button switches the status
-
+	for (auto i : selectedTorrents())
+		i->setPaused(isPaused);// the pause button switches the status
 }
 
 /**
@@ -355,10 +357,8 @@ void GtkTorrentTreeView::propertyView_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
-	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-
-	for (auto i : selectedIndices())
-		t[i]->setSequentialDownload(rcmItemSeq->get_active());
+	for (auto i : selectedTorrents())
+		i->setSequentialDownload(rcmItemSeq->get_active());
 }
 
 /**
@@ -366,13 +366,11 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
-	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-
-	if(selectedIndices().size() > 0)
+	if(!selectedTorrents().empty())
 	{
-		bool firstIsSeq = t[selectedIndices()[0]]->SequentialDownloadEnabled();
-		for (auto i : selectedIndices())
-			if(t[i]->SequentialDownloadEnabled() != firstIsSeq)
+		bool firstIsSeq = selectedTorrents()[0]->SequentialDownloadEnabled();
+		for (auto i : selectedTorrents())
+			if(i->SequentialDownloadEnabled() != firstIsSeq)
 			{
 				rcmItemSeq->set_inconsistent();
 				return;
@@ -395,7 +393,6 @@ void GtkTorrentTreeView::reloadColors()
 	m_colors["Checking..."            ] = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"      ], gt::Settings::settings["CheckingBackGroundColor"      ]);
 	m_colors["Seeding"                ] = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"       ], gt::Settings::settings["SeedingBackGroundColor"       ]);
 	m_colors["Downloading"            ] = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"   ], gt::Settings::settings["DownloadingBackGroundColor"   ]);
-
 }
 
 void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
@@ -403,17 +400,17 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	char pausedTorrents = 0, startedTorrents = 0;
 
-	if(selectedIndices().empty())
+	if(selectedTorrents().empty())
 	{
 		m_parent->btn_pause ->hide();
 		m_parent->btn_resume->hide();
 		return;
 	}
 
-	for (auto i : selectedIndices())
+	for (auto i : selectedTorrents())
 	{
-		pausedTorrents  +=  t[i]->isPaused();
-		startedTorrents += !t[i]->isPaused();
+		pausedTorrents  +=  i->isPaused();
+		startedTorrents += !i->isPaused();
 		if(pausedTorrents && startedTorrents) break;
 	}
 
