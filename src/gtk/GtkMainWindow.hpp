@@ -32,6 +32,7 @@ class GtkMainWindow : public Gtk::Window
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
+	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:

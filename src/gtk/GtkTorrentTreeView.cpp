@@ -28,8 +28,6 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar 
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
-	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
-		addCell(tor);
 }
 
 /**

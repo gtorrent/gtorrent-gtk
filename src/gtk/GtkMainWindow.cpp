@@ -6,6 +6,8 @@
 #include <boost/algorithm/string.hpp>
 #include <giomm.h>
 #include <glibmm.h>
+#include <libnotifymm.h>
+
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/main.h>
@@ -26,6 +28,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
 	//TODO:This needs to be refactored
+	Notify::init("gTorrent");
 	set_position(Gtk::WIN_POS_CENTER);
 	set_default_size(800, 500);
 	magtxt->set_visible();
@@ -101,16 +104,20 @@ GtkMainWindow::GtkMainWindow() :
 
 	// for some reason, the treeview start with its first element selected
 	m_treeview->get_selection()->unselect_all();
-
-
-	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
-	        gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
+	{
+		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		m_treeview->addCell(tor);
+	}
+	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
+	if (gt::Settings::settings["FileAssociation"] == "" ||
+		gt::Settings::settings["FileAssociation"] == std::to_string(-1))
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
 		if(code != -1)
 			gt::Platform::associate(code & 2, code & 1);
-		gt::Settings::setOption("FileAssociation", code);
+		gt::Settings::settings["FileAssociation"] =  std::to_string(code);
 		delete dialog;
 	}
 
@@ -139,7 +146,10 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 		{
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
 			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 				m_treeview->addCell(t);
+			}
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 	}
@@ -154,7 +164,10 @@ bool GtkMainWindow::onSecTick()
 	m_infobar->updateState(m_treeview->getFirstSelected());
 	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
+	{
+		t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(t);
+	}
 	m_swin->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
@@ -185,11 +198,28 @@ void GtkMainWindow::onAddBtnClicked()
 		{
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 				m_treeview->addCell(t);
+			}
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 		break;
 	}
+}
+
+void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
+{
+	Notify::Notification notif("sdf", "sdfsdf", "dialog-information");
+	int newstate = t->getState();
+	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
+		notif.update(t->getName(), t->getName() + " has finished downloading.");
+	else if(newstate == libtorrent::torrent_status::downloading  && 
+			oldstate == libtorrent::torrent_status::downloading_metadata)
+		notif.update(t->getName(), t->getName() + " has started downloading.");
+	else 
+		return;
+	notif.show();
 }
 
 /**
@@ -208,7 +238,10 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
+		{
+			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview->addCell(t);
+		}
 		magtxt->set_text("");
 	}
 }
