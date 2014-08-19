@@ -3,7 +3,7 @@
 #include <gtorrent/Log.hpp>
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
-
+#include <gtkmm/treerowreference.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/checkmenuitem.h>
 #include <gtkmm/menuitem.h>
@@ -218,6 +218,8 @@ void GtkTorrentTreeView::updateCells()
 	for (auto & c : m_liststore->children())
 	{
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
+		std::shared_ptr<gt::Torrent> a = c[m_cols.m_col_torrent];
+		assert(t == a);
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_queue]      = i++;
@@ -233,7 +235,6 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
-		c[m_cols.m_col_torrent]    = t;
 	}
 }
 
@@ -279,11 +280,18 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 */
 void GtkTorrentTreeView::removeSelected()
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	for (auto i : selectedIndices())
+	Glib::RefPtr<Gtk::TreeSelection> sel = get_selection();
+	std::vector<Gtk::TreeModel::Path> paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(get_model(), path));
+
+	for (auto i : rows)
 	{
-		Application::getSingleton()->getCore()->removeTorrent(t[i]);
-		removeCell(i);
+		Gtk::TreeModel::iterator treeiter = m_liststore->get_iter(i.get_path());
+		Application::getSingleton()->getCore()->removeTorrent((*treeiter)[m_cols.m_col_torrent]);
+		m_liststore->erase(treeiter);
 	}
 	m_parent->onSecTick();
 	m_infobar->updateInfo(getFirstSelected());
