@@ -44,14 +44,12 @@ void GuiBase::loadDefaultSettings()
 	gt::Settings::settings["GraphUploadFillColor"  ] = "red";
 	gt::Settings::settings["GraphDownloadFillColor"] = "green";
 
-	gt::Settings::settings["GraphGridColor"         ] = "grey"; //deprecated
-
 	gt::Settings::settings["GraphHLineColor"         ] = "grey";
 	gt::Settings::settings["GraphVLineColor"         ] = "grey";
 	gt::Settings::settings["GraphBorderColor"        ] = "grey";
 	gt::Settings::settings["GraphGridColor"          ] = "grey";
 
 	gt::Settings::settings["ShowLegend"             ] = "Yes";
-	gt::Settings::settings["GraphRefreshRate"       ] = "1"; // number in hertz, higher = more cpu usage, lower = less "responsive"
+	gt::Settings::settings["EnableNotification"     ] = "Yes";
 
 }

@@ -199,7 +199,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	//Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
-
+	std::cout << gt::Settings::settings["GraphUploadCurveColor"] << std::endl; 
 	std::string label;
 	if(gt::Settings::settings["ShowLegend"] != "No")
 	{
@@ -263,44 +263,6 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->text_path("0B/s");
 	cr->fill();
 
-/*
-	if(order > 100)
-		label = std::to_string(maxValue / (1024 * 1000)) + "MB/s";
-	else
-		label = std::to_string(maxValue / 1024) + "KB/s";
-
-	cr->move_to(0, 10);
-	cr->text_path(label);
-	cr->fill();
-	cr->stroke();
-
-	cr->move_to(0, height / 2);
-	cr->line_to(width, height / 2);
-	cr->stroke();
-
-	if(order > 100)
-		label = std::to_string(maxValue / (2 * 1024 * 1000)) + "MB/s";
-	else
-		label = std::to_string(maxValue / (2 * 1024)) + "KB/s";
-	cr->move_to(0, height / 2 + 10);
-	cr->text_path(label);
-	cr->fill();
-	cr->stroke();
-
-	cr->move_to(0, height);
-	cr->line_to(width, height);
-	cr->stroke();
-
-	if(order > 100)
-		label = "0MB/s";
-	else
-		label = "0KB/s";
-	cr->move_to(0, height - 5);
-	cr->text_path(label);
-	cr->fill();
-	cr->stroke();
-
-*/
 	return true;
 }
 
@@ -326,11 +288,11 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 		oldy = y;
 		x += increment;
 	}
-		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]));
 
 	if(gt::Settings::settings["GraphStyle"] == "Fill")
 	{
 		cr->stroke_preserve();
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]));
 		cr->line_to(x - increment, height);
 		cr->line_to(0,height);
 		auto k = Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]);
