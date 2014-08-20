@@ -6,7 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <giomm.h>
 #include <glibmm.h>
-#include <libnotifymm.h>
+#include <libnotify/notify.h>
 
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
@@ -28,7 +28,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
 	//TODO:This needs to be refactored
-	Notify::init("gTorrent");
+	notify_init ("Hello world!");
 	set_position(Gtk::WIN_POS_CENTER);
 	set_default_size(800, 500);
 	magtxt->set_visible();
@@ -211,16 +211,21 @@ void GtkMainWindow::onAddBtnClicked()
 
 void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
 {
-	Notify::Notification notif("sdf", "sdfsdf", "dialog-information");
+	NotifyNotification *Hello;
+
 	int newstate = t->getState();
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
-		notif.update(t->getName(), t->getName() + " has finished downloading.");
+		Hello = notify_notification_new (t->getName().c_str(), string().c_str(t->getName() + " has finished downloading."), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  && 
 			oldstate == libtorrent::torrent_status::downloading_metadata)
-		notif.update(t->getName(), t->getName() + " has started downloading.");
+		Hello = notify_notification_new (t->getName().c_str(), string().c_str(t->getName() + " has started downloading."), "dialog-information");
 	else 
-		return;
-	notif.show();
+		goto fail; //:^)
+
+	notify_notification_show (Hello, NULL);
+fail:
+	g_object_unref(G_OBJECT(Hello));
+	notify_uninit();
 }
 
 /**
