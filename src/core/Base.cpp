@@ -52,6 +52,6 @@ void GuiBase::loadDefaultSettings()
 	gt::Settings::settings["GraphGridColor"          ] = "grey";
 
 	gt::Settings::settings["ShowLegend"             ] = "Yes";
-	gt::Settings::settings["GraphRefreshRate"       ] = "#1"; // number in hertz, higher = more cpu usage, lower = less "responsive"
+	gt::Settings::settings["GraphRefreshRate"       ] = "1"; // number in hertz, higher = more cpu usage, lower = less "responsive"
 
 }

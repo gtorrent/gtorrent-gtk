@@ -12,11 +12,26 @@
  */
 GtkGraph::GtkGraph(unsigned size) :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
-	Glib::ObjectBase("BlockBar"),
-	Gtk::Widget(),
+	Glib::ObjectBase("DrawingArea"),
+	Gtk::DrawingArea(),
 	m_maxSize(size)
 {
 	set_has_window(true);
+}
+bool upl = true;
+
+std::string speedstr(int64_t file_size)
+{
+	std::ostringstream fss;
+
+	if (file_size <= 0)
+		return std::string();
+
+	fss << std::setprecision(3);
+	std::string units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+	int e = ::floor(::log(file_size) / ::log(1024));
+	fss << (file_size / ::pow(1024, e)) << " " << units[e];
+	return fss.str() + "/s";
 }
 
 GtkGraph::~GtkGraph()
@@ -162,11 +177,11 @@ void GtkGraph::on_unrealize()
  */
 bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
+	cr->set_line_width(1.0);
 	const double width = (double)get_allocation().get_width();
 	const double height = (double)get_allocation().get_height();
-
+	std::vector <double> dash = { 5 };
 	Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
-	cr->fill();
 
 	double increment = width / 60;
 	unsigned order;
@@ -192,11 +207,13 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->move_to(10, height / 2 - 15);
 		cr->text_path(label);
 		cr->fill();
-		cr->stroke();
 	}
-
+	upl = true;
+	if(gt::Settings::settings["GraphUploadCurveStyle"] == "Dash")
+		cr->set_dash(dash, 0);
 	draw(m_history[m_selected].first, height, increment, maxValue, cr);
-
+	cr->unset_dash();
+	upl = false;
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
 
 	if(gt::Settings::settings["ShowLegend"] != "No")
@@ -208,15 +225,45 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 	}
 
+	if(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash")
+		cr->set_dash(dash, 0);
 	draw(m_history[m_selected].second, height, increment, maxValue, cr);
+	cr->unset_dash();
 
 	// draw grid
-	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphGridColor"]));
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
 
-	cr->move_to(0, 0);
-	cr->line_to(width, 0);
+	cr->move_to(0, height);
+	cr->line_to(width, height);
+	cr->move_to(0, height);
+	cr->line_to(0, 0);
+
+	cr->move_to(width - 40, 0);
+	cr->line_to(width - 40, height);
 	cr->stroke();
 
+	int lValue = maxValue + 5 - (maxValue % 5);
+	for(int i = 1; i <= 6; ++i)
+	{
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
+		std::string label = speedstr(lValue - ((lValue / 5) * (i - 1)));
+		cr->move_to(width - 37, 10 + ((height / 5) * (i - 1)));
+		cr->text_path(label);
+		cr->fill();
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
+		cr->set_line_width(0.6);
+		cr->move_to(0, 13 + ((height / 5) * (i - 1)));
+		cr->line_to(width - 35, 13 + ((height / 5) * (i - 1)));
+		cr->stroke();
+		cr->set_line_width(1.0);
+	}
+
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
+	cr->move_to(width - 37, height - 5);
+	cr->text_path("0B/s");
+	cr->fill();
+
+/*
 	if(order > 100)
 		label = std::to_string(maxValue / (1024 * 1000)) + "MB/s";
 	else
@@ -253,9 +300,10 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->fill();
 	cr->stroke();
 
-
+*/
 	return true;
 }
+
 /**
  * Draws a curve for the speed graph.
  */
@@ -267,21 +315,30 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 	oldy = height + (q.front() * height / maxValue);
 	cr->move_to(0, oldy);
 	q.pop();
-	increment += 2 * increment / 60; //:^)
+	increment += 2 * increment / 60.0 - (double(40) / 60); //:^)
 
 	double x = increment * (60 - q.size());
 	while(q.size() >= 2)
 	{
 		double y = height - (q.front() * height / maxValue);
-		cr->curve_to(x - (increment / 2), oldy, x - (increment / 2), y, x, y); // I'm 100% sure I tried this and it didn't work
+		cr->curve_to(x - (increment / 2), oldy, x - (increment / 2), y, x, y);
 		q.pop();
 		oldy = y;
 		x += increment;
 	}
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]));
 
-	cr->stroke();
+	if(gt::Settings::settings["GraphStyle"] == "Fill")
+	{
+		cr->stroke_preserve();
+		cr->line_to(x - increment, height);
+		cr->line_to(0,height);
+		auto k = Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]);
+		std::cout << Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]).to_string() << std::endl;
+		cr->fill();
+	}
+	else cr->stroke();
 }
-
 /**
  * Resizes the history of the graph widget.
  */

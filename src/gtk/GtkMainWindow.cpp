@@ -41,13 +41,14 @@ GtkMainWindow::GtkMainWindow() :
 
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
+	m_infobar->set_margin_left(5);
+	m_infobar->set_margin_right(5);
 
-	//swin->get_vscrollbar()->hide(); // works, but then you can't use the scrollwheel
 	m_swin->add(*m_treeview);
 	panel->pack1(*m_swin);
 	panel->pack2(*m_infobar);
 
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
+	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
