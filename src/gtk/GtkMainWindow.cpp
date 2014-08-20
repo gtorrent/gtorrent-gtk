@@ -211,21 +211,19 @@ void GtkMainWindow::onAddBtnClicked()
 
 void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
 {
-	NotifyNotification *Hello;
+	NotifyNotification *Hello = nullptr;
 
 	int newstate = t->getState();
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
-		Hello = notify_notification_new (t->getName().c_str(), string().c_str(t->getName() + " has finished downloading."), "dialog-information");
+		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  && 
 			oldstate == libtorrent::torrent_status::downloading_metadata)
-		Hello = notify_notification_new (t->getName().c_str(), string().c_str(t->getName() + " has started downloading."), "dialog-information");
+		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has started downloading.").c_str(), "dialog-information");
 	else 
-		goto fail; //:^)
+		return; //:^)
 
 	notify_notification_show (Hello, NULL);
-fail:
 	g_object_unref(G_OBJECT(Hello));
-	notify_uninit();
 }
 
 /**
@@ -292,6 +290,7 @@ void GtkMainWindow::onPropertiesBtnClicked()
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_treeview->saveColumns();
+	notify_uninit();
 	m_core->shutdown();
 	return false;
 }

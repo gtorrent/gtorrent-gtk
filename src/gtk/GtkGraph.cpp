@@ -334,7 +334,7 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 		cr->line_to(x - increment, height);
 		cr->line_to(0,height);
 		auto k = Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]);
-		std::cout << Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]).to_string() << std::endl;
+		cr->set_source_rgba(k.get_red(), k.get_green(), k.get_blue(), k.get_alpha() * 0.5);
 		cr->fill();
 	}
 	else cr->stroke();
