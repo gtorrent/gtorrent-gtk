@@ -199,7 +199,6 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	//Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_color());
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"]));
-	std::cout << gt::Settings::settings["GraphUploadCurveColor"] << std::endl; 
 	std::string label;
 	if(gt::Settings::settings["ShowLegend"] != "No")
 	{

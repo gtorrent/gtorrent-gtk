@@ -57,7 +57,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-
 	if(selected)
 		set_visible(true);
 	else
@@ -71,7 +70,6 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 
 	m_title->set_text(selected->getName());
 	m_graph->select(selected);
-
 	if(previous != selected)
 		m_status_box->update(selected);
 	previous = selected;
