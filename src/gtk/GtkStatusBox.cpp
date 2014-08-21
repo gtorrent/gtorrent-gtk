@@ -121,8 +121,7 @@ void GtkStatusBox::update(std::shared_ptr<gt::Torrent> selected)
 	m_tracker_url   .set_text(selected->getCurrentTrackerURL());
 	m_upload_speed  .set_text(selected->getTextUploadRate());
 	m_uploaded      .set_text(selected->getTextTotalUploaded());
-        m_downloaded    .set_text(selected->getTextTotalDownloaded());
-
+	m_downloaded    .set_text(selected->getTextTotalDownloaded());
 	m_down_limit    .set_text("");
 	m_up_limit      .set_text("");
 	m_tracker_status.set_text("");
