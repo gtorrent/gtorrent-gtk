@@ -13,6 +13,7 @@ namespace Gtk
 class GtkBlockBar;
 class GtkGraph;
 class GtkStatusBox;
+class GtkFileTreeView;
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
@@ -23,10 +24,10 @@ private:
 	Gtk::Notebook *m_notebook;
 	Gtk::Box      *m_stat_box;
 	Gtk::Box      *m_piece_box;
+
 	Gtk::ScrolledWindow *m_scroll_box;
 	GtkStatusBox        *m_status_box;
-
-
+	GtkFileTreeView *m_fileview;
 
 public:
 	GtkTorrentInfoBar();

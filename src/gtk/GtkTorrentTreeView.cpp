@@ -198,7 +198,6 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 	row[m_cols.m_col_torrent]    =  t;
-
 }
 
 /**
