@@ -1,13 +1,15 @@
 #pragma once
+
+#include <gtkmm/drawingarea.h>
 #include <queue>
 #include <cmath>
 
-class GtkGraph : public Gtk::Widget
+class GtkGraph : public Gtk::DrawingArea
 {
 public:
 	GtkGraph(unsigned size = 61);
 	virtual ~GtkGraph();
-
+	int xoffset = 0;
 	void resize(unsigned size);
 	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);

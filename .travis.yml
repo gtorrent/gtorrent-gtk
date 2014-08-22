@@ -34,7 +34,7 @@ before_install:
 
 install:
         # Install dependancies
-        - sudo apt-get install -f -y --force-yes libgtkmm-3.0-dev libglibmm-2.4-dev libtorrent-rasterbar-dev libboost-all-dev  
+        - sudo apt-get install -f -y --force-yes libgtkmm-3.0-dev libglibmm-2.4-dev libnotify-dev libboost-all-dev  
         # Update g++ to 4.8
         - sudo apt-get install -f -y g++
         - sudo apt-get install -f -y clang
