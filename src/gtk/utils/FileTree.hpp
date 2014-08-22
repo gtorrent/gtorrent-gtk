@@ -24,7 +24,6 @@ class FileTree
 
 	bool                             is_dir;
 	int                              index;
-	int                              level;
 	FileTree                        *parent = nullptr;
 	libtorrent::file_storage         fs;
 	std::map<std::string, FileTree*> children;
