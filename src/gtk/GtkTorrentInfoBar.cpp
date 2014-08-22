@@ -25,8 +25,11 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_notebook = Gtk::manage(new Gtk::Notebook());
 	m_stat_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_fileview = Gtk::manage(new GtkFileTreeView());
 	m_title = Gtk::manage(new Gtk::Label());
+
+        m_filebox = Gtk::manage(new Gtk::ScrolledWindow());
+	m_fileview = Gtk::manage(new GtkFileTreeView());
+        m_filebox->add(*m_fileview);
 
 	this->pack_start(*m_title, Gtk::PACK_SHRINK);
 
@@ -48,7 +51,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_notebook->append_page(*m_graph, "Info Graph");
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 
-	m_notebook->append_page(*m_fileview, "Files");
+	m_notebook->append_page(*m_filebox, "Files");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
 
@@ -61,7 +64,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-
 	if(selected)
 		set_visible(true);
 	else

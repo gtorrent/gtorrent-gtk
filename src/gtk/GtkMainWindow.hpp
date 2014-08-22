@@ -32,16 +32,14 @@ class GtkMainWindow : public Gtk::Window
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
+	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
 	Gtk::ScrolledWindow *m_swin;
-	GtkMainWindow();
 
-	bool onDestroy(GdkEventAny *event);
-	bool onSecTick();
 
 	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
 	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
@@ -55,4 +53,8 @@ public:
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
 
+
+	GtkMainWindow();
+	bool onDestroy(GdkEventAny *event);
+	bool onSecTick();
 };

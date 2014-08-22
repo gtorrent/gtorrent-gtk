@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-//#include <gtkmm.h>
 
 namespace Gtk
 {
@@ -14,22 +13,24 @@ namespace Gtk
 	class Entry;
 	class SpinButton;
 	class Application;
+	class CheckButton;
 }
 
 class GtkMainWindow;
 
 class GtkSettingsDialog
 {
-	Gtk::Dialog *dial = nullptr;
+	Gtk::Dialog   *dial   = nullptr;
 	GtkMainWindow *parent = nullptr;
 	std::map<std::string, std::string> backup;
 
-	Gtk::SpinButton        *uplimit,        *downlimit,  *dhtlimit,    *cachesize,     *cacheexpiry, *cachechunk, *defaultreci, *increci, *decreci, *activdspin, *activsspin;
-	Gtk::Entry             *useragentbox,   *hostbox,    *portbox,     *userbox,       *passbox,     *savepathbox;
-	Gtk::ColorButton       *forebutt,       *backbutt,   *gridbutt,    *downcolorbutt, *upcolorbutt;
-	Gtk::ComboBoxText      *seedchokecombo, *chokecombo, *statuscombo, *overridecombo;
-	Gtk::Switch            *showtoggle,     *anontoggle, *suggesttoggle;
+	Gtk::SpinButton        *uplimit,        *downlimit,  *dhtlimit,      *cachesize,     *cacheexpiry, *cachechunk,     *defaultreci, *increci, *decreci, *activdspin, *activsspin;
+	Gtk::Entry             *useragentbox,   *hostbox,    *portbox,       *userbox,       *passbox,     *savepathbox;
+	Gtk::ColorButton       *forebutt,       *backbutt,   *gridbutt,      *downcolorbutt, *upcolorbutt, *dcurvefillbutt, *ucurvefillbutt;
+	Gtk::Switch            *showtoggle,     *anontoggle, *suggesttoggle, *filltoggle,    *notifytoggle;
+	Gtk::ComboBoxText      *seedchokecombo, *chokecombo, *statuscombo,   *overridecombo;
 	Gtk::Button            *okbutt,         *notokbutt;
+	Gtk::CheckButton       *ddashcheck,     *udashcheck;
 	Gtk::FileChooserButton *filebutt;
 
 public:
@@ -51,11 +52,13 @@ public:
 	void onIncreciChanged    ();
 	void onUpLimitChanged    ();
 	void onDecreciChanged    ();
+	void onUpFillColorSet    ();
 	void onOverrideChanged   ();
 	void onDHTLimitChanged   ();
 	void onCacheSizeChanged  ();
 	void onSeedChokeChanged  ();
 	void onDownLimitChanged  ();
+	void onDownFillColorSet  ();
 	void onCacheChunkChanged ();
 	void onCacheExpiryChanged();
 	void onDefaultReciChanged();
