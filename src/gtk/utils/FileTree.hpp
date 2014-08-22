@@ -22,6 +22,7 @@ class FileTree
 	std::string fullname();
 	void add(std::string &str);
 
+	bool                             is_dir;
 	int                              index;
 	int                              level;
 	FileTree                        *parent = nullptr;

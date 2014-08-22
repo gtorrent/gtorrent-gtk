@@ -23,6 +23,9 @@ public:
 			add(m_col_icon);
 	}
 
+        /* Test column */
+        Gtk::TreeModelColumn<int> m_col_index;
+
 	/* Shown column */
 	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
 
