@@ -1,5 +1,5 @@
-#include<gtorrent/Settings.hpp>
-#include<gtorrent/Platform.hpp>
+#include <vector>
+
 #include <gtkmm/icontheme.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/checkmenuitem.h>
@@ -8,6 +8,11 @@
 #include <gtkmm/separatormenuitem.h>
 #include <giomm/fileinfo.h>
 #include <giomm/file.h>
+
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Torrent.hpp>
+
 #include "../Application.hpp"
 #include "GtkFileTreeView.hpp"
 
@@ -64,6 +69,15 @@ void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, 
 // Seems to work with torrent that are 1 or 2 node deep, but it should require further testing.
 void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 {
+        /* Generate file_progress() vector
+         * TODO It's hackish and a better idea might be
+         * to implement this directly somehow into FileTree
+         */
+        std::vector<libtorrent::size_type> progress_all;
+        ft.t->getHandle().file_progress(progress_all, 1);
+        
+        std::cout << "Length: " << progress_all.size() << std::endl;
+        
 	// TODO: size column shall be in the format "x of y" where x is size of block*downloaded block and y is size of block*number of block in file
 	if(ft.children.size() == 0)
 	{
@@ -97,12 +111,13 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		childr[m_cols.m_col_name] = ft.filename;
 		childr[m_cols.m_col_size] = getFileSizeString(totalSize);
 		childr[m_cols.m_col_priority] = prioStr[priority];
-		childr[m_cols.m_col_percent] = int(progress * 100);
+		childr[m_cols.m_col_percent] = int(progress_all[ft.index] * 100 / ft.t->getInfo()->files().file_size(ft.index));
 		childr[m_cols.m_col_percent_text] = std::to_string(childr[m_cols.m_col_percent]) + '%';
 		childr[m_cols.m_col_activated] = state == 1;
 		childr[m_cols.m_col_inconsistent] = state == 2;
 		Gtk::IconInfo iconInfo = iconTheme->lookup_icon("folder", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 		childr[m_cols.m_col_icon] = iconInfo.load_icon();
+
 		populateTree(*i.second, &childr);
 	}
 }
