@@ -27,6 +27,7 @@ private:
 
 	Gtk::ScrolledWindow *m_scroll_box;
 	GtkStatusBox        *m_status_box;
+	Gtk::ScrolledWindow *m_filebox;
 	GtkFileTreeView *m_fileview;
 
 public:
