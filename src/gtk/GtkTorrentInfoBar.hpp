@@ -14,7 +14,6 @@ namespace Gtk
 
 class GtkBlockBar;
 class GtkGraph;
-class GtkStatusBox;
 class GtkFileTreeView;
 class GtkGeneralBox;
 

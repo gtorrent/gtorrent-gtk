@@ -31,7 +31,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkGraph.cpp
 	gtk/GtkSettingsDialog.cpp
 	gtk/GtkFileTreeView.cpp
-    gtk/utils/FileTree.cpp
+  gtk/utils/FileTree.cpp
   gtk/GtkGeneralBox.cpp
 	gtk/GtkPeersBox.cpp
 	gtk/GtkPiecesBox.cpp
@@ -49,7 +49,6 @@ TARGET_LINK_LIBRARIES ( gtorrent-gtk
 	${LIBGLIBMM_LIBRARIES}
 	${LIBNOTIFY_LIBRARIES}
 	)
-
 
 ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
 

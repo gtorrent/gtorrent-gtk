@@ -11,11 +11,8 @@
 #include "../Application.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
-
 #include "GtkFileTreeView.hpp"
-
 #include "GtkGeneralBox.hpp"
-
 
 /**
 * Sets up the torrent info bar.
