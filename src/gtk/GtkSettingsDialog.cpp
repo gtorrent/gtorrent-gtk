@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/colorbutton.h>
 #include <gtkmm/spinbutton.h>
@@ -35,6 +36,9 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(     "showtoggle",     showtoggle);
 	builder->get_widget(     "anontoggle",     anontoggle);
 	builder->get_widget(     "chokecombo",     chokecombo);
+	builder->get_widget(     "ddashcheck",     ddashcheck);
+	builder->get_widget(     "udashcheck",     udashcheck);
+	builder->get_widget(     "filltoggle",     filltoggle);
 	builder->get_widget(    "uplimitspin",        uplimit);
 	builder->get_widget(    "increcispin",        increci);
 	builder->get_widget(    "decrecispin",        decreci);
@@ -44,6 +48,7 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(    "statuscombo",    statuscombo);
 	builder->get_widget(   "dhtlimitspin",       dhtlimit);
 	builder->get_widget(   "useragentbox",   useragentbox);
+	builder->get_widget(   "notifyswitch",   notifytoggle);
 	builder->get_widget(  "gridcolorbutt",       gridbutt);
 	builder->get_widget(  "downlimitspin",      downlimit);
 	builder->get_widget(  "cachesizespin",      cachesize);
@@ -51,6 +56,8 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(  "suggesttoggle",  suggesttoggle);
 	builder->get_widget(  "overridecombo",  overridecombo);
 	builder->get_widget( "seedchokecombo", seedchokecombo);
+	builder->get_widget( "dcurvefillbutt", dcurvefillbutt);
+	builder->get_widget("ucurvefillbutt",  ucurvefillbutt);
 	builder->get_widget("filechooserbutt",       filebutt);
 	builder->get_widget("cachechunksspin",     cachechunk);
 	builder->get_widget("cacheexpiryspin",    cacheexpiry);
@@ -83,45 +90,54 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	decreci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["DecreaseReciprocationRate"]), 0,        100, 10, 10, 10);
 	increci    ->get_adjustment()->configure(std::stoi(gt::Settings::settings["IncreaseReciprocationRate"]), 0,        100, 10, 10, 10);
 
-	okbutt       ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOkClicked         ));
-	notokbutt    ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onnotOkClicked      ));
-	statuscombo  ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onStatusChanged     ));
-	chokecombo   ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onChokeChanged      ));
-	overridecombo->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOverrideChanged   ));
-	filebutt     ->signal_file_set     ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onFilebuttSet       ));
-	forebutt     ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onForegroundSet     ));
-	backbutt     ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onBackgroundSet     ));
-	downcolorbutt->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownColorSet      ));
-	upcolorbutt  ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpColorSet        ));
-	gridbutt     ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onGridColorSet      ));
-	uplimit      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpLimitChanged    ));
-	increci      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onIncreciChanged    ));
-	decreci      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDecreciChanged    ));
-	dhtlimit     ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDHTLimitChanged   ));
-	downlimit    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownLimitChanged  ));
-	cachesize    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheSizeChanged  ));
-	cachechunk   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheChunkChanged ));
-	cacheexpiry  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheExpiryChanged));
-	defaultreci  ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDefaultReciChanged));
-
-	activdspin->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onActivDChanged        ));
-	activsspin->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onActivSChanged        ));
+	okbutt        ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOkClicked         ));
+	notokbutt     ->signal_clicked      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onnotOkClicked      ));
+	statuscombo   ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onStatusChanged     ));
+	chokecombo    ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onChokeChanged      ));
+	overridecombo ->signal_changed      ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onOverrideChanged   ));
+	filebutt      ->signal_file_set     ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onFilebuttSet       ));
+	forebutt      ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onForegroundSet     ));
+	backbutt      ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onBackgroundSet     ));
+	downcolorbutt ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownColorSet      ));
+	upcolorbutt   ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpColorSet        ));
+	gridbutt      ->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onGridColorSet      ));
+	dcurvefillbutt->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownFillColorSet  ));
+	ucurvefillbutt->signal_color_set    ().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpFillColorSet    ));
+	activdspin    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onActivDChanged     ));
+	activsspin    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onActivSChanged     ));
+	uplimit       ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onUpLimitChanged    ));
+	increci       ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onIncreciChanged    ));
+	decreci       ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDecreciChanged    ));
+	dhtlimit      ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDHTLimitChanged   ));
+	downlimit     ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDownLimitChanged  ));
+	cachesize     ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheSizeChanged  ));
+	cachechunk    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheChunkChanged ));
+	cacheexpiry   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheExpiryChanged));
+	defaultreci   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDefaultReciChanged));
 }
 
 int GtkSettingsDialog::run()
 {
-	upcolorbutt  ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"  ]));
-	downcolorbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
-	gridbutt     ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphGridColor"         ]));
+	dcurvefillbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphDownloadFillColor" ]));
+	ucurvefillbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphUploadFillColor"   ]));
+	upcolorbutt   ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphUploadCurveColor"  ]));
+	downcolorbutt ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
+	gridbutt      ->set_rgba(Gdk::RGBA(gt::Settings::settings["GraphGridColor"         ]));
 
 	statuscombo->set_active(0);
 
 	savepathbox ->set_text(gt::Settings::settings["SavePath" ]);
 	useragentbox->set_text(gt::Settings::settings["UserAgent"]);
 
-	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"     ] == "Yes");
-	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"  ] == "Yes");
-	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"] == "Yes");
+	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
+	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
+	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
+	notifytoggle ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
+
+	ddashcheck->set_active(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash");
+	udashcheck->set_active(gt::Settings::settings["GraphUploadCurveStyle"  ] == "Dash");
+
+	filltoggle   ->set_active(gt::Settings::settings["GraphStyle"        ] == "Fill");
 
 	return dial->run();
 }
@@ -131,9 +147,13 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["SavePath"       ] = savepathbox->get_text();
 	gt::Settings::settings["UserAgent"      ] = useragentbox->get_text();
 
-	gt::Settings::settings["ShowLegend"     ] = (showtoggle   ->get_active()) ? "Yes" : "No";
-	gt::Settings::settings["AnonymousMode"  ] = (anontoggle   ->get_active()) ? "Yes" : "No";
-	gt::Settings::settings["PieceSuggestion"] = (suggesttoggle->get_active()) ? "Yes" : "No";
+	gt::Settings::settings["GraphStyle"             ] = (filltoggle   ->get_active()) ? "Fill" : "Curves";
+	gt::Settings::settings["ShowLegend"             ] = (showtoggle   ->get_active()) ?  "Yes" :     "No";
+	gt::Settings::settings["AnonymousMode"          ] = (anontoggle   ->get_active()) ?  "Yes" :     "No";
+	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle->get_active()) ?  "Yes" :     "No";
+	gt::Settings::settings["EnableNotification"     ] = (notifytoggle ->get_active()) ?  "Yes" :     "No";
+	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck   ->get_active()) ? "Dash" :   "Line";
+	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck   ->get_active()) ? "Dash" :   "Line";
 
 	backup = gt::Settings::settings;
 	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings
@@ -336,7 +356,9 @@ void GtkSettingsDialog::onGridColorSet()
 	        gridbutt->get_rgba().get_red_u()   / 256,
 	        gridbutt->get_rgba().get_green_u() / 256,
 	        gridbutt->get_rgba().get_blue_u()  / 256);
-	gt::Settings::settings["GraphGridColor"] = colorstring;
+	gt::Settings::settings["GraphBorderColor"] = colorstring;
+	gt::Settings::settings["GraphHLineColor" ] = colorstring;
+	gt::Settings::settings["GraphGridColor"  ] = colorstring;
 }
 
 void GtkSettingsDialog::onDownColorSet()
@@ -416,4 +438,25 @@ void GtkSettingsDialog::onActivDChanged()
 void GtkSettingsDialog::onActivSChanged()
 {
 	gt::Settings::settings["ActiveSeeds"] = activsspin->get_text();
+}
+
+
+void GtkSettingsDialog::onDownFillColorSet()
+{
+	char colorstring[16] = {0};
+	sprintf(colorstring, "#%02X%02X%02X",
+	        dcurvefillbutt->get_rgba().get_red_u()   / 256,
+	        dcurvefillbutt->get_rgba().get_green_u() / 256,
+	        dcurvefillbutt->get_rgba().get_blue_u()  / 256);
+	gt::Settings::settings["GraphDownloadFillColor"] = colorstring;
+}
+
+void GtkSettingsDialog::onUpFillColorSet()
+{
+	char colorstring[16] = {0};
+	sprintf(colorstring, "#%02X%02X%02X",
+	        ucurvefillbutt->get_rgba().get_red_u()   / 256,
+	        ucurvefillbutt->get_rgba().get_green_u() / 256,
+	        ucurvefillbutt->get_rgba().get_blue_u()  / 256);
+	gt::Settings::settings["GraphUploadFillColor"] = colorstring;
 }

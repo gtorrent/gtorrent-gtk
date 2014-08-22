@@ -127,7 +127,7 @@ private:
 	std::map<std::string, std::pair<std::string, std::string>> m_colors; // Associates a state with a background and foreground color.
 
 	void setupColumns();
-	std::vector<unsigned> selectedIndices();
+	std::vector<std::shared_ptr<gt::Torrent>> selectedTorrents();
 
 	/* Event handlers for clicks on the controls */
 	bool				  onKeyPress(GdkEventKey *event);

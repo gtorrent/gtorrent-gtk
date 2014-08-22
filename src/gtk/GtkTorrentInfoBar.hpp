@@ -14,6 +14,8 @@ namespace Gtk
 
 class GtkBlockBar;
 class GtkGraph;
+class GtkStatusBox;
+class GtkFileTreeView;
 class GtkGeneralBox;
 
 class GtkTorrentInfoBar : public Gtk::Box
@@ -129,7 +131,11 @@ public:
 	Gtk::Notebook *m_notebook;
 	Gtk::Box      *m_general_box;
 	Gtk::Box      *m_piece_box;
+
 	Gtk::ScrolledWindow *m_scroll_box;
+
+	Gtk::ScrolledWindow *m_filebox;
+	GtkFileTreeView *m_fileview;
 	GtkGeneralBox        *m_status_box;
 
 public:

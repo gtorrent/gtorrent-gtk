@@ -11,7 +11,11 @@
 #include "../Application.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
+
+#include "GtkFileTreeView.hpp"
+
 #include "GtkGeneralBox.hpp"
+
 
 /**
 * Sets up the torrent info bar.
@@ -25,13 +29,16 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_trackers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_peers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_pieces_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_files_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	//m_files_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_speed_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_log_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_general_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-
 	m_title = Gtk::manage(new Gtk::Label());
+
+        m_filebox = Gtk::manage(new Gtk::ScrolledWindow());
+	m_fileview = Gtk::manage(new GtkFileTreeView());
+        m_filebox->add(*m_fileview);
 
 	this->pack_start(*m_title, Gtk::PACK_SHRINK);
 
@@ -57,7 +64,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_notebook->append_page(*m_trackers_box, "Trackers");
 	m_notebook->append_page(*m_peers_box, "Peers");
 	m_notebook->append_page(*m_pieces_box, "Pieces");
-	m_notebook->append_page(*m_files_box, "Files");
+	m_notebook->append_page(*m_filebox, "Files");
 	m_notebook->append_page(*m_graph, "Speed");
 	m_notebook->append_page(*m_log_box, "Log");
 
@@ -73,7 +80,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-
 	if(selected)
 	{
 		set_visible(true);
@@ -90,6 +96,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 
 	m_title->set_text(selected->getName());
 	m_graph->select(selected);
+	m_fileview->select(selected);
 
 	if(previous != selected)
 		m_status_box->update(selected);
