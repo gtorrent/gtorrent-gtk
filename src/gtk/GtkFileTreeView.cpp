@@ -46,7 +46,7 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
 	return false;
 }
 
-void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &deepness)
+void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &deepness)
 {
 	if(ft.children.size() == 0)
 	{
@@ -61,6 +61,23 @@ void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, 
 	}
 }
 
+
+void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness)
+{
+	if(row.children().size() == 0)
+	{
+		libtorrent::file_entry entry = row[m_cols.m_col_entry];
+		size += entry.size;
+		priority = row[m_cols.m_col_prioritylevel];
+		state = priority == 8 ? 2 : priority != 0;
+		return;
+	}
+	for(auto child : row.children())
+	{
+		getChildAttributes(child, size, state, progress, priority, deepness);
+	}
+}
+
 // Seems to work with torrent that are 1 or 2 node deep, but it should require further testing.
 void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 {
@@ -68,16 +85,26 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 	if(ft.children.size() == 0)
 	{
 		Gtk::TreeRow childr;
-		auto sPath = Glib::build_filename(ft.t->getSavePath() + ft.parent->fullname(), ft.filename);
-		auto iconInfo = iconTheme->lookup_icon(Gio::File::create_for_path(sPath)->query_info()->get_icon(), 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
+		Gtk::IconInfo iconInfo;
+		if(torrent->getInfo()->files().is_valid() && gt::Platform::checkDirExist(ft.t->getSavePath() + ft.parent->fullname() +ft.filename))
+		{
+			std::cout << "Shit's valid" << std::endl;
+			auto sPath = Glib::build_filename(ft.t->getSavePath() + ft.parent->fullname(), ft.filename);
+			iconInfo = iconTheme->lookup_icon(Gio::File::create_for_path(sPath)->query_info()->get_icon(), 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
+		}
+		else
+			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
+
 		if(row)
 			childr = *m_liststore->append(row->children());
 		else
 			childr = *m_liststore->append();
+		childr[m_cols.m_col_index] = ft.index;
 		childr[m_cols.m_col_name] = ft.filename;
 		childr[m_cols.m_col_size] = getFileSizeString(ft.fs.at(ft.index).size);
 		childr[m_cols.m_col_icon] = iconInfo.load_icon();
 		childr[m_cols.m_col_priority] = prioStr[ft.t->getHandle().file_priority(ft.index)];
+		childr[m_cols.m_col_prioritylevel] = ft.t->getHandle().file_priority(ft.index);
 		childr[m_cols.m_col_activated] = ft.t->getHandle().file_priority(ft.index) != 0;
 		return;
 	}
@@ -110,12 +137,13 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 {
 	m_liststore->clear();
-	auto filestorage = selected->getInfo()->files();
-	FileTree ft(filestorage, selected);
-	for(auto i : selected->filenames())
-		ft.add(i);
+	torrent = selected;
 
-	if(selected->filenames().size() != 1)
+	auto filestorage = torrent->getInfo()->files();
+	FileTree ft(filestorage, torrent);
+	for(auto i : torrent->filenames())
+		ft.add(i);
+	if(torrent->filenames().size() != 1)
 		for(auto i : ft.children.begin()->second->children)
 			populateTree(*i.second, nullptr);
 	else // if 1 node-deep then there is no root folder
@@ -157,6 +185,8 @@ void GtkFileTreeView::setupColumns()
 		col->add_attribute(cellto->property_inconsistent(), m_cols.m_col_inconsistent);
 
 		cellto->property_xalign() = 0.5;
+		cellto->set_activatable();
+		cellto->signal_toggled().connect(sigc::mem_fun(*this, &GtkFileTreeView::onCheckBoxClicked), false);
 		cellp->property_pixbuf_expander_open() = iconTheme->lookup_icon("folder-open", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
 		append_column("Size", m_cols.m_col_size);
 		append_column("Priority", m_cols.m_col_priority);
@@ -223,28 +253,81 @@ void GtkFileTreeView::loadColumns()
 	}
 	while (tmp != "");
 }
-/*
-void GtkFileTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
+
+void GtkFileTreeView::update()
 {
-	if (t == NULL)
-		return;
-
-	Gtk::TreeModel::Row row      = *(m_liststore->append());
-	// if there's a % in the state std::string, then the torrent is downloading
-	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
-
-	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_eta]        = t->getTextEta();
-	row[m_cols.m_col_name]       = t->getName();
-	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
-	row[m_cols.m_col_size]       = t->getTextSize();
-	row[m_cols.m_col_remaining]  = t->getTextRemaining();
-	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-	row[m_cols.m_col_background] =  m_colors[fgbg].first;
-	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-	row[m_cols.m_col_torrent]    =  t;
+	for(auto child : m_liststore->children())
+		update(child);
 }
-*/
 
+void GtkFileTreeView::update(Gtk::TreeRow &row)
+{
+	if(row.children().size() == 0)
+	{
+		row[m_cols.m_col_priority] = prioStr[torrent->getHandle().file_priority(row[m_cols.m_col_index])];
+		row[m_cols.m_col_activated] = torrent->getHandle().file_priority(row[m_cols.m_col_index]) != 0;
+		return;
+	}
+	for(auto i : row.children())
+	{
+		long totalSize = 0;
+		int state = 0, priority = -1, deepness = 0;
+		double progress = 0;
+		getChildAttributes(row, totalSize, state, progress, priority, deepness); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
 
+		row[m_cols.m_col_size] = getFileSizeString(totalSize);
+		row[m_cols.m_col_priority] = prioStr[priority];
+		row[m_cols.m_col_percent] = int(progress * 100);
+		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
+		row[m_cols.m_col_activated] = state == 1;
+		row[m_cols.m_col_inconsistent] = state == 2;
+		update(i);
+	}
+
+}
+
+void GtkFileTreeView::setPriority(Gtk::TreeRow &node, int level)
+{
+	if(node.children().size() == 0)
+	{
+		std::cout << "Priority was " << prioStr[node[m_cols.m_col_prioritylevel]] << std::endl;
+		node[m_cols.m_col_activated] = (level != 0);
+		torrent->getHandle().file_priority(node[m_cols.m_col_index], level);
+		node[m_cols.m_col_priority] = prioStr[level];
+		node[m_cols.m_col_prioritylevel] = level;
+		std::cout << "Priority is " << prioStr[node[m_cols.m_col_prioritylevel]] << std::endl;
+		if(node[m_cols.m_col_activated])
+			std::cout << "Was checked" << std::endl;
+		else
+			std::cout << "wasn't checked" << std::endl;
+		node[m_cols.m_col_activated] = false;
+		if(node[m_cols.m_col_activated])
+			std::cout << "is checked" << std::endl;
+		else
+			std::cout << "isn't checked" << std::endl;
+		if(node[m_cols.m_col_activated])
+			std::cout << "is still checked" << std::endl;
+		else
+			std::cout << "still isn't checked" << std::endl;
+		return;
+	}
+	for(auto child : node.children())
+		setPriority(child, level);
+}
+
+void GtkFileTreeView::onCheckBoxClicked(std::string path)
+{
+	auto row = *m_liststore->get_iter(Gtk::TreePath(path));
+	if(row[m_cols.m_col_activated])
+		std::cout << "Row is activated so I'll desactivate it";
+	else
+		std::cout << "Row is disabled so I'll activate it";
+	row[m_cols.m_col_activated] = !row[m_cols.m_col_activated];
+	if(row[m_cols.m_col_inconsistent]) row[m_cols.m_col_activated] = false;
+	if(row[m_cols.m_col_activated])
+		std::cout << "Row is activated" << std::endl;
+	else
+		std::cout << "Row is Disabled" << std::endl;
+	setPriority(row, row[m_cols.m_col_activated]);
+	update(row);
+}

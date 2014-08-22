@@ -38,6 +38,20 @@ string FileTree::fullname()
 	return ret;
 }
 
+void FileTree::print(FileTree &tree)
+{
+	for(auto i : tree.children)
+	{
+		std::cout << i.first << std::endl;
+		print(*i.second);
+	}
+}
+
+void FileTree::print()
+{
+	print(*this);
+}
+
 void FileTree::add(string &str)
 {
 	if(str.find('/') != string::npos) // if true then the file is nested inside a folder
