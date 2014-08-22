@@ -4,6 +4,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
 #include "utils/FileTree.hpp"
+#include <glibmm.h>
 
 class GtkFileColumns : public Gtk::TreeModel::ColumnRecord
 {
@@ -15,19 +16,30 @@ public:
 			add(m_col_percent_text);
 			add(m_col_priority);
 			add(m_col_name);
-			add(m_col_foreground);
-			add(m_col_background);
 			add(m_col_entry);
+			add(m_col_activated);
+			add(m_col_inconsistent);
+			add(m_col_folder);
+			add(m_col_icon);
 	}
 
+	/* Shown column */
 	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_percent;
+
+	/* Columns that use a custom cell renderer */
 	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
 	Gtk::TreeModelColumn<Glib::ustring> m_col_priority;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_background;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_foreground;
+
+	/* Colomns used to keep data */
 	Gtk::TreeModelColumn<libtorrent::file_entry> m_col_entry;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_prioritylevel;
+	Gtk::TreeModelColumn<unsigned int> m_col_percent;
+	Gtk::TreeModelColumn<bool> m_col_activated;
+	Gtk::TreeModelColumn<bool> m_col_inconsistent;
+	Gtk::TreeModelColumn<bool> m_col_folder;
+	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> m_col_icon;
+
 };
 
 class GtkFileTreeView : public Gtk::TreeView

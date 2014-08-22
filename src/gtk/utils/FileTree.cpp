@@ -7,7 +7,7 @@ FileTree::FileTree(libtorrent::file_storage files, shared_ptr<gt::Torrent> tor) 
 {
 }
 
-FileTree::FileTree(FileTree *Parent) : parent(Parent), fs(Parent->fs), t(Parent->t)
+FileTree::FileTree(FileTree *Parent) : parent(Parent), fs(Parent->fs), t(Parent->t), index(Parent->index)
 {
 }
 

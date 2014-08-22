@@ -103,14 +103,14 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview->get_selection()->unselect_all();
 
 
-	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
-	        gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	if (gt::Settings::settings["FileAssociation"] == "" ||
+	        gt::Settings::settings["FileAssociation"] == "-1")
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
 		if(code != -1)
 			gt::Platform::associate(code & 2, code & 1);
-		gt::Settings::setOption("FileAssociation", code);
+		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
 
