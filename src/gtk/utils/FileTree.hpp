@@ -14,9 +14,11 @@
 
 class FileTree
 {
-	public:
+public:
 	FileTree(libtorrent::file_storage files, std::shared_ptr<gt::Torrent> tor);
 	FileTree(FileTree *Parent);
+	void print(FileTree &);
+	void print();
 	~FileTree();
 
 	std::string fullname();
