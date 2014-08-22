@@ -14,7 +14,7 @@
 
 class FileTree
 {
-public:
+	public:
 	FileTree(libtorrent::file_storage files, std::shared_ptr<gt::Torrent> tor);
 	FileTree(FileTree *Parent);
 	~FileTree();
@@ -23,6 +23,7 @@ public:
 	void add(std::string &str);
 
 	int                              index;
+	int                              level;
 	FileTree                        *parent = nullptr;
 	libtorrent::file_storage         fs;
 	std::map<std::string, FileTree*> children;
