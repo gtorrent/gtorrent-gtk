@@ -96,12 +96,16 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 		size += entry.size;
 		priority = row[m_cols.m_col_prioritylevel];
 		state = priority == 8 ? 2 : priority != 0;
+		++deepness;
+		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]);
 		return;
 	}
 	for(auto child : row.children())
 	{
 		getChildAttributes(child, size, state, progress, priority, deepness);
 	}
+	progress /= deepness;
+
 }
 
 // Seems to work with torrent that are 1 or 2 node deep, but it should require further testing.
