@@ -23,6 +23,7 @@ public:
 			add(m_col_folder);
 			add(m_col_icon);
 			add(m_col_index);
+			add(m_col_fullpath);
 	}
 
 	/* Shown column */
@@ -38,6 +39,7 @@ public:
 	Gtk::TreeModelColumn<unsigned int> m_col_prioritylevel;
 	Gtk::TreeModelColumn<unsigned int> m_col_percent;
 	Gtk::TreeModelColumn<unsigned int> m_col_index;
+	Gtk::TreeModelColumn<std::string> m_col_fullpath;
 	Gtk::TreeModelColumn<bool> m_col_activated;
 	Gtk::TreeModelColumn<bool> m_col_inconsistent;
 	Gtk::TreeModelColumn<bool> m_col_folder;
@@ -51,6 +53,8 @@ public:
 	std::shared_ptr<gt::Torrent> torrent;
 	GtkFileColumns m_cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;
+	std::vector<libtorrent::size_type> progress_all;
+
 	void select(std::shared_ptr<gt::Torrent> selected);
 	void loadColumns();
 	void saveColumns();
