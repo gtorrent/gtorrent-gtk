@@ -5,11 +5,6 @@ using namespace std;
 
 FileTree::FileTree(libtorrent::file_storage files, shared_ptr<gt::Torrent> tor) : fs(files), t(tor), index(0)
 {
-	// TEST
-	std::cout << "Printing file_storage..." << std::endl;
-	std::cout << " Total files: " << files.num_files() << std::endl;
-	for (int i = 0; i < files.num_files(); ++i)
-		std::cout << "  " << i << ": " << files.at(i).path << std::endl;
 }
 
 FileTree::FileTree(FileTree *Parent) : parent(Parent), fs(Parent->fs), t(Parent->t), index(Parent->index)
