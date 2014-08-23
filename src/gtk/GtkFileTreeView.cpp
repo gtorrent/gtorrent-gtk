@@ -155,10 +155,14 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 		torrent = selected;
 		torrent->getHandle().file_progress(progress_all, 1);
 
-		auto filestorage = torrent->getInfo()->files();
+		libtorrent::file_storage filestorage = torrent->getInfo()->files();
 		FileTree ft(filestorage, torrent);
-		for(auto i : torrent->filenames())
-			ft.add(i);
+		for(int i = 0; i < filestorage.num_files(); ++i)
+		{
+			std::string path = filestorage.at(i).path;
+			ft.add(path, i);
+		}
+
 		if(torrent->filenames().size() != 1)
 			for(auto i : ft.children.begin()->second->children)
 				populateTree(*i.second, nullptr);

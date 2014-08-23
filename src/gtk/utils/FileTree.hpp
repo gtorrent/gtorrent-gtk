@@ -22,7 +22,7 @@ public:
 	~FileTree();
 
 	std::string fullname();
-	void add(std::string &str);
+	void add(std::string &str, int index);
 
 	bool                             is_dir;
 	FileTree                        *parent = nullptr;
