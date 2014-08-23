@@ -16,7 +16,7 @@
 #include "../Application.hpp"
 #include "GtkFileTreeView.hpp"
 
-std::string prioStr[] = 
+std::string prioStr[] =
 {
 	"Off",
 	"Normal",
@@ -92,9 +92,9 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
          */
         std::vector<libtorrent::size_type> progress_all;
         ft.t->getHandle().file_progress(progress_all, 1);
-        
+
         std::cout << "Length: " << progress_all.size() << std::endl;
-        
+
 	// TODO: size column shall be in the format "x of y" where x is size of block*downloaded block and y is size of block*number of block in file
 	if(ft.children.size() == 0)
 	{
@@ -191,7 +191,7 @@ void GtkFileTreeView::setupColumns()
 		col->pack_start(*cellt, false);
 		col->add_attribute(cellt->property_text(), m_cols.m_col_name);
 		col->add_attribute(cellp->property_pixbuf(), m_cols.m_col_icon);
-		
+
 		cid = append_column(*Gtk::manage(new Gtk::TreeViewColumn("Enabled")));
 		col = get_column(cid - 1);
 
@@ -334,7 +334,7 @@ void GtkFileTreeView::onCheckBoxClicked(std::string path)
 {
 	auto row = *m_liststore->get_iter(Gtk::TreePath(path));
 	if(row[m_cols.m_col_activated])
-		std::cout << "Row is activated so I'll desactivate it";
+		std::cout << "Row is activated so I'll deactivate it";
 	else
 		std::cout << "Row is disabled so I'll activate it";
 	row[m_cols.m_col_activated] = !row[m_cols.m_col_activated];
@@ -342,7 +342,7 @@ void GtkFileTreeView::onCheckBoxClicked(std::string path)
 	if(row[m_cols.m_col_activated])
 		std::cout << "Row is activated" << std::endl;
 	else
-		std::cout << "Row is Disabled" << std::endl;
+		std::cout << "Row is disabled" << std::endl;
 	setPriority(row, row[m_cols.m_col_activated]);
 	update(row);
 }
