@@ -53,20 +53,33 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
 	return false;
 }
 
-void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &deepness)
+/* Gets collective information from all the children recursively
+ * @param size Cumulative file size of all children (in bytes?)
+ * @param progress Average progress of all children
+ * @param total Number of children
+ */
+void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &total)
 {
+	/* Reached the end of recursion call */
 	if(ft.children.size() == 0)
 	{
 		size += ft.fs.at(ft.index).size;
 		priority = (priority == -1 ? ft.t->getHandle().file_priority(ft.index) : (priority != ft.t->getHandle().file_priority(ft.index) ? 8 : priority));
 		state = priority == 8 ? 2 : priority != 0;
-		++deepness;
+		++total;
+
 		progress += progress_all[ft.index] / ft.fs.file_size(ft.index);
-		progress /= deepness;
 		return;
 	}
+
+	/* For each child */
 	for(auto i : ft.children)
-		getChildAttributes(*i.second, size, state, progress, priority, deepness);
+	{
+		getChildAttributes(*i.second, size, state, progress, priority, total);
+	}
+
+	/* Complete all the calculations */
+	progress /= total;
 }
 
 void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness)
@@ -89,6 +102,7 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 {
 	// TODO: size column shall be in the format "x of y" where x is size of block*downloaded block and y is size of block*number of block in file
+	/* If the FileTree doesn't contain any children */
 	if(ft.children.size() == 0)
 	{
 		Gtk::TreeRow childr;
@@ -104,8 +118,6 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 			iconInfo = iconTheme->lookup_icon(Gio::File::create_for_path(childr[m_cols.m_col_fullpath])->query_info()->get_icon(), 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
-
-
 
 		childr[m_cols.m_col_index]         = _index++;
 		childr[m_cols.m_col_name]          = ft.filename;
@@ -124,6 +136,7 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		? childr = *m_liststore->append(row->children())
 		: childr = *m_liststore->append();
 
+	/* If the FileTree contains children */
 	for(auto i : ft.children)
 	{
 		// TODO: File folder attributes here, the size column and progress bar are respectivly a recursive sum and recursive average of their children
