@@ -107,8 +107,9 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 
 
 
-		childr[m_cols.m_col_index]         = _index++;
+		childr[m_cols.m_col_index]         = ft.index;
 		childr[m_cols.m_col_name]          = ft.filename;
+		childr[m_cols.m_col_entry]         = ft.fs.at(ft.index);
 		childr[m_cols.m_col_size]          = getFileSizeString(ft.fs.at(ft.index).size); // TODO: For some reason the reported size here is wrong, to fix, urgent.
 		childr[m_cols.m_col_icon]          = iconInfo.load_icon();
 		childr[m_cols.m_col_percent]       = int(progress_all[ft.index] * 100 / ft.fs.file_size(ft.index));
