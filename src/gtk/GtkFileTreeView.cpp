@@ -60,15 +60,17 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
  */
 void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &total)
 {
+	std::cout << "getChildAttributes(): Calculating total child attributes of: " << ft.filename << ", Index: " << ft.index << std::endl;
 	/* Reached the end of recursion call */
 	if(ft.children.size() == 0)
 	{
+		std::cout << "|Current total of children: " << total << ", Current cumulative progress: " << progress << ", Index: " << ft.index << std::endl;
 		size += ft.fs.at(ft.index).size;
 		priority = (priority == -1 ? ft.t->getHandle().file_priority(ft.index) : (priority != ft.t->getHandle().file_priority(ft.index) ? 8 : priority));
 		state = priority == 8 ? 2 : priority != 0;
 		++total;
 
-		progress += progress_all[ft.index] / ft.fs.file_size(ft.index);
+		progress += double(progress_all[ft.index]) / ft.fs.file_size(ft.index);
 		return;
 	}
 
@@ -80,6 +82,10 @@ void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, d
 
 	/* Complete all the calculations */
 	progress /= total;
+	std::cout << "*** Finished child calculations for " << ft.filename << std::endl;
+	std::cout << " Results: Progress: " << progress << std::endl;
+
+	std::cout << std::endl;
 }
 
 void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness)
