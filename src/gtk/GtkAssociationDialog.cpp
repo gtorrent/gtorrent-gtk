@@ -23,8 +23,9 @@ GtkAssociationDialog::GtkAssociationDialog(GtkMainWindow &Parent) : Gtk::Dialog(
 	content->pack_end(*panel, true, true);
 	content->show_all();
 
-	add_button("Remind me later, nii-chan :3", -1);
-	Gtk::Button *okButton = add_button("Ok, uguu~~", 0);
+	// No fun allowed
+	add_button("Remind me later", -1);
+	Gtk::Button *okButton = add_button("Ok", 0);
 	okButton->signal_released().connect(sigc::bind(sigc::mem_fun(*this, &GtkAssociationDialog::PlsFindMeAName), okButton));
 }
 

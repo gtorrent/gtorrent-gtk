@@ -110,7 +110,7 @@ GtkMainWindow::GtkMainWindow() :
 		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(tor);
 	}
-	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
+
 	if (gt::Settings::settings["FileAssociation"] == "" ||
 		gt::Settings::settings["FileAssociation"] == std::to_string(-1))
 	{
