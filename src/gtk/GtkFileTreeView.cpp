@@ -355,6 +355,7 @@ void GtkFileTreeView::loadColumns()
 
 void GtkFileTreeView::update()
 {
+	if(!torrent->getInfo().get()) return;
 	torrent->getHandle().file_progress(progress_all, 1);
 	for(auto child : m_liststore->children())
 		update(child);
