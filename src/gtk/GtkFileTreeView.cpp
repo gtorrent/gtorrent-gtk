@@ -452,7 +452,7 @@ void GtkFileTreeView::openView_onClick()
 
 }
 
-void GtkFileTreeView::toggle_onClick()
+void GtkFileTreeView::toggleView_onClick()
 {
 	setSelectedPriorities(selectedRows()[0][m_cols.m_col_prioritylevel] == 0);
 }
