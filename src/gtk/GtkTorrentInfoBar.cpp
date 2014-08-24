@@ -46,7 +46,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
 	m_progress->set_size_request(0, 20);
 
-	m_general_box->add(*m_piece_box);
+	m_pieces_box->add(*m_piece_box);
 
 	m_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
 	m_status_box = Gtk::manage(new GtkGeneralBox());
