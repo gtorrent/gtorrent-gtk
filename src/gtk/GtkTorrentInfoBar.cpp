@@ -14,8 +14,6 @@
 #include "GtkStatusBox.hpp"
 #include "GtkPeerTreeView.hpp"
 
->>>>>>> Stashed changes
-
 /**
 * Sets up the torrent info bar.
 */

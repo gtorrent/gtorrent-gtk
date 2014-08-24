@@ -3,7 +3,6 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
-#include "utils/FileTree.hpp"
 #include <glibmm.h>
 
 class GtkPeerColumns : public Gtk::TreeModel::ColumnRecord
