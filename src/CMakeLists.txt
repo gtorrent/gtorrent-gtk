@@ -30,6 +30,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkBlockBar.cpp
 	gtk/GtkGraph.cpp
 	gtk/GtkSettingsDialog.cpp
+	gtk/GtkPeerTreeView.cpp
 	gtk/GtkFileTreeView.cpp
   gtk/utils/FileTree.cpp
   gtk/GtkGeneralBox.cpp

@@ -14,6 +14,7 @@ namespace Gtk
 
 class GtkBlockBar;
 class GtkGraph;
+class GtkPeerTreeView;
 class GtkFileTreeView;
 class GtkGeneralBox;
 
@@ -56,7 +57,6 @@ public:
 	Gtk::Label *m_seeds_label;
 	Gtk::Label *m_seeds;
 	Gtk::Label *m_peers_label;
-	Gtk::Label *m_peers;
 	Gtk::Label *m_share_ratio_label;
 	Gtk::Label *m_share_ratio;
 
@@ -130,8 +130,9 @@ public:
 	Gtk::Notebook *m_notebook;
 	Gtk::Box      *m_general_box;
 	Gtk::Box      *m_piece_box;
-
 	Gtk::ScrolledWindow *m_scroll_box;
+	Gtk::ScrolledWindow *m_peer_scroll_box;
+	GtkPeerTreeView *m_peers;
 
 	Gtk::ScrolledWindow *m_filebox;
 	GtkFileTreeView *m_fileview;

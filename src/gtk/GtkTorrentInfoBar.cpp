@@ -11,6 +11,7 @@
 #include "../Application.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
+#include "GtkPeerTreeView.hpp"
 #include "GtkFileTreeView.hpp"
 #include "GtkGeneralBox.hpp"
 
@@ -41,6 +42,10 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_progress = Gtk::manage(new GtkBlockBar());
 	m_graph = Gtk::manage(new GtkGraph());
 
+	m_peer_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
+	m_peers      = Gtk::manage(new GtkPeerTreeView());
+	m_peer_scroll_box->add(*m_peers);
+
 	m_filebox->add(*m_fileview);
 	pack_start(*m_title, Gtk::PACK_SHRINK);
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
@@ -59,7 +64,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_notebook->append_page(*m_general_box, "General");
 	m_notebook->append_page(*m_trackers_box, "Trackers");
-	m_notebook->append_page(*m_peers_box, "Peers");
+	m_notebook->append_page(*m_peer_scroll_box, "Peers");
 	m_notebook->append_page(*m_pieces_box, "Pieces");
 	m_notebook->append_page(*m_filebox, "Files");
 	m_notebook->append_page(*m_graph, "Speed");
@@ -91,6 +96,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 
 	m_title->set_text(selected->getName());
 	m_graph->select(selected);
+	m_peers->select(selected);
 	m_fileview->select(selected);
 
 	if(previous != selected)
@@ -105,6 +111,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 		m_progress->setBlocks(selected->getPieces());
 
 	m_status_box->update(selected);
+	m_peers->update();
 	m_fileview->update();
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(auto ptr : t)
