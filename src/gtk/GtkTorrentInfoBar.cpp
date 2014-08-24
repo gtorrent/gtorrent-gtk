@@ -23,14 +23,12 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 {
 	//TODO: better layout
 	m_notebook = Gtk::manage(new Gtk::Notebook());
-	m_general_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_trackers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_peers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_pieces_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	//m_files_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_speed_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_log_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_general_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_title = Gtk::manage(new Gtk::Label());
   m_filebox = Gtk::manage(new Gtk::ScrolledWindow());
@@ -58,13 +56,11 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_pieces_box->add(*m_piece_box);
 
 	m_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
-	m_status_box = Gtk::manage(new GtkGeneralBox());
-	m_scroll_box->add(*m_status_box);
+	m_gen_box = Gtk::manage(new GtkGeneralBox());
+	m_scroll_box->add(*m_gen_box);
 
 	m_general_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_general_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
-	//m_notebook->append_page(*m_graph, "Info Graph");
-	//m_notebook->append_page(*m_general_box, "Torrent Info");
 
 	m_notebook->append_page(*m_general_box, "General");
 	m_notebook->append_page(*m_trackers_box, "Trackers");
@@ -104,7 +100,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	m_fileview->select(selected);
 
 	if(previous != selected)
-		m_status_box->update(selected);
+		m_gen_box->update(selected);
 	previous = selected;
 }
 
@@ -114,7 +110,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	if(selected->getHandle().status().has_metadata)
 		m_progress->setBlocks(selected->getPieces());
 
-	m_status_box->update(selected);
+	m_gen_box->update(selected);
 	m_peers->update();
 	m_fileview->update();
 
