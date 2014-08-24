@@ -22,13 +22,13 @@ public:
 	~FileTree();
 
 	std::string fullname();
-	void add(std::string &str);
+	void add(std::string &str, int index);
 
 	bool                             is_dir;
-	int                              index;
 	FileTree                        *parent = nullptr;
 	libtorrent::file_storage         fs;
 	std::map<std::string, FileTree*> children;
 	std::shared_ptr<gt::Torrent>     t;
+	int                              index;
 	std::string                      filename;
 };

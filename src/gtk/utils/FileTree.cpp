@@ -52,7 +52,7 @@ void FileTree::print()
 	print(*this);
 }
 
-void FileTree::add(string &str)
+void FileTree::add(string &str, int i)
 {
 	if(str.find('/') != string::npos) // if true then the file is nested inside a folder
 	{
@@ -64,13 +64,13 @@ void FileTree::add(string &str)
 			is_dir = true;
 		}
 		string file = str.substr(str.find('/') + 1); // we add the file, which may be nested deeper inside folders, but it's handled recursively
-		children[dir_name]->add(file);
+		children[dir_name]->add(file, i);
 	}
 	else //we reached the file itself
 	{
 		is_dir = false;
 		children[str] = new FileTree(this);
-		children[str]->index = index++;
+		children[str]->index = i;
 		children[str]->filename = str;
 	}
 }
