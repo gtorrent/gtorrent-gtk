@@ -31,7 +31,10 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_progress = Gtk::manage(new GtkBlockBar());
 	m_graph = Gtk::manage(new GtkGraph());
+	
+	m_peer_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
 	m_peers      = Gtk::manage(new GtkPeerTreeView());
+	m_peer_scroll_box->add(*m_peers);
 
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
 	m_progress->set_size_request(0, 20);
@@ -46,7 +49,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_stat_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
 	m_notebook->append_page(*m_graph, "Info Graph");
-	m_notebook->append_page(*m_peers, "Peers");
+	m_notebook->append_page(*m_peer_scroll_box, "Peers");
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }

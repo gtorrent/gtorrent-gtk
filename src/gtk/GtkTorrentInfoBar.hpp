@@ -26,6 +26,7 @@ private:
 	Gtk::Box      *m_piece_box;
 	Gtk::ScrolledWindow *m_scroll_box;
 	GtkStatusBox        *m_status_box;
+	Gtk::ScrolledWindow *m_peer_scroll_box;
 	GtkPeerTreeView *m_peers;
 
 public:
