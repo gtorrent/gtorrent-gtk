@@ -28,6 +28,7 @@ class GtkPeerTreeView : public Gtk::TreeView
 		GtkPeerColumns m_cols;
 		Glib::RefPtr<Gtk::ListStore> m_liststore;
 		void setupColumns();
+		void insert(const gt::Peer &p);
 
 	public:
 		std::shared_ptr<gt::Torrent> torrent;

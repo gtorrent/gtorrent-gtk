@@ -2,6 +2,28 @@
 
 #include <gtkmm/liststore.h>
 
+void GtkPeerTreeView::insert(const gt::Peer &p)
+{
+	Gtk::TreeModel::iterator i = m_liststore->children().begin();
+	while(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) < p.ip)
+		++i;
+	if(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) == p.ip)
+	{
+		(*i)[m_cols.m_col_ip] = p.ip;
+		(*i)[m_cols.m_col_client] = p.client;
+		(*i)[m_cols.m_col_down] = p.downloadSpeed;
+		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+	}
+	else
+	{
+		i = m_liststore->insert(i);
+		(*i)[m_cols.m_col_ip] = p.ip;
+		(*i)[m_cols.m_col_client] = p.client;
+		(*i)[m_cols.m_col_down] = p.downloadSpeed;
+		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+	}
+}
+
 GtkPeerTreeView::GtkPeerTreeView()
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
@@ -28,6 +50,8 @@ void GtkPeerTreeView::update()
 
 	}
 
+	for (auto &peer : torrent->getPeers())
+		insert(peer);
 }
 
 void GtkPeerTreeView::setupColumns()

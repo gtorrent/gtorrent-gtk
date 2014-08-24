@@ -131,12 +131,9 @@ public:
 	Gtk::Box      *m_general_box;
 	Gtk::Box      *m_piece_box;
 	Gtk::ScrolledWindow *m_scroll_box;
+	GtkStatusBox        *m_status_box;
 	Gtk::ScrolledWindow *m_peer_scroll_box;
 	GtkPeerTreeView *m_peers;
-
-	Gtk::ScrolledWindow *m_filebox;
-	GtkFileTreeView *m_fileview;
-	GtkGeneralBox        *m_status_box;
 
 public:
 	GtkTorrentInfoBar();

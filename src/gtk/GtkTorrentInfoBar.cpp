@@ -46,6 +46,10 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_peers      = Gtk::manage(new GtkPeerTreeView());
 	m_peer_scroll_box->add(*m_peers);
 
+	m_peer_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
+	m_peers      = Gtk::manage(new GtkPeerTreeView());
+	m_peer_scroll_box->add(*m_peers);
+
 	m_filebox->add(*m_fileview);
 	pack_start(*m_title, Gtk::PACK_SHRINK);
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
@@ -113,6 +117,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	m_status_box->update(selected);
 	m_peers->update();
 	m_fileview->update();
+
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(auto ptr : t)
 		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
