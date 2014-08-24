@@ -31,7 +31,6 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkGraph.cpp
 	gtk/GtkSettingsDialog.cpp
 	gtk/GtkPeerTreeView.cpp
-<<<<<<< HEAD
 	gtk/GtkFileTreeView.cpp
   gtk/utils/FileTree.cpp
   gtk/GtkGeneralBox.cpp
@@ -39,9 +38,6 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkPiecesBox.cpp
 	gtk/GtkFilesBox.cpp
 	gtk/GtkLogBox.cpp
-=======
-    gtk/GtkStatusBox.cpp
->>>>>>> origin/wip/peerview
 	main.cpp
 	)
 
