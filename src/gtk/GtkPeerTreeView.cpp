@@ -5,6 +5,7 @@
 GtkPeerTreeView::GtkPeerTreeView()
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
+	set_model(m_liststore);
 	setupColumns();
 }
 
