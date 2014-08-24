@@ -104,7 +104,7 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
  * @param progress Average progress of all children
  * @param total Number of children
  */
-void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &total)
+void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority)
 {
 	/* Reached the end of recursion call */
 	if(ft.children.size() == 0)
@@ -112,20 +112,14 @@ void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, d
 		size += ft.fs.at(ft.index).size;
 		priority = (priority == -1 ? ft.t->getHandle().file_priority(ft.index) : (priority != ft.t->getHandle().file_priority(ft.index) ? 8 : priority));
 		state = priority == 8 ? 2 : priority != 0;
-		++total;
-
 		progress += double(progress_all[ft.index]) / ft.fs.file_size(ft.index);
 		return;
 	}
 
 	/* For each child */
 	for(auto i : ft.children)
-	{
-		getChildAttributes(*i.second, size, state, progress, priority, total);
-	}
-
-	/* Complete all the calculations */
-	progress /= total;
+		getChildAttributes(*i.second, size, state, progress, priority);
+	progress /= ft.children.size();
 }
 
 /**
@@ -135,7 +129,7 @@ void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, d
  * @param progress Average progress of all children
  * @param total Number of children
  */
-void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness)
+void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority)
 {
 	if(row.children().size() == 0)
 	{
@@ -143,16 +137,12 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 		size += entry.size;
 		priority = row[m_cols.m_col_prioritylevel];
 		state = priority == 8 ? 2 : priority != 0;
-		++deepness;
 		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]);
 		return;
 	}
 	for(auto child : row.children())
-	{
-		getChildAttributes(child, size, state, progress, priority, deepness);
-	}
-	progress /= deepness;
-
+		getChildAttributes(child, size, state, progress, priority);
+	progress /= row.children().size();
 }
 
 // Seems to work with torrent that are 1 or 2 node deep, but it should require further testing.
@@ -201,9 +191,9 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		// TODO: File folder attributes here, the size column and progress bar are respectivly a recursive sum and recursive average of their children
 		// don't use ft.fs here.
 		long totalSize = 0;
-		int state = 0, priority = -1, deepness = 0;
+		int state = 0, priority = -1;
 		double progress = 0;
-		getChildAttributes(ft, totalSize, state, progress, priority, deepness); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
+		getChildAttributes(ft, totalSize, state, progress, priority); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
 
 		childr[m_cols.m_col_name]           = ft.filename;
 		childr[m_cols.m_col_size]           = getFileSizeString(totalSize);
@@ -382,9 +372,9 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 	for(auto i : row.children())
 	{
 		long totalSize = 0;
-		int state = 0, priority = -1, deepness = 0;
+		int state = 0, priority = -1;
 		double progress = 0;
-		getChildAttributes(row, totalSize, state, progress, priority, deepness); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
+		getChildAttributes(row, totalSize, state, progress, priority); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
 
 		row[m_cols.m_col_size] = getFileSizeString(totalSize);
 		row[m_cols.m_col_priority] = prioStr[priority];
