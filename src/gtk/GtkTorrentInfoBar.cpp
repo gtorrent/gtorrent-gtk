@@ -26,7 +26,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_trackers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_peers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_pieces_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	//m_files_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	m_general_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_speed_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_log_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
