@@ -158,13 +158,6 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 // Seems to work with torrent that are 1 or 2 node deep, but it should require further testing.
 void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 {
-/*
-        std::vector<libtorrent::size_type> progress_all;
-        ft.t->getHandle().file_progress(progress_all, 1);
-
-        std::cout << "Length: " << progress_all.size() << std::endl;
-
->>>>>>> wip/looks-familiar*/
 	// TODO: size column shall be in the format "x of y" where x is size of block*downloaded block and y is size of block*number of block in file
 	/* If the FileTree doesn't contain any children */
 	if(ft.children.size() == 0)
@@ -173,6 +166,7 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		Gtk::IconInfo iconInfo;
 
 		childr = row
+
 			? *m_liststore->append(row->children())
 			: *m_liststore->append();
 
