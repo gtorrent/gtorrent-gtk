@@ -67,8 +67,8 @@ public:
 	void update(Gtk::TreeRow &row);
 	void onCheckBoxClicked(std::string path);
 	void populateTree(FileTree &ft, Gtk::TreeRow *row);
-	void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &deepness);
-	void getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness);
+	void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority);
+	void getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority);
 	void toggleView_onClick();
 	void openView_onClick();
 	std::vector<Gtk::TreeRow> selectedRows();
