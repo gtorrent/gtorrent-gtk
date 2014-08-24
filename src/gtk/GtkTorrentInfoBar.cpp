@@ -12,6 +12,9 @@
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
 #include "GtkStatusBox.hpp"
+#include "GtkPeerTreeView.hpp"
+
+>>>>>>> Stashed changes
 
 /**
 * Sets up the torrent info bar.
@@ -30,6 +33,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 
 	m_progress = Gtk::manage(new GtkBlockBar());
 	m_graph = Gtk::manage(new GtkGraph());
+	m_peers      = Gtk::manage(new GtkPeerTreeView());
 
 	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
 	m_progress->set_size_request(0, 20);
@@ -44,6 +48,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
 	m_stat_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
 	m_notebook->append_page(*m_graph, "Info Graph");
+	m_notebook->append_page(*m_peers, "Peers");
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 }
@@ -70,6 +75,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 
 	m_title->set_text(selected->getName());
 	m_graph->select(selected);
+	m_peers->select(selected);
 	if(previous != selected)
 		m_status_box->update(selected);
 	previous = selected;
@@ -82,7 +88,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 		m_progress->setBlocks(selected->getPieces());
 
 	m_status_box->update(selected);
-
+	m_peers->update();
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(auto ptr : t)
 		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
