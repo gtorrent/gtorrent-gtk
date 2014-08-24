@@ -36,6 +36,7 @@ Glib::RefPtr<Gtk::IconTheme> iconTheme;
 GtkFileTreeView::GtkFileTreeView()
 {
 	m_liststore = Gtk::TreeStore::create(m_cols);
+	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	iconTheme = Gtk::IconTheme::get_default();
 	set_model(m_liststore);
 	setupColumns();
@@ -50,6 +51,50 @@ bool GtkFileTreeView::fileColumns_onClick(GdkEventButton *event)
 
 bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
 {
+	if(event->type == 5 && event->button == 1) //if double left click
+		openView_onClick();
+
+	if(event->button == 3) // if right-click
+	{
+		if(selectedRows().size() == 0) return false;
+
+		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
+		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem((selectedRows()[0][m_cols.m_col_prioritylevel] == 0) ? "Start" : "Stop"));
+		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Rename"));
+		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
+		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
+		Gtk::MenuItem *rcmItem5        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+
+		Gtk::Menu *submenu = Gtk::manage(new Gtk::Menu());
+
+		for(int i = 0; i < 8; ++i)
+		{
+			Gtk::MenuItem *smItem = Gtk::manage(new Gtk::MenuItem(prioStr[i]));
+			smItem->signal_activate().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkFileTreeView::setSelectedPriorities), i));
+			submenu->add(*smItem);
+		}
+		rcmItem5->set_submenu(*submenu);
+
+		rcmItem2->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::toggleView_onClick));
+//		rcmItem3->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::rename_onClick)); // not really sure who the fuck rename manually their files, btw, also may be hard to actually implement
+		rcmItem4->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::openView_onClick));
+
+		m_rcMenu->add(*rcmItem2);
+		m_rcMenu->add(*rcmItem3);
+		m_rcMenu->add(*rcSep1);
+		m_rcMenu->add(*rcmItem4);
+		m_rcMenu->add(*rcmItem5);
+		m_rcMenu->show_all();
+		m_rcMenu->popup(event->button, event->time);
+	}
+
+	if(is_blank_at_pos(event->x, event->y) && event->send_event == false) // is_blank_at_pos return true even if the blank is the background of a row... so I just resend the click.
+	{
+		get_selection()->unselect_all();
+		event->send_event = true; // why doesn't put() do that
+		Gdk::Event((GdkEvent*)event).put();
+	}
+
 	return false;
 }
 
@@ -160,15 +205,17 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		double progress = 0;
 		getChildAttributes(ft, totalSize, state, progress, priority, deepness); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
 
-		childr[m_cols.m_col_name]         = ft.filename;
-		childr[m_cols.m_col_size]         = getFileSizeString(totalSize);
-		childr[m_cols.m_col_priority]     = prioStr[priority];
-		childr[m_cols.m_col_percent]      = int(progress * 100);
-		childr[m_cols.m_col_percent_text] = std::to_string(childr[m_cols.m_col_percent]) + '%';
-		childr[m_cols.m_col_activated]    = state == 1;
-		childr[m_cols.m_col_inconsistent] = state == 2;
-		Gtk::IconInfo iconInfo            = iconTheme->lookup_icon("folder", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
-		childr[m_cols.m_col_icon]         = iconInfo.load_icon();
+		childr[m_cols.m_col_name]           = ft.filename;
+		childr[m_cols.m_col_size]           = getFileSizeString(totalSize);
+		childr[m_cols.m_col_priority]       = prioStr[priority];
+		childr[m_cols.m_col_prioritylevel]  = priority;
+		childr[m_cols.m_col_percent]        = int(progress * 100);
+		childr[m_cols.m_col_percent_text]   = std::to_string(childr[m_cols.m_col_percent]) + '%';
+		childr[m_cols.m_col_activated]      = state == 1;
+		childr[m_cols.m_col_inconsistent]   = state == 2;
+		Gtk::IconInfo iconInfo              = iconTheme->lookup_icon("folder", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
+		childr[m_cols.m_col_icon]           = iconInfo.load_icon();
+		childr[m_cols.m_col_index]          = ft.index;
 
 		populateTree(*i.second, &childr);
 	}
@@ -370,4 +417,42 @@ void GtkFileTreeView::onCheckBoxClicked(std::string path)
 	row[m_cols.m_col_activated] = !row[m_cols.m_col_activated];
 	setPriority(row, row[m_cols.m_col_activated]);
 	update(row);
+}
+
+std::vector<Gtk::TreeRow> GtkFileTreeView::selectedRows()
+{
+	Glib::RefPtr<Gtk::TreeSelection> sel = get_selection();
+	std::vector<Gtk::TreeModel::Path> paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeRow> rows;
+
+	for(auto path : paths)
+		rows.push_back(*m_liststore->get_iter(path));
+
+	return rows;
+}
+
+void GtkFileTreeView::setSelectedPriorities(int level)
+{
+	auto rows = selectedRows();
+	for(auto row : rows)
+		setPriority(row, level);
+}
+
+void GtkFileTreeView::openView_onClick()
+{
+	auto row = selectedRows()[0];
+	if(torrent == nullptr || !torrent->hasMetadata())
+		return;
+
+	// Have to do that because I assumed the index col of a folder contained the index of one of its children 
+	if(row.children().size() != 0)
+		gt::Platform::openTorrent(torrent, row.children()[0][m_cols.m_col_index], row.children().size() != 0);
+	else
+		gt::Platform::openTorrent(torrent, row[m_cols.m_col_index]);
+
+}
+
+void GtkFileTreeView::toggle_onClick()
+{
+	setSelectedPriorities(selectedRows()[0][m_cols.m_col_prioritylevel] == 0);
 }

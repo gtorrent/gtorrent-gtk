@@ -54,6 +54,7 @@ public:
 	GtkFileColumns m_cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;
 	std::vector<libtorrent::size_type> progress_all;
+	Gtk::Menu *m_rcMenu;
 
 	void select(std::shared_ptr<gt::Torrent> selected);
 	void loadColumns();
@@ -68,5 +69,9 @@ public:
 	void populateTree(FileTree &ft, Gtk::TreeRow *row);
 	void getChildAttributes(FileTree &ft, long &size, int &state, double &progress, int &priority, int &deepness);
 	void getChildAttributes(Gtk::TreeRow &row, long &size, int &state, double &progress, int &priority, int &deepness);
+	void toggleView_onClick();
+	void openView_onClick();
+	std::vector<Gtk::TreeRow> selectedRows();
+	void  setSelectedPriorities(int);
 	GtkFileTreeView();
 };
