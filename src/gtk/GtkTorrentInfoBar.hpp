@@ -5,6 +5,8 @@
 
 #include <gtorrent/Torrent.hpp>
 
+#include "GtkGraph.hpp"
+
 namespace Gtk
 {
 	class Notebook;
@@ -139,6 +141,10 @@ public:
 
 public:
 	GtkTorrentInfoBar();
+	inline void removeInfo (std::shared_ptr<gt::Torrent> selected)
+	{
+		m_graph->removeHistory(selected);
+	}
 	void updateInfo (std::shared_ptr<gt::Torrent> selected);
 	void updateState(std::shared_ptr<gt::Torrent> selected);
 };

@@ -398,6 +398,8 @@ void GtkMainWindow::onResumeBtnClicked()
 */
 void GtkMainWindow::onRemoveBtnClicked()
 {
+	for(auto t : m_treeview->selectedTorrents())
+		m_infobar->removeInfo(t);
 	m_treeview->removeSelected();
 }
 
