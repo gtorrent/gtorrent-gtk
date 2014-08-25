@@ -13,6 +13,10 @@ public:
 	void resize(unsigned size);
 	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
+	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
+	{
+		m_history.erase(t);
+	}
 
 protected:
 

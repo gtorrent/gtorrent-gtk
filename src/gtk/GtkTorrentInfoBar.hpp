@@ -3,6 +3,8 @@
 #include <gtkmm/box.h>
 #include <gtorrent/Torrent.hpp>
 
+#include "GtkGraph.hpp"
+
 namespace Gtk
 {
 	class Notebook;
@@ -11,7 +13,6 @@ namespace Gtk
 }
 
 class GtkBlockBar;
-class GtkGraph;
 class GtkStatusBox;
 
 class GtkTorrentInfoBar : public Gtk::Box
@@ -30,6 +31,10 @@ private:
 
 public:
 	GtkTorrentInfoBar();
+	inline void removeInfo (std::shared_ptr<gt::Torrent> selected)
+	{
+		m_graph->removeHistory(selected);
+	}
 	void updateInfo (std::shared_ptr<gt::Torrent> selected);
 	void updateState(std::shared_ptr<gt::Torrent> selected);
 };
