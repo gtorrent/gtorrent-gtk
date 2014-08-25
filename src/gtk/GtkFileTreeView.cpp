@@ -135,7 +135,7 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 	{
 		libtorrent::file_entry entry = row[m_cols.m_col_entry];
 		size += entry.size;
-		priority = row[m_cols.m_col_prioritylevel];
+		priority = (priority == -1 ? row[m_cols.m_col_prioritylevel] : (priority != row[m_cols.m_col_prioritylevel] ? 8 : priority)); //row[m_cols.m_col_prioritylevel];
 		state = priority == 8 ? 2 : priority != 0;
 		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]);
 		return;
@@ -395,7 +395,6 @@ void GtkFileTreeView::setPriority(Gtk::TreeRow &node, int level)
 		node[m_cols.m_col_activated] = false;
 		node[m_cols.m_col_priority] = prioStr[level];
 		node[m_cols.m_col_prioritylevel] = level;
-		std::cout << node[m_cols.m_col_index] << std::endl;
 		return;
 	}
 	for(auto child : node.children())
@@ -407,7 +406,7 @@ void GtkFileTreeView::onCheckBoxClicked(std::string path)
 	auto row = *m_liststore->get_iter(Gtk::TreePath(path));
 	row[m_cols.m_col_activated] = !row[m_cols.m_col_activated];
 	setPriority(row, row[m_cols.m_col_activated]);
-	update(row);
+	update();
 }
 
 std::vector<Gtk::TreeRow> GtkFileTreeView::selectedRows()
@@ -427,6 +426,7 @@ void GtkFileTreeView::setSelectedPriorities(int level)
 	auto rows = selectedRows();
 	for(auto row : rows)
 		setPriority(row, level);
+	update(); //Even if we are just changing the priority on a sub folder, updating the whole tree is necessary as we may have to change a parent state
 }
 
 void GtkFileTreeView::openView_onClick()
@@ -435,7 +435,6 @@ void GtkFileTreeView::openView_onClick()
 	if(torrent == nullptr || !torrent->hasMetadata())
 		return;
 
-	// Have to do that because I assumed the index col of a folder contained the index of one of its children
 	if(row.children().size() != 0)
 		gt::Platform::openTorrent(torrent, row.children()[0][m_cols.m_col_index], row.children().size() != 0);
 	else
