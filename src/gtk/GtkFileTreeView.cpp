@@ -16,6 +16,7 @@
 #include "../Application.hpp"
 #include "GtkFileTreeView.hpp"
 
+
 int _index = 0; // TODO: Indexing is broken in FileTree, this is a temporary measure
 std::string prioStr[] =
 {
@@ -156,7 +157,6 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		Gtk::IconInfo iconInfo;
 
 		childr = row
-
 			? *m_liststore->append(row->children())
 			: *m_liststore->append();
 
