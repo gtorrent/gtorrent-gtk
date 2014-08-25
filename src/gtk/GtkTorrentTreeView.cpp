@@ -20,6 +20,7 @@
 GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
+	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
@@ -42,7 +43,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	if(event->button == 3) // if right-click
 	{
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
+		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
 		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
 		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
@@ -196,7 +197,6 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
 	row[m_cols.m_col_torrent]    =  t;
-
 }
 
 /**
