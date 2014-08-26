@@ -112,9 +112,7 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
-
 	}
-
 	return true; //The bool that determine if the event has been handled allows to propagete or not a click
 }
 
@@ -131,17 +129,40 @@ void GtkTorrentTreeView::setupColumns()
 		loadColumns();
 	else
 	{
-		append_column(         "#", m_cols.m_col_queue);
-		append_column(       "Age", m_cols.m_col_age);
-		append_column(       "ETA", m_cols.m_col_eta);
-		append_column(      "Name", m_cols.m_col_name);
-		append_column(      "Seed", m_cols.m_col_seeders);
-		append_column(     "Leech", m_cols.m_col_leechers);
-		append_column(  "Up Speed", m_cols.m_col_ul_speed);
-		append_column("Down Speed", m_cols.m_col_dl_speed);
-		append_column(      "Size", m_cols.m_col_size);
-		append_column(   "Remains", m_cols.m_col_remaining);
-		append_column(     "Ratio", m_cols.m_col_dl_ratio);
+		cid = append_column(         "#", m_cols.m_col_queue);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_queue);
+		cid = append_column(       "Age", m_cols.m_col_age);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_age);
+		cid = append_column(       "ETA", m_cols.m_col_eta);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_eta);
+		cid = append_column(      "Name", m_cols.m_col_name);
+		set_search_column(cid - 1);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_name);
+		cid = append_column(      "Seed", m_cols.m_col_seeders);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_seeders);
+		cid = append_column(     "Leech", m_cols.m_col_leechers);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_leechers);
+		cid = append_column(  "Up Speed", m_cols.m_col_ul_speed);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_ul_speed);
+		cid = append_column("Down Speed", m_cols.m_col_dl_speed);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_dl_speed);
+		cid = append_column(      "Size", m_cols.m_col_size);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_size);
+		cid = append_column(   "Remains", m_cols.m_col_remaining);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_remaining);
+		cid = append_column(     "Ratio", m_cols.m_col_dl_ratio);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_dl_ratio);
 	}
 
 	for (auto & c : this->get_columns())
@@ -156,11 +177,13 @@ void GtkTorrentTreeView::setupColumns()
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
 	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
+	col->set_sort_column(m_cols.m_col_percent);
 
 	for (auto &c : this->get_columns())
 	{
 		Gtk::Button *butt = c->get_button();
 		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentColumns_onClick));
+//		butt->signal_button_press_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::sortFromColumn), c));
 		c->set_sizing(Gtk::TreeViewColumnSizing::TREE_VIEW_COLUMN_FIXED);
 		c->set_alignment(0.5f);
 		c->set_clickable();
@@ -168,7 +191,6 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_reorderable();
 		if(gt::Settings::settings["ColumnsProperties"] == "")
 			c->set_fixed_width(120);
-
 	}
 	if(gt::Settings::settings["ColumnsProperties"] == "")
 		get_column(0)->set_fixed_width(48);
@@ -215,9 +237,8 @@ void GtkTorrentTreeView::updateCells()
 	int i = 0;
 	for (auto & c : m_liststore->children())
 	{
-		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
-		std::shared_ptr<gt::Torrent> a = c[m_cols.m_col_torrent];
-		assert(t == a);
+		std::shared_ptr<gt::Torrent> t = c[m_cols.m_col_torrent];
+
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_queue]      = i++;
@@ -472,6 +493,7 @@ void GtkTorrentTreeView::loadColumns()
 			         : get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
 			k->set_fixed_width(width);
 			k->set_visible(!hidden);
+			k->set_sort_column(*cols[index]);
 		}
 	}
 	while (tmp != "");
