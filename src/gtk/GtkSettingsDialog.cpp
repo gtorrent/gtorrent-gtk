@@ -13,6 +13,7 @@
 #include <gtkmm/filechooserbutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/textview.h>
 
 #include "../Application.hpp"
 #include "GtkMainWindow.hpp"
@@ -30,6 +31,8 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(         "okbutt",         okbutt);
 	builder->get_widget(       "forebutt",       forebutt);
 	builder->get_widget(       "backbutt",       backbutt);
+	builder->get_widget(       "textview",       textview);
+	builder->get_widget(      "dhtswitch",      dhtswitch);
 	builder->get_widget(     "chokecombo",     chokecombo);
 	builder->get_widget(     "activdspin",     activdspin);
 	builder->get_widget(     "activsspin",     activsspin);
@@ -129,6 +132,18 @@ int GtkSettingsDialog::run()
 	savepathbox ->set_text(gt::Settings::settings["SavePath" ]);
 	useragentbox->set_text(gt::Settings::settings["UserAgent"]);
 
+	std::string tmp = gt::Settings::settings["DHTBootstraps"];
+
+	auto buff = textview->get_buffer();
+	buff->set_text("");
+	while(!tmp.empty())
+	{
+		buff->set_text(buff->get_text() + tmp.substr(0, tmp.find(',')) + "\n");
+		if(tmp.find(',') == std::string::npos) break;
+		tmp = tmp.substr(tmp.find(',') + 1);
+	}
+	
+	dhtswitch    ->set_active(gt::Settings::settings["DHTEnabled"        ] == "Yes");
 	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
 	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
 	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
@@ -146,8 +161,8 @@ void GtkSettingsDialog::onOkClicked()
 {
 	gt::Settings::settings["SavePath"       ] = savepathbox->get_text();
 	gt::Settings::settings["UserAgent"      ] = useragentbox->get_text();
-
 	gt::Settings::settings["GraphStyle"             ] = (filltoggle   ->get_active()) ? "Fill" : "Curves";
+	gt::Settings::settings["DHTEnabled"             ] = (dhtswitch    ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["ShowLegend"             ] = (showtoggle   ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["AnonymousMode"          ] = (anontoggle   ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle->get_active()) ?  "Yes" :     "No";
@@ -155,6 +170,18 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck   ->get_active()) ? "Dash" :   "Line";
 	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck   ->get_active()) ? "Dash" :   "Line";
 
+	auto buff = textview->get_buffer();
+	string tmp = buff->get_text();
+	string routers;
+	while(!tmp.empty())
+	{
+		tmp.erase(tmp.find_last_not_of(" \n\r\t")+1);
+		routers += tmp.substr(0, tmp.find('\n'));
+		if(tmp.find('\n') == std::string::npos) break; //ignore trailing newlines
+		routers += ',';
+		tmp = tmp.substr(tmp.find('\n') + 1);
+	}
+	gt::Settings::settings["DHTBootstraps"] = routers;
 	backup = gt::Settings::settings;
 	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings
 	dial->hide();
