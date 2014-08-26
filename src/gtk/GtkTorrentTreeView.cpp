@@ -187,16 +187,16 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_eta]        = t->getTextEta();
+	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-	row[m_cols.m_col_background] =  m_colors[fgbg].first;
-	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-	row[m_cols.m_col_torrent]    =  t;
+	row[m_cols.m_col_background] = m_colors[fgbg].first;
+	row[m_cols.m_col_foreground] = m_colors[fgbg].second;
+	row[m_cols.m_col_torrent]    = t;
 }
 
 /**
@@ -229,8 +229,8 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
-		c[m_cols.m_col_dl_ratio]   = t->getTextState();
-		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
+		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 	}
