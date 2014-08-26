@@ -255,6 +255,7 @@ void GtkSettingsDialog::onStatusChanged()
 	case 8:
 		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["FinishedForeGroundColor"]));
 		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["FinishedBackGroundColor"]));
+		break;
 	case 9:
 		forebutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedForeGroundColor"]));
 		backbutt->set_rgba(Gdk::RGBA(gt::Settings::settings["QueuedBackGroundColor"]));
@@ -413,7 +414,6 @@ void GtkSettingsDialog::onSeedChokeChanged()
 		gt::Settings::settings["SeedChokingAlgorithm"] = "AntiLeech";
 	}
 }
-
 
 void GtkSettingsDialog::onOverrideChanged()
 {
