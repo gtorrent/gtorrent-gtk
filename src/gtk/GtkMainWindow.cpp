@@ -105,20 +105,22 @@ GtkMainWindow::GtkMainWindow() :
 
 	// for some reason, the treeview start with its first element selected
 	m_treeview->get_selection()->unselect_all();
+
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
 		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(tor);
 	}
 	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
+
 	if (gt::Settings::settings["FileAssociation"] == "" ||
-		gt::Settings::settings["FileAssociation"] == std::to_string(-1))
+	        gt::Settings::settings["FileAssociation"] == "-1")
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
 		if(code != -1)
 			gt::Platform::associate(code & 2, code & 1);
-		gt::Settings::settings["FileAssociation"] =  std::to_string(code);
+		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
 
@@ -273,6 +275,8 @@ void GtkMainWindow::onResumeBtnClicked()
 */
 void GtkMainWindow::onRemoveBtnClicked()
 {
+	for(auto t : m_treeview->selectedTorrents())
+		m_infobar->removeInfo(t);
 	m_treeview->removeSelected();
 }
 
