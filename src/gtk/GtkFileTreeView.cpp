@@ -46,7 +46,7 @@ GtkFileTreeView::GtkFileTreeView()
 
 bool GtkFileTreeView::fileColumns_onClick(GdkEventButton *event)
 {
-	return false;
+	return true;
 }
 
 bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
@@ -170,7 +170,8 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		childr[m_cols.m_col_index]         = ft.index;
 		childr[m_cols.m_col_name]          = ft.filename;
 		childr[m_cols.m_col_entry]         = ft.fs.at(ft.index);
-		childr[m_cols.m_col_size]          = getFileSizeString(ft.fs.at(ft.index).size); // TODO: For some reason the reported size here is wrong, to fix, urgent.
+		childr[m_cols.m_col_size]          = getFileSizeString(ft.fs.at(ft.index).size);
+		childr[m_cols.m_col_bsize]         = ft.fs.at(ft.index).size;
 		childr[m_cols.m_col_icon]          = iconInfo.load_icon();
 		childr[m_cols.m_col_percent]       = int(progress_all[ft.index] * 100 / ft.fs.file_size(ft.index));
 		childr[m_cols.m_col_priority]      = prioStr[ft.t->getHandle().file_priority(ft.index)];
@@ -197,6 +198,7 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 
 		childr[m_cols.m_col_name]           = ft.filename;
 		childr[m_cols.m_col_size]           = getFileSizeString(totalSize);
+		childr[m_cols.m_col_bsize]          = totalSize;
 		childr[m_cols.m_col_priority]       = prioStr[priority];
 		childr[m_cols.m_col_prioritylevel]  = priority;
 		childr[m_cols.m_col_percent]        = int(progress * 100);
@@ -261,12 +263,14 @@ void GtkFileTreeView::setupColumns()
 
 		col->pack_start(*cellto, false);
 		col->set_min_width(29);
+		col->set_sort_column(m_cols.m_col_activated);
 		col->set_max_width(29);
 		col->add_attribute(cellto->property_active(), m_cols.m_col_activated);
 		col->add_attribute(cellto->property_inconsistent(), m_cols.m_col_inconsistent);
 
 		cid = append_column(*Gtk::manage(new Gtk::TreeViewColumn("Name")));
 		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_name);
 		set_expander_column(*col);
 		col->pack_start(*cellp, false);
 		col->pack_start(*cellt, false);
@@ -277,8 +281,12 @@ void GtkFileTreeView::setupColumns()
 		cellto->property_width() = 16;
 		cellto->signal_toggled().connect(sigc::mem_fun(*this, &GtkFileTreeView::onCheckBoxClicked), false);
 		cellp->property_pixbuf_expander_open() = iconTheme->lookup_icon("folder-open", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
-		append_column("Size", m_cols.m_col_size);
-		append_column("Priority", m_cols.m_col_priority);
+		cid = append_column("Size", m_cols.m_col_size);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_bsize);
+		cid = append_column("Priority", m_cols.m_col_priority);
+		col = get_column(cid - 1);
+		col->set_sort_column(m_cols.m_col_prioritylevel);
 	}
 
 	cell = Gtk::manage(new Gtk::CellRendererProgress());
@@ -286,6 +294,7 @@ void GtkFileTreeView::setupColumns()
 	col = this->get_column(cid - 1);
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
+	col->set_sort_column(m_cols.m_col_percent);
 
 	for (auto &c : this->get_columns())
 	{
@@ -319,6 +328,14 @@ void GtkFileTreeView::loadColumns()
 		&m_cols.m_col_size,
 		&m_cols.m_col_priority
 	};
+
+	std::vector<Gtk::TreeModelColumnBase*> scols
+	{
+		&m_cols.m_col_name,
+		&m_cols.m_col_bsize,
+		&m_cols.m_col_prioritylevel
+	};
+
 	std::string tmp = gt::Settings::settings["FileColumnsProperties"];
 	if (tmp == "")
 		tmp = "Name|250|v,Size|95|v,Progress|160|v,Priority|160|v,";
@@ -338,6 +355,7 @@ void GtkFileTreeView::loadColumns()
 			auto k = get_column(append_column(titles[index], *static_cast<Gtk::TreeModelColumn<Glib::ustring>*>(cols[index])) - 1);
 			k->set_fixed_width(width);
 			k->set_visible(!hidden);
+			k->set_sort_column(*scols[index]);
 		}
 	}
 	while (tmp != "");
@@ -361,7 +379,8 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 
-		row[m_cols.m_col_priority] = prioStr[torrent->getHandle().file_priority(row[m_cols.m_col_index])];
+		row[m_cols.m_col_prioritylevel] = torrent->getHandle().file_priority(row[m_cols.m_col_index]);
+		row[m_cols.m_col_priority] = prioStr[row[m_cols.m_col_prioritylevel]];
 		row[m_cols.m_col_activated] = torrent->getHandle().file_priority(row[m_cols.m_col_index]) != 0;
 		row[m_cols.m_col_percent] = int(progress_all[row[m_cols.m_col_index]] * 100 / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]));
 		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
@@ -376,8 +395,9 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 		double progress = 0;
 		getChildAttributes(row, totalSize, state, progress, priority); // state = 0 = off, 1 = enabled, 2 = inconsistent, priority = 0-7 as expected and 8 for mixed
 
-		row[m_cols.m_col_size] = getFileSizeString(totalSize);
+		//row[m_cols.m_col_size] = getFileSizeString(totalSize);
 		row[m_cols.m_col_priority] = prioStr[priority];
+		row[m_cols.m_col_prioritylevel] = priority;
 		row[m_cols.m_col_percent] = int(progress * 100);
 		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
 		row[m_cols.m_col_activated] = state == 1;
