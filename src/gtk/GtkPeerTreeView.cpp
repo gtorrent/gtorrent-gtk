@@ -61,3 +61,10 @@ void GtkPeerTreeView::setupColumns()
 	append_column("Download", m_cols.m_col_down);
 	append_column("Upload", m_cols.m_col_up);
 }
+
+void GtkPeerTreeView::select(std::shared_ptr<gt::Torrent> t)
+{
+	torrent = t;
+	m_liststore->clear();
+	update();
+}
