@@ -56,7 +56,8 @@ PKG_SEARCH_MODULE (LIBNOTIFY REQUIRED libnotify)
 
 # Build gt-core
 ADD_SUBDIRECTORY (gtorrent-core/src)
-
+# Build resources 
+ADD_SUBDIRECTORY (assets)
 # Build gt-gtk
 ADD_SUBDIRECTORY (src)
 
@@ -66,8 +67,8 @@ CONFIGURE_FILE (
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
 	IMMEDIATE @ONLY)
 
-file(COPY assets/gtorrent.png DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY assets/settings.glade DESTINATION ${CMAKE_BINARY_DIR})
+#file(COPY assets/gtorrent.png DESTINATION ${CMAKE_BINARY_DIR})
+#file(COPY assets/settings.glade DESTINATION ${CMAKE_BINARY_DIR})
 
 ADD_CUSTOM_TARGET (uninstall
 	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)

@@ -19,6 +19,8 @@ INCLUDE_DIRECTORIES (
 
 INCLUDE_DIRECTORIES (${PROJECT_BINARY_DIR})
 
+SET_SOURCE_FILES_PROPERTIES(${PROJECT_SOURCE_DIR}/src/gtk/resources.c PROPERTIES GENERATED 1)
+
 ADD_EXECUTABLE ( ${PROJECT_NAME}
 	Application.cpp
 	core/Base.cpp
@@ -34,6 +36,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
     gtk/GtkStatusBox.cpp
     gtk/utils/FileTree.cpp
 	main.cpp
+	${PROJECT_SOURCE_DIR}/src/gtk/resources.c
 	)
 
 TARGET_LINK_LIBRARIES ( gtorrent-gtk
@@ -44,9 +47,9 @@ TARGET_LINK_LIBRARIES ( gtorrent-gtk
 	${LIBGTKMM_LIBRARIES}
 	${LIBGLIBMM_LIBRARIES}
 	${LIBNOTIFY_LIBRARIES}
-	)      
+	)
 
-ADD_DEPENDENCIES(gtorrent-gtk gtorrent)
+ADD_DEPENDENCIES(gtorrent-gtk gtorrent assets)
 
 ADD_DEFINITIONS (
 	${LIBTORRENT_CFLAGS}

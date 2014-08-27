@@ -22,7 +22,7 @@ using namespace std;
 
 GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file(gt::Platform::getExecutablePath().substr(0, gt::Platform::getExecutablePath().find_last_of('/') + 1) +  "settings.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/settings.glade");//_file(gt::Platform::getExecutablePath().substr(0, gt::Platform::getExecutablePath().find_last_of('/') + 1) +  "settings.glade");
 	builder->get_widget("dialog1", dial);
 	dial->set_modal();
 	backup = gt::Settings::settings;
