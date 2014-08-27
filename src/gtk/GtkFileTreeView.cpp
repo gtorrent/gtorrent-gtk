@@ -136,7 +136,7 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 	{
 		libtorrent::file_entry entry = row[m_cols.m_col_entry];
 		size += entry.size;
-		priority = (priority == -1 ? row[m_cols.m_col_prioritylevel] : (priority != row[m_cols.m_col_prioritylevel] ? 8 : priority)); //row[m_cols.m_col_prioritylevel];
+		priority = (priority == -1 ? row[m_cols.m_col_prioritylevel] : (unsigned(priority) != row[m_cols.m_col_prioritylevel] ? 8 : priority)); //row[m_cols.m_col_prioritylevel];
 		state = priority == 8 ? 2 : priority != 0;
 		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]);
 		return;
