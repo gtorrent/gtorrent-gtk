@@ -64,9 +64,9 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_general_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
 
 	m_notebook->append_page(*m_general_box, "General");
-	m_notebook->append_page(*m_trackers_box, "Trackers");
+	m_notebook->append_page(*m_tracker_scroll_box, "Trackers");
 	m_notebook->append_page(*m_peer_scroll_box, "Peers");
-	m_notebook->append_page(*m_tracker_scroll_box, "Pieces");
+	m_notebook->append_page(*m_pieces_box, "Pieces");
 	m_notebook->append_page(*m_filebox, "Files");
 	m_notebook->append_page(*m_graph, "Speed");
 	m_notebook->append_page(*m_log_box, "Log");
