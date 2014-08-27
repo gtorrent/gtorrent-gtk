@@ -17,6 +17,7 @@ namespace Gtk
 class GtkBlockBar;
 class GtkGraph;
 class GtkPeerTreeView;
+class GtkTrackerTreeView;
 class GtkFileTreeView;
 class GtkGeneralBox;
 
@@ -138,6 +139,8 @@ public:
 	GtkPeerTreeView *m_peers;
 	Gtk::ScrolledWindow *m_filebox;
 	GtkFileTreeView *m_fileview;
+	Gtk::ScrolledWindow *m_tracker_scroll_box;
+	GtkTrackerTreeView *m_trackers;
 
 public:
 	GtkTorrentInfoBar();

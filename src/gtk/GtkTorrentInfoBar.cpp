@@ -12,6 +12,7 @@
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
 #include "GtkPeerTreeView.hpp"
+#include "GtkTrackerTreeView.hpp"
 #include "GtkFileTreeView.hpp"
 #include "GtkGeneralBox.hpp"
 
@@ -44,9 +45,9 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_peers      = Gtk::manage(new GtkPeerTreeView());
 	m_peer_scroll_box->add(*m_peers);
 
-	m_peer_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
-	m_peers      = Gtk::manage(new GtkPeerTreeView());
-	m_peer_scroll_box->add(*m_peers);
+	m_tracker_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
+	m_trackers      = Gtk::manage(new GtkTrackerTreeView());
+	m_tracker_scroll_box->add(*m_trackers);
 
 	m_filebox->add(*m_fileview);
 	pack_start(*m_title, Gtk::PACK_SHRINK);
@@ -65,7 +66,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar()
 	m_notebook->append_page(*m_general_box, "General");
 	m_notebook->append_page(*m_trackers_box, "Trackers");
 	m_notebook->append_page(*m_peer_scroll_box, "Peers");
-	m_notebook->append_page(*m_pieces_box, "Pieces");
+	m_notebook->append_page(*m_tracker_scroll_box, "Pieces");
 	m_notebook->append_page(*m_filebox, "Files");
 	m_notebook->append_page(*m_graph, "Speed");
 	m_notebook->append_page(*m_log_box, "Log");
