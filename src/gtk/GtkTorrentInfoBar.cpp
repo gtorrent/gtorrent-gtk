@@ -49,6 +49,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 	m_notebook->append_page(*m_stat_box, "Torrent Info");
 	m_notebook->append_page(*m_filebox, "Files");
 	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
+	show_all();
 }
 
 // TODO: Should replace every place where a torrent index is required with a torrent pointer, smells like everything would break if

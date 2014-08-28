@@ -40,6 +40,8 @@ public:
 
 	Gtk::Button *addTorrentButton = nullptr, *resumeButton = nullptr, *pauseButton = nullptr, *removeButton = nullptr, *propertiesButton = nullptr, *settingsButton = nullptr;
 	Gtk::Separator *vSeparatorOne = nullptr, *vSeparatorTwo = nullptr; 
+	Gtk::Popover *magPopover = nullptr;
+	Gtk::Entry *magEntry = nullptr;
 	Gtk::ScrolledWindow *scrolledWindow = nullptr;
 	Gtk::MenuButton *addMagnetButton = nullptr;
 	Gtk::Paned *panel = nullptr;

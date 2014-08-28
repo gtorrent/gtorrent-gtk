@@ -41,12 +41,15 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
 	builder->get_widget_derived(  "infobar",        m_infobar);
 
-//	magtxt->set_visible();
-//	magtxt->set_width_chars(75);
-//	magPop->add(*magtxt);
-//	btn_add_link->set_popover(*magPop);
+	magEntry   = Gtk::manage(new Gtk::Entry());
+	magEntry->set_visible();
+	magEntry->set_width_chars(75);
+	magPopover = Gtk::manage(new Gtk::Popover());
 
-//	m_infobar  = Gtk::manage(new GtkTorrentInfoBar());
+	magPopover->add(*magEntry);
+	magPopover->set_relative_to(*addMagnetButton);
+	addMagnetButton->set_popover(*magPopover);
+
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
 	m_infobar->set_margin_left(5);
@@ -206,24 +209,23 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 */
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
-/*	if(magPop->get_visible())
+	if(magPopover->get_visible())
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		std::string link = clip->wait_for_text();
 		if(gt::Core::isLink(link))
-			magtxt->set_text(link);
+			magEntry->set_text(link);
 	}
 	else
 	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
+		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
 		if (t)
 		{
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview->addCell(t);
 		}
-		magtxt->set_text("");
+		magEntry->set_text("");
 	}
-*/
 }
 
 /**
