@@ -57,7 +57,6 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_title("gTorrent");
 
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 
 	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));

@@ -9,6 +9,7 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
+#include <gtkmm/separator.h>
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
@@ -51,6 +52,7 @@ public:
 	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
+	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 
 
 	GtkMainWindow();

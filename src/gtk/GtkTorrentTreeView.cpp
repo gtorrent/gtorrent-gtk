@@ -220,8 +220,8 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_bage]       = t->getActiveTime();
-	row[m_cols.m_col_eta]        = t->getTextEta();
 	row[m_cols.m_col_beta]       = t->getEta();
+	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
@@ -230,9 +230,9 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_bsize]      = t->getSize();
 	row[m_cols.m_col_bremaining] = t->getRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-	row[m_cols.m_col_background] =  m_colors[fgbg].first;
-	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-	row[m_cols.m_col_torrent]    =  t;
+	row[m_cols.m_col_background] = m_colors[fgbg].first;
+	row[m_cols.m_col_foreground] = m_colors[fgbg].second;
+	row[m_cols.m_col_torrent]    = t;
 }
 
 /**
@@ -269,9 +269,9 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_bdl_speed]  = t->getDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
 		c[m_cols.m_col_bsize]      = t->getSize();
-		c[m_cols.m_col_dl_ratio]   = t->getTextState();
-		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
 		c[m_cols.m_col_beta]       = t->getTimeRemaining();
+		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 	}
@@ -456,6 +456,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
+	m_parent->btn_remove->set_visible(!selectedTorrents().empty());
+	m_parent->separator1->set_visible(m_parent->btn_remove->get_visible());
 }
 
 // columns are saved in a single settings, looking like this:
