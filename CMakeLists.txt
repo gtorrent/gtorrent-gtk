@@ -11,18 +11,24 @@ PROJECT (gtorrent-gtk)
 SET (GTORRENT_VERSION_MAJOR 0)
 SET (GTORRENT_VERSION_MINOR 0)
 SET (GTORRENT_VERSION_PATCH 2)
+SET (GTORRENT_VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
 
 #############################################################
-
-# Configure version into utils/Version.hpp
-SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
-CONFIGURE_FILE (src/utils/Version.hpp.in Version.hpp @ONLY)
 
 # Set Cmake to build runtime in cwd
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 # Options
-OPTION (WIN_DEBUG "Disable -mwindows for debugging purposes" OFF) #Disables CXXFLAG -mwindows in order to allow console output
+OPTION (WIN_DEBUG                "Disable -mwindows for debugging purposes" OFF)
+OPTION (ENABLE_TESTEXCUTABLE     "Enable the compilation of a simple test"  OFF)
+OPTION (USE_LOGGING              "Turns logging on/off"                     ON)
+OPTION (Boost_USE_STATIC_LIBS    "Use static version of Boost libraries."   ON)
+OPTION (Boost_USE_MULTITHREADED  "Use multithreaded version of Boost."      ON)  
+OPTION (Boost_USE_STATIC_RUNTIME "Use Boost static runtime."                OFF) 
+
+IF (USE_LOGGING)
+ADD_DEFINITIONS(-DUSE_LOGGING=1)
+ENDIF()
 
 # adds Windows flag necessary to prevent console window spawning and allows override to disable this for debugging purposes
 IF (WIN32 AND (NOT WIN_DEBUG))
@@ -46,6 +52,7 @@ INCLUDE (FindPkgConfig)
 PKG_SEARCH_MODULE (LIBTORRENT REQUIRED libtorrent-rasterbar)
 PKG_SEARCH_MODULE (LIBGTKMM REQUIRED gtkmm-3.0)
 PKG_SEARCH_MODULE (LIBGLIBMM REQUIRED glibmm-2.4)
+PKG_SEARCH_MODULE (LIBNOTIFY REQUIRED libnotify)
 
 # Build gt-core
 ADD_SUBDIRECTORY (gtorrent-core/src)

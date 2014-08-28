@@ -1,24 +1,22 @@
 #pragma once
 
+#include <gtkmm/drawingarea.h>
 #include <queue>
 #include <cmath>
 
-#include <gtkmm/widget.h>
-#include <gdkmm/general.h>
-#include <gtk/gtkwidget.h>
-#include <gtkmm/cssprovider.h>
-
-#include "../Application.hpp"
-
-class GtkGraph : public Gtk::Widget
+class GtkGraph : public Gtk::DrawingArea
 {
 public:
 	GtkGraph(unsigned size = 61);
 	virtual ~GtkGraph();
-
+	int xoffset = 0;
 	void resize(unsigned size);
-	void add(unsigned index, double upload, double download);
-	void select(unsigned s);
+	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
+	void select(std::shared_ptr<gt::Torrent> s);
+	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
+	{
+		m_history.erase(t);
+	}
 
 protected:
 
@@ -37,8 +35,8 @@ protected:
 
 	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
 private:
-	std::vector<std::pair<std::queue<double>, std::queue<double>>> m_history;
-	unsigned m_selected;
+	std::map<std::shared_ptr<gt::Torrent>, std::pair<std::queue<double>, std::queue<double>>> m_history;
+	std::shared_ptr<gt::Torrent> m_selected;
 	unsigned m_maxSize;
 	double max(std::queue<double> q);
 	inline double max(std::queue<double> q1, std::queue<double> q2)

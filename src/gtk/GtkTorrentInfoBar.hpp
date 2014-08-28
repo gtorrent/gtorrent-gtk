@@ -1,34 +1,42 @@
 #pragma once
 
 #include <gtkmm/box.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/label.h>
-#include <gtkmm/listbox.h>
-#include <gtkmm/table.h>
-
 #include <gtorrent/Torrent.hpp>
 
-#include "../Application.hpp"
-#include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
+
+namespace Gtk
+{
+	class Notebook;
+	class Label;
+	class ScrolledWindow; 
+}
+
+class GtkBlockBar;
+class GtkStatusBox;
+class GtkFileTreeView;
 
 class GtkTorrentInfoBar : public Gtk::Box
 {
-public:
-	GtkBlockBar *m_progress;
-	Gtk::Label *m_title;
-	GtkGraph *m_graph;
+private:
+	GtkBlockBar   *m_progress;
+	Gtk::Label    *m_title;
+	GtkGraph      *m_graph;
 	Gtk::Notebook *m_notebook;
-	Gtk::Box *m_stat_box;
-	Gtk::Box *m_piece_box;
+	Gtk::Box      *m_stat_box;
+	Gtk::Box      *m_piece_box;
 
-	Gtk::Table *m_table_layout;
-	Gtk::Label *m_down_total_label;
-	Gtk::Label *m_down_total;
-	Gtk::Label *m_up_total_label;
-	Gtk::Label *m_up_total;
+	Gtk::ScrolledWindow *m_scroll_box;
+	GtkStatusBox        *m_status_box;
+	Gtk::ScrolledWindow *m_filebox;
+	GtkFileTreeView *m_fileview;
 
+public:
 	GtkTorrentInfoBar();
-	void updateInfo(std::shared_ptr<gt::Torrent> selected);
+	inline void removeInfo (std::shared_ptr<gt::Torrent> selected)
+	{
+		m_graph->removeHistory(selected);
+	}
+	void updateInfo (std::shared_ptr<gt::Torrent> selected);
 	void updateState(std::shared_ptr<gt::Torrent> selected);
 };

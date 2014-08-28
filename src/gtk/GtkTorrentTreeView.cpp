@@ -1,10 +1,18 @@
 #include "GtkTorrentTreeView.hpp"
-#include "GtkMainWindow.hpp"
-#include <giomm/file.h>
+
+#include <gtorrent/Log.hpp>
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Platform.hpp>
+#include <gtkmm/treerowreference.h>
+#include <gtkmm/cellrendererprogress.h>
+#include <gtkmm/checkmenuitem.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/separatormenuitem.h>
-#include <Log.hpp>
-#include <Settings.hpp>
-#include <Platform.hpp>
+
+#include "../Application.hpp"
+#include "GtkMainWindow.hpp"
+#include "GtkTorrentInfoBar.hpp"
 
 /**
 * Sets up the tree view containing torrent information.
@@ -12,15 +20,15 @@
 GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
+	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
+	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
 	set_model(m_liststore);
 	setupColumns();
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
-	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
-		addCell(tor);
 }
 
 /**
@@ -35,7 +43,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	if(event->button == 3) // if right-click
 	{
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));
+		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
 		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
 		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
 		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
@@ -179,17 +187,16 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_eta]        = t->getTextEta();
+	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
 	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-	row[m_cols.m_col_background] =  m_colors[fgbg].first;
-	row[m_cols.m_col_foreground] =  m_colors[fgbg].second;
-	row[m_cols.m_col_torrent]    =  t;
-
+	row[m_cols.m_col_background] = m_colors[fgbg].first;
+	row[m_cols.m_col_foreground] = m_colors[fgbg].second;
+	row[m_cols.m_col_torrent]    = t;
 }
 
 /**
@@ -209,6 +216,8 @@ void GtkTorrentTreeView::updateCells()
 	for (auto & c : m_liststore->children())
 	{
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->getTorrents()[i];
+		std::shared_ptr<gt::Torrent> a = c[m_cols.m_col_torrent];
+		assert(t == a);
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_queue]      = i++;
@@ -220,26 +229,30 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
-		c[m_cols.m_col_dl_ratio]   = t->getTextState();
-		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
+		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
+		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
-		c[m_cols.m_col_torrent]    = t;
 	}
 }
 
 /**
 * Gets the selected cells in the torrent tree view.
 */
-std::vector<unsigned> GtkTorrentTreeView::selectedIndices()
+std::vector<std::shared_ptr<gt::Torrent>> GtkTorrentTreeView::selectedTorrents()
 {
-	Glib::RefPtr<Gtk::TreeSelection> sel = this->get_selection();
-	sel->set_mode(Gtk::SelectionMode::SELECTION_MULTIPLE);
-	std::vector<Gtk::TreeModel::Path> path = sel->get_selected_rows();
-	std::vector<unsigned> indices;
-	for (auto val : path)
-		indices.push_back(val[0]); // we only get the first index because our tree is 1 node deep
-	return indices;
+	std::vector<std::shared_ptr<gt::Torrent>> torrents;
+
+	Glib::RefPtr<Gtk::TreeSelection> sel = get_selection();
+	std::vector<Gtk::TreeModel::Path> paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(get_model(), path));
+
+	for (auto i : rows)
+		torrents.push_back((*m_liststore->get_iter(i.get_path()))[m_cols.m_col_torrent]);
+	return torrents;
 }
 
 /**
@@ -247,11 +260,10 @@ std::vector<unsigned> GtkTorrentTreeView::selectedIndices()
 */
 std::shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	if(selectedIndices().size() < 1)
+	if(selectedTorrents().empty())
 		return nullptr;
 	else
-		return t[selectedIndices()[0]];
+		return selectedTorrents()[0];
 }
 
 /**
@@ -259,10 +271,8 @@ std::shared_ptr<gt::Torrent> GtkTorrentTreeView::getFirstSelected()
 */
 void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	for (auto i : selectedIndices())
-		t[i]->setPaused(isPaused);// the pause button switches the status
-
+	for (auto i : selectedTorrents())
+		i->setPaused(isPaused);// the pause button switches the status
 }
 
 /**
@@ -270,11 +280,18 @@ void GtkTorrentTreeView::setSelectedPaused(bool isPaused)
 */
 void GtkTorrentTreeView::removeSelected()
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	for (auto i : selectedIndices())
+	Glib::RefPtr<Gtk::TreeSelection> sel = get_selection();
+	std::vector<Gtk::TreeModel::Path> paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(get_model(), path));
+
+	for (auto i : rows)
 	{
-		Application::getSingleton()->getCore()->removeTorrent(t[i]);
-		removeCell(i);
+		Gtk::TreeModel::iterator treeiter = m_liststore->get_iter(i.get_path());
+		Application::getSingleton()->getCore()->removeTorrent((*treeiter)[m_cols.m_col_torrent]);
+		m_liststore->erase(treeiter);
 	}
 	m_parent->onSecTick();
 	m_infobar->updateInfo(getFirstSelected());
@@ -338,10 +355,8 @@ void GtkTorrentTreeView::propertyView_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
-	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-
-	for (auto i : selectedIndices())
-		t[i]->setSequentialDownload(rcmItemSeq->get_active());
+	for (auto i : selectedTorrents())
+		i->setSequentialDownload(rcmItemSeq->get_active());
 }
 
 /**
@@ -349,13 +364,11 @@ void GtkTorrentTreeView::sequentialChange_onClick()
 */
 void GtkTorrentTreeView::sequentialChange_onRealize()
 {
-	std::vector<std::shared_ptr<gt::Torrent> > t = Application::getSingleton()->getCore()->getTorrents();
-
-	if(selectedIndices().size() > 0)
+	if(!selectedTorrents().empty())
 	{
-		bool firstIsSeq = t[selectedIndices()[0]]->SequentialDownloadEnabled();
-		for (auto i : selectedIndices())
-			if(t[i]->SequentialDownloadEnabled() != firstIsSeq)
+		bool firstIsSeq = selectedTorrents()[0]->SequentialDownloadEnabled();
+		for (auto i : selectedTorrents())
+			if(i->SequentialDownloadEnabled() != firstIsSeq)
 			{
 				rcmItemSeq->set_inconsistent();
 				return;
@@ -368,16 +381,16 @@ void GtkTorrentTreeView::sequentialChange_onRealize()
 
 void GtkTorrentTreeView::reloadColors()
 {
-	m_colors["Paused"]                  = std::pair<std::string, std::string>(gt::Settings::settings["PausedForeGroundColor"],      gt::Settings::settings["PausedBackGroundColor"]);
-	m_colors["Queued for checking"]     = std::pair<std::string, std::string>(gt::Settings::settings["QueuedForeGroundColor"],      gt::Settings::settings["QueuedcheckingBackGroundColor"]);
-	m_colors["Downloading metadata..."] = std::pair<std::string, std::string>(gt::Settings::settings["MetadataForeGroundColor"],    gt::Settings::settings["MetadataBackGroundColor"]);
-	m_colors["Finished"]                = std::pair<std::string, std::string>(gt::Settings::settings["FinishedForeGroundColor"],    gt::Settings::settings["FinishedBackGroundColor"]);
-	m_colors["Allocating..."]           = std::pair<std::string, std::string>(gt::Settings::settings["AllocatingForeGroundColor"],  gt::Settings::settings["AllocatingBackGroundColor"]);
-	m_colors["Resuming..."]             = std::pair<std::string, std::string>(gt::Settings::settings["ResumingForeGroundColor"],    gt::Settings::settings["ResumingBackGroundColor"]);
-	m_colors["Checking..."]             = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"],    gt::Settings::settings["CheckingBackGroundColor"]);
-	m_colors["Seeding"]                 = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"],     gt::Settings::settings["SeedingBackGroundColor"]);
-	m_colors["Downloading"]             = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"], gt::Settings::settings["DownloadingBackGroundColor"]);
-
+	m_colors["Paused"                 ] = std::pair<std::string, std::string>(gt::Settings::settings["PausedForeGroundColor"        ], gt::Settings::settings["PausedBackGroundColor"        ]);
+	m_colors["Queued for checking"    ] = std::pair<std::string, std::string>(gt::Settings::settings["QueuedCheckingForeGroundColor"], gt::Settings::settings["QueuedcheckingBackGroundColor"]);
+	m_colors["Queued"                 ] = std::pair<std::string, std::string>(gt::Settings::settings["QueuedForeGroundColor"        ], gt::Settings::settings["QueuedBackGroundColor"        ]);
+	m_colors["Downloading metadata..."] = std::pair<std::string, std::string>(gt::Settings::settings["MetadataForeGroundColor"      ], gt::Settings::settings["MetadataBackGroundColor"      ]);
+	m_colors["Finished"               ] = std::pair<std::string, std::string>(gt::Settings::settings["FinishedForeGroundColor"      ], gt::Settings::settings["FinishedBackGroundColor"      ]);
+	m_colors["Allocating..."          ] = std::pair<std::string, std::string>(gt::Settings::settings["AllocatingForeGroundColor"    ], gt::Settings::settings["AllocatingBackGroundColor"    ]);
+	m_colors["Resuming..."            ] = std::pair<std::string, std::string>(gt::Settings::settings["ResumingForeGroundColor"      ], gt::Settings::settings["ResumingBackGroundColor"      ]);
+	m_colors["Checking..."            ] = std::pair<std::string, std::string>(gt::Settings::settings["CheckingForeGroundColor"      ], gt::Settings::settings["CheckingBackGroundColor"      ]);
+	m_colors["Seeding"                ] = std::pair<std::string, std::string>(gt::Settings::settings["SeedingForeGroundColor"       ], gt::Settings::settings["SeedingBackGroundColor"       ]);
+	m_colors["Downloading"            ] = std::pair<std::string, std::string>(gt::Settings::settings["DownloadingForeGroundColor"   ], gt::Settings::settings["DownloadingBackGroundColor"   ]);
 }
 
 void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
@@ -385,10 +398,17 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	char pausedTorrents = 0, startedTorrents = 0;
 
-	for (auto i : selectedIndices())
+	if(selectedTorrents().empty())
 	{
-		pausedTorrents  +=  t[i]->isPaused();
-		startedTorrents += !t[i]->isPaused();
+		m_parent->btn_pause ->hide();
+		m_parent->btn_resume->hide();
+		return;
+	}
+
+	for (auto i : selectedTorrents())
+	{
+		pausedTorrents  +=  i->isPaused();
+		startedTorrents += !i->isPaused();
 		if(pausedTorrents && startedTorrents) break;
 	}
 
@@ -457,4 +477,13 @@ void GtkTorrentTreeView::loadColumns()
 		}
 	}
 	while (tmp != "");
+}
+
+bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
+{
+	m_infobar->updateInfo(getFirstSelected());	
+	if(event->send_event) return true;
+	event->send_event = true;
+	Gdk::Event((GdkEvent*)event).put();
+	return false;
 }

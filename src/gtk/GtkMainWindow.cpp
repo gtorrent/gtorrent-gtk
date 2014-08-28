@@ -1,8 +1,25 @@
-#include "Platform.hpp"
-#include "Settings.hpp"
-#include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
+
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Settings.hpp>
+
+#include <boost/algorithm/string.hpp>
+#include <giomm.h>
+#include <glibmm.h>
+#include <libnotify/notify.h>
+
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/hvseparator.h>
+#include <gtkmm/main.h>
+#include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm/stock.h>
+
+#include "../Application.hpp"
+#include "GtkAssociationDialog.hpp"
+#include "GtkTorrentTreeView.hpp"
+#include "GtkTorrentInfoBar.hpp"
+#include "GtkSettingsDialog.hpp"
 
 /**
 * Sets up the main window.
@@ -11,6 +28,7 @@ GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
 {
 	//TODO:This needs to be refactored
+	notify_init ("Hello world!");
 	set_position(Gtk::WIN_POS_CENTER);
 	set_default_size(800, 500);
 	magtxt->set_visible();
@@ -23,13 +41,14 @@ GtkMainWindow::GtkMainWindow() :
 
 	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
+	m_infobar->set_margin_left(5);
+	m_infobar->set_margin_right(5);
 
-	//swin->get_vscrollbar()->hide(); // works, but then you can't use the scrollwheel
 	m_swin->add(*m_treeview);
 	panel->pack1(*m_swin);
 	panel->pack2(*m_infobar);
 
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1000);
+	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	header = Gtk::manage(new Gtk::HeaderBar());
@@ -86,15 +105,21 @@ GtkMainWindow::GtkMainWindow() :
 	// for some reason, the treeview start with its first element selected
 	m_treeview->get_selection()->unselect_all();
 
+	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
+	{
+		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		m_treeview->addCell(tor);
+	}
+	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
 
-	if (gt::Settings::getOptionAsString("FileAssociation") == "" ||
-	        gt::Settings::getOptionAsInt("FileAssociation") == -1)
+	if (gt::Settings::settings["FileAssociation"] == "" ||
+	        gt::Settings::settings["FileAssociation"] == "-1")
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
 		if(code != -1)
 			gt::Platform::associate(code & 2, code & 1);
-		gt::Settings::setOption("FileAssociation", code);
+		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
 
@@ -107,7 +132,7 @@ GtkMainWindow::GtkMainWindow() :
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
 	std::string sel_data = selection_data.get_data_as_string();
-	if(m_core->isMagnetLink(sel_data))
+	if(m_core->isLink(sel_data))
 	{
 		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
 		if (t)//Checks if t is not null
@@ -123,7 +148,10 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 		{
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
 			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 				m_treeview->addCell(t);
+			}
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 	}
@@ -138,7 +166,10 @@ bool GtkMainWindow::onSecTick()
 	m_infobar->updateState(m_treeview->getFirstSelected());
 	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
+	{
+		t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(t);
+	}
 	m_swin->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
@@ -169,11 +200,31 @@ void GtkMainWindow::onAddBtnClicked()
 		{
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 				m_treeview->addCell(t);
+			}
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 		break;
 	}
+}
+
+void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
+{
+	NotifyNotification *Hello = nullptr;
+
+	int newstate = t->getState();
+	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
+		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has finished downloading.").c_str(), "dialog-information");
+	else if(newstate == libtorrent::torrent_status::downloading  && 
+			oldstate == libtorrent::torrent_status::downloading_metadata)
+		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has started downloading.").c_str(), "dialog-information");
+	else 
+		return; //:^)
+
+	notify_notification_show (Hello, NULL);
+	g_object_unref(G_OBJECT(Hello));
 }
 
 /**
@@ -185,14 +236,17 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		std::string link = clip->wait_for_text();
-		if(gt::Core::isMagnetLink(link))
+		if(gt::Core::isLink(link))
 			magtxt->set_text(link);
 	}
 	else
 	{
 		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
 		if (t)
+		{
+			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview->addCell(t);
+		}
 		magtxt->set_text("");
 	}
 }
@@ -220,6 +274,8 @@ void GtkMainWindow::onResumeBtnClicked()
 */
 void GtkMainWindow::onRemoveBtnClicked()
 {
+	for(auto t : m_treeview->selectedTorrents())
+		m_infobar->removeInfo(t);
 	m_treeview->removeSelected();
 }
 
@@ -237,6 +293,7 @@ void GtkMainWindow::onPropertiesBtnClicked()
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_treeview->saveColumns();
+	notify_uninit();
 	m_core->shutdown();
 	return false;
 }

@@ -1,29 +1,18 @@
 #pragma once
 
-#include <glibmm.h>
-#include <giomm.h>
-#include <gtkmm/headerbar.h>
-#include <gtkmm/window.h>
-#include <gtkmm/button.h>
-#include <gtkmm/menubutton.h>
-#include <gtkmm/main.h>
-#include <gtkmm/stock.h>
-#include <boost/algorithm/string.hpp>
-#include <gtkmm/uimanager.h>
-#include <gtkmm/paned.h>
-#include <gtkmm/filechooserdialog.h>
-#include <gtkmm/hvseparator.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/popover.h>
-
 #include <gtorrent/Core.hpp>
 
-#include "GtkTorrentTreeView.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include "GtkSettingsDialog.hpp"
+#include <gtkmm/button.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/headerbar.h>
+#include <gtkmm/menubutton.h>
+#include <gtkmm/popover.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/window.h>
 
-//#include <Application.hpp>
-
+class GtkTorrentInfoBar;
+class GtkTorrentTreeView;
+class GtkSettingsDialog;
 
 class GtkMainWindow : public Gtk::Window
 {
@@ -43,16 +32,14 @@ class GtkMainWindow : public Gtk::Window
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
+	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
 	Gtk::ScrolledWindow *m_swin;
-	GtkMainWindow();
 
-	bool onDestroy(GdkEventAny *event);
-	bool onSecTick();
 
 	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
 	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
@@ -67,4 +54,8 @@ public:
 	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
 	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 
+
+	GtkMainWindow();
+	bool onDestroy(GdkEventAny *event);
+	bool onSecTick();
 };
