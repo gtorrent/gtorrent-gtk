@@ -1,5 +1,5 @@
 #include "GtkTorrentTreeView.hpp"
-
+#include <glibmm/pattern.h>
 #include <gtorrent/Log.hpp>
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
@@ -9,7 +9,7 @@
 #include <gtkmm/menuitem.h>
 #include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/separatormenuitem.h>
-
+#include <cctype>
 #include "../Application.hpp"
 #include "GtkMainWindow.hpp"
 #include "GtkTorrentInfoBar.hpp"
@@ -20,12 +20,23 @@
 GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
+	m_filter = Gtk::TreeModelFilter::create(m_liststore);
+	m_filter->set_visible_func(sigc::mem_fun(*this, &GtkTorrentTreeView::showMatches));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
-	set_model(m_liststore);
+	set_model(m_filter);
 	setupColumns();
+	set_enable_search();
+	m_searchEntry = Gtk::manage(new Gtk::Entry());
+	m_searchPopover = Gtk::manage(new Gtk::Popover());
+	m_searchPopover->add(*m_searchEntry);
+	m_searchPopover->set_relative_to(*this);
+	m_searchPopover->set_modal();
+	m_searchEntry->show();
+	set_search_entry(*m_searchEntry);
+	set_search_column(m_cols.m_col_name);
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
@@ -229,7 +240,8 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 */
 void GtkTorrentTreeView::removeCell(unsigned index)
 {
-	m_liststore->erase(m_liststore->get_iter("0:" + std::to_string(index)));
+//liststore->get_iter("0:" + std::to_string(index))
+	m_liststore->erase(m_filter->convert_iter_to_child_iter(m_filter->get_iter("0:" + std::to_string(index))));
 }
 
 /**
@@ -280,7 +292,7 @@ std::vector<std::shared_ptr<gt::Torrent>> GtkTorrentTreeView::selectedTorrents()
 		rows.push_back(Gtk::TreeModel::RowReference(get_model(), path));
 
 	for (auto i : rows)
-		torrents.push_back((*m_liststore->get_iter(i.get_path()))[m_cols.m_col_torrent]);
+		torrents.push_back((*m_filter->get_iter(i.get_path()))[m_cols.m_col_torrent]);
 	return torrents;
 }
 
@@ -318,7 +330,7 @@ void GtkTorrentTreeView::removeSelected()
 
 	for (auto i : rows)
 	{
-		Gtk::TreeModel::iterator treeiter = m_liststore->get_iter(i.get_path());
+		Gtk::TreeModel::iterator treeiter = m_liststore->get_iter(m_filter->convert_path_to_child_path(i.get_path()));
 		Application::getSingleton()->getCore()->removeTorrent((*treeiter)[m_cols.m_col_torrent]);
 		m_liststore->erase(treeiter);
 	}
@@ -525,9 +537,26 @@ void GtkTorrentTreeView::loadColumns()
 
 bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 {
+	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
+	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) return false;
 	m_infobar->updateInfo(getFirstSelected());	
 	if(event->send_event) return true;
 	event->send_event = true;
 	Gdk::Event((GdkEvent*)event).put();
 	return false;
+}
+
+bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
+{
+	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered
+
+	std::string toMatch = iter->get_value(m_cols.m_col_name);
+	std::string matching(this->get_search_entry()->get_text());
+
+	std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), tolower);
+	std::transform(matching.begin(), matching.end(), matching.begin(), tolower);
+
+	Glib::PatternSpec matcher("*" + matching + "*");
+
+	return matcher.match(toMatch);
 }

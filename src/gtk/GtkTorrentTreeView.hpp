@@ -4,7 +4,9 @@
 
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/popover.h>
 
 namespace Gtk
 {
@@ -88,6 +90,7 @@ private:
 	GtkTorrentColumns m_cols;
 	GtkTorrentInfoBar *m_infobar;
 	GtkMainWindow *m_parent;
+	Gtk::Entry *m_searchEntry;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
@@ -97,6 +100,7 @@ private:
 	void setupColumns();
 
 	/* Event handlers for clicks on the controls */
+	bool				 showMatches(const Gtk::TreeModel::const_iterator& iter);
 	bool				  onKeyPress(GdkEventKey *event);
 	bool         torrentView_onClick(GdkEventButton *event);
 	bool      torrentColumns_onClick(GdkEventButton *event);
@@ -114,6 +118,8 @@ private:
 
 public:
 	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
+	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
+	Gtk::Popover *m_searchPopover;
 
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
