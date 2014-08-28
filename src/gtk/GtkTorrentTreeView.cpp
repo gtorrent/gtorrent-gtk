@@ -415,7 +415,7 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
-	m_parent->btn_remove->set_visible(!selectedIndices().empty());
+	m_parent->btn_remove->set_visible(!selectedTorrents().empty());
 	m_parent->separator1->set_visible(m_parent->btn_remove->get_visible());
 }
 

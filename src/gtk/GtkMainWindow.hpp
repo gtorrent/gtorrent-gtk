@@ -9,6 +9,7 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
+#include <gtkmm/separator.h>
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
