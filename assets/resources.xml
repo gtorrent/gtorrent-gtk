@@ -3,5 +3,6 @@
   <gresource prefix="/org/gtk/gtorrent">
     <file>gtorrent.png</file>
     <file compressed="true">settings.glade</file>
+    <file compressed="true">mainwindow.ui</file>
   </gresource>
 </gresources>

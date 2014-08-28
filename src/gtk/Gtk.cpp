@@ -1,5 +1,9 @@
+#include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
+#include <exception>
+#include <stdexcept>
 #include <sys/stat.h>
-
+#include <gtkmm/builder.h>
 #include <gtkmm/settings.h>
 #include <gtkmm/main.h>
 
@@ -19,19 +23,34 @@ bool exists (const std::string& name)
 }
 
 /**
-* Sets up the main window.
-*/
+ * Sets up the main window.
+ */
 GuiGtk::GuiGtk(int argc, char **argv)
 {
-	Gtk::Main kit(argc, argv);
+	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtorrent.gtk");
+	Glib::RefPtr<Gtk::Builder> refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+		return ;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " << ex.what() << std::endl;
+		return ;
+	}
 
-	GtkMainWindow mainWindow;
-
-	std::string binpath = argv[0];
-	binpath = binpath.substr(0, binpath.find_last_of(gt::Platform::getFileSeparator()));
-	std::string iconpath = binpath + gt::Platform::getFileSeparator() + "gtorrent.png";
-	if (exists (iconpath))
-		mainWindow.set_icon_from_file(iconpath);
-
-	kit.run(mainWindow);
+	GtkMainWindow *mainWindow = 0;
+	refBuilder->get_widget_derived("GtkMainWindow", mainWindow);
+	mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
+	app->run(*mainWindow, argc, argv);
 }
