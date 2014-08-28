@@ -39,13 +39,14 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(   "scrolledWindow",   scrolledWindow);
 	builder->get_widget(          "vSepOne",    vSeparatorOne);
 	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
+	builder->get_widget_derived(  "infobar",        m_infobar);
 
 //	magtxt->set_visible();
 //	magtxt->set_width_chars(75);
 //	magPop->add(*magtxt);
 //	btn_add_link->set_popover(*magPop);
 
-	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
+//	m_infobar  = Gtk::manage(new GtkTorrentInfoBar());
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
 	m_infobar->set_margin_left(5);
@@ -55,17 +56,16 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	m_treeview->set_visible();
 	scrolledWindow->add(*m_treeview);
 	panel->pack1(*scrolledWindow);
-	panel->pack2(*m_infobar);
 
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
-	addMagnetButton ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
-	addTorrentButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
-	pauseButton     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
-	resumeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
-	removeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
-	settingsButton  ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
+	addTorrentButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked       ));
+	pauseButton     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked     ));
+	resumeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked    ));
+	removeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked    ));
+	settingsButton  ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked  ));
+	addMagnetButton ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked ));
 	propertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
 
 	// Let's add some DnD goodness
@@ -87,7 +87,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	}
 
 	if (gt::Settings::settings["FileAssociation"] == "" ||
-	gt::Settings::settings["FileAssociation"] == "-1")
+		gt::Settings::settings["FileAssociation"] == "-1")
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)

@@ -18,8 +18,8 @@
 /**
 * Sets up the torrent info bar.
 */
-GtkTorrentInfoBar::GtkTorrentInfoBar()
-	: Gtk::Box(Gtk::ORIENTATION_VERTICAL)
+GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder)
+	: Gtk::Box(box), builder(rbuilder)
 {
 	//TODO: better layout
 	m_notebook   = Gtk::manage(new Gtk::Notebook());
