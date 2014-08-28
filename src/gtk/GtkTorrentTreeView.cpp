@@ -21,12 +21,13 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar 
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	m_filter = Gtk::TreeModelFilter::create(m_liststore);
+	m_filtersort = Gtk::TreeModelSort::create(m_filter);
 	m_filter->set_visible_func(sigc::mem_fun(*this, &GtkTorrentTreeView::showMatches));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
-	set_model(m_filter);
+	set_model(m_filtersort);
 	setupColumns();
 	set_enable_search();
 	m_searchEntry = Gtk::manage(new Gtk::Entry());

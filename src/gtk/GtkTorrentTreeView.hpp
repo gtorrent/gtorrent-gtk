@@ -5,6 +5,7 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelfilter.h>
+#include <gtkmm/treemodelsort.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/popover.h>
 
@@ -119,6 +120,7 @@ private:
 public:
 	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
+	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;
 	Gtk::Popover *m_searchPopover;
 
 	void addCell(std::shared_ptr<gt::Torrent> &t);
