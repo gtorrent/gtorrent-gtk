@@ -1,14 +1,10 @@
 # gtorrent
---------------------
 [![Build Status](https://travis-ci.org/gtorrent/gtorrent-gtk.svg?branch=master)](https://travis-ci.org/gtorrent/gtorrent-gtk)
 
 *Gtk torrent client built on libtorrent-rasterbar*
 
 ## About
 A minimalistic lightweight bittorrent client written by some aspies from the 4cdan technology board.
-
-### Goals
-- ......
 
 ## Contributing
 ### Making changes
@@ -18,6 +14,7 @@ A minimalistic lightweight bittorrent client written by some aspies from the 4cd
 4. Make a pull request to this repo
 
 *As a collaborator*
+
 1. Make a **new branch** on this repository
 2. Make your changes
 3. Make a pull request
@@ -28,7 +25,7 @@ A minimalistic lightweight bittorrent client written by some aspies from the 4cd
 We are using tabs for indentations. Don't like it? I don't either, but it's our
 *standard* so please fucking follow it.  Fortunately, we are allowed to use
 spaces to align code. Will this cause a mess aligning due to different tab
-sizes? *Yes.* So let's all agree to use tabsize=8, alright? I didn't decide
+sizes? *Yes.* So let's all agree to use `tabsize=8`, alright? I didn't decide
 this one.
 
 gTorrent uses astyle to format our code. You can find more about it
@@ -54,7 +51,7 @@ Links to the documentation of each library.
 - libtorrent-rasterbar: [Here](http://libtorrent.org/reference.html) and [here](http://libtorrent.org/manual.html).
 
 ## Compiling
-**Remember, you want libtorrent 1.0.0+**, which your repo probably doesn't
+**Remember, you want libtorrent 1.0.0+**, which your distro probably doesn't
 have. You need to compile this from source to have compile gtorrent.
 
 Get the code with:
@@ -71,20 +68,20 @@ because we have a submodule of gtorrent-core in this repository.
 - libnotify
 
 ### GNU/Linux or Mac OS X
-``
+```
 $ mkdir -p build/ && cd build/
 $ cmake ..
 $ make
-``
+```
 
 #### Ubuntu notes
 The version of libgtkmm in 14.04 is a bit out of date. To fix this do:
 
-``
+```
 $ sudo add-apt-repository ppa:gnome3-team/gnome3-staging
 $ sudo apt-get update
 $ sudo apt-get dist-upgrade
-``
+```
 
 #### ArchLinux
 You have it easier, dumbass nerds and your "bleeding edge" repos.
