@@ -56,8 +56,8 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_title("gTorrent");
 
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
+	//Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	//Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 
 	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
 	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
@@ -65,12 +65,12 @@ GtkMainWindow::GtkMainWindow() :
 	btn_resume     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
 	btn_remove     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
 	btn_settings   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
-	btn_properties ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
+	//btn_properties ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
 
 	btn_add_link   ->set_image_from_icon_name("insert-link-symbolic");
 	btn_add_torrent->set_image_from_icon_name("list-add-symbolic");
 	btn_pause      ->set_image_from_icon_name("media-playback-pause-symbolic");
-	btn_properties ->set_image_from_icon_name("preferences-system-symbolic");
+	//btn_properties ->set_image_from_icon_name("preferences-system-symbolic");
 	btn_remove     ->set_image_from_icon_name("edit-delete-symbolic");
 	btn_resume     ->set_image_from_icon_name("media-playback-start-symbolic");
 	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
@@ -83,9 +83,9 @@ GtkMainWindow::GtkMainWindow() :
 	header->add(*btn_resume);
 	header->add(*btn_pause);
 	header->add(*btn_remove);
-	header->add(*separator1);
-	header->add(*btn_properties);
-	header->add(*separator2);
+	//header->add(*separator1);
+	//header->add(*btn_properties);
+	//header->add(*separator2);
 	header->pack_end(*btn_settings);
 	// Let's add some DnD goodness
 	std::vector<Gtk::TargetEntry> listTargets;
@@ -101,6 +101,7 @@ GtkMainWindow::GtkMainWindow() :
 	add(*panel);
 	show_all();
 	btn_pause->hide();
+	btn_remove->hide();
 	m_infobar->set_visible(false);
 
 	// for some reason, the treeview start with its first element selected
