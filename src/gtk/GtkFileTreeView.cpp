@@ -451,6 +451,7 @@ void GtkFileTreeView::setSelectedPriorities(int level)
 
 void GtkFileTreeView::openView_onClick()
 {
+	if(selectedRows().size() == 0) return;
 	auto row = selectedRows()[0];
 	if(torrent == nullptr || !torrent->hasMetadata())
 		return;
