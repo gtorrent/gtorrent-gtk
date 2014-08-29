@@ -1,6 +1,6 @@
-#include <gtkmm/widget.h>
+#include <gtkmm/bin.h>
 #include <gdkmm/general.h>
-#include <gtkmm/cssprovider.h>
+#include <gtkmm/menu.h>
 
 #include <gtorrent/Settings.hpp>
 
@@ -11,13 +11,10 @@
  * Sets up the speed graph.
  */
 GtkGraph::GtkGraph(const unsigned maxSize) :
-	//The GType name will actually be gtkmm__CustomObject_BlockBar
-	Glib::ObjectBase("DrawingArea"),
-	Gtk::DrawingArea(),
+	Gtk::Button(),
 	m_displaySize(maxSize),
 	m_maxSize(maxSize)
 {
-	set_has_window(true);
 	m_displaySize = 60; //FIXME: this needs to be replaced by user choice
 }
 bool upl = true;
@@ -38,140 +35,6 @@ std::string speedstr(int64_t file_size)
 
 GtkGraph::~GtkGraph()
 {
-}
-
-/**
- * Gets the vfunc() for speed graph.
- */
-Gtk::SizeRequestMode GtkGraph::get_request_mode_vfunc() const
-{
-	//Accept the default value supplied by the base class.
-	return Gtk::Widget::get_request_mode_vfunc();
-}
-
-/**
- * Discovers the total amount of minimum space and natural space needed by the speed graph widget.
- */
-void GtkGraph::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
-{
-	minimum_width = 100;
-	natural_width = 500;
-}
-
-/**
- * Gets the preferred height for the speed graph widget for this particular width.
- */
-void GtkGraph::get_preferred_height_for_width_vfunc(int /* width */,
-        int& minimum_height, int& natural_height) const
-{
-	get_preferred_height(minimum_height, natural_height);
-}
-
-/**
- * Gets the preferred height for the speed graph widget.
- */
-void GtkGraph::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
-{
-	minimum_height = 50;
-	natural_height = 100;
-}
-
-/**
- * Gets the preferred width for the speed graph widget for this particular height.
- */
-void GtkGraph::get_preferred_width_for_height_vfunc(int /* height */,
-        int& minimum_width, int& natural_width) const
-{
-	get_preferred_width(minimum_width, natural_width);
-}
-
-/**
- * Does something with the space that we have actually been given.
- */
-void GtkGraph::on_size_allocate(Gtk::Allocation& allocation)
-{
-	//(We will not be given heights or widths less than we have requested, though
-	//we might get more)
-
-	//Use the offered allocation for this container:
-	set_allocation(allocation);
-
-	if(m_refGdkWindow)
-	{
-		m_refGdkWindow->move_resize( allocation.get_x(), allocation.get_y(),
-		                             allocation.get_width(), allocation.get_height() );
-	}
-}
-
-/**
- * Does something when the speed graph is mapped.
- */
-void GtkGraph::on_map()
-{
-	//Call base class:
-	Gtk::Widget::on_map();
-}
-
-/**
- * Does something when the speed graph is unmapped.
- */
-void GtkGraph::on_unmap()
-{
-	//Call base class:
-	Gtk::Widget::on_unmap();
-}
-
-/**
- * Does something when the speed graph is realized.
- */
-void GtkGraph::on_realize()
-{
-	//Do not call base class Gtk::Widget::on_realize().
-	//It's intended only for widgets that set_has_window(false).
-
-	set_realized();
-
-	if(!m_refGdkWindow)
-	{
-		//Create the GdkWindow:
-
-		GdkWindowAttr attributes;
-		memset(&attributes, 0, sizeof(attributes));
-
-		Gtk::Allocation allocation = get_allocation();
-
-		//Set initial position and size of the Gdk::Window:
-		attributes.x = allocation.get_x();
-		attributes.y = allocation.get_y();
-		attributes.width = allocation.get_width();
-		attributes.height = allocation.get_height();
-
-		attributes.event_mask = get_events () | Gdk::EXPOSURE_MASK;
-		attributes.window_type = GDK_WINDOW_CHILD;
-		attributes.wclass = GDK_INPUT_OUTPUT;
-
-		m_refGdkWindow = Gdk::Window::create(get_parent_window(), &attributes,
-		                                     GDK_WA_X | GDK_WA_Y);
-		set_window(m_refGdkWindow);
-
-		//set colors TODO
-		//override_background_color(Gdk::RGBA("red"));
-		//override_color(Gdk::RGBA("green"));
-
-		//make the widget receive expose events
-		m_refGdkWindow->set_user_data(gobj());
-	}
-}
-
-/**
- * Does something when the speed graph is unrealized.
- */
-void GtkGraph::on_unrealize()
-{
-	m_refGdkWindow.reset();
-
-	//Call base class:
-	Gtk::Widget::on_unrealize();
 }
 
 /**
@@ -363,3 +226,28 @@ std::queue<double> GtkGraph::lastElements(std::queue<double> q, unsigned n)
 		q.pop();
 	return q;
 }
+
+bool GtkGraph::on_button_press_event(GdkEventButton *event)
+{
+	if(event->button == 3) // if right-click
+	{
+		Gtk::Menu   *m_rcMenu = Gtk::manage(new Gtk::Menu());
+		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("1 hour"));
+		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("30 minutes"));
+		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("60 seconds"));
+
+
+		rcmItem1->signal_activate().connect([this](){m_displaySize = 3600;});
+		rcmItem2->signal_activate().connect([this](){m_displaySize = 1800;});
+		rcmItem3->signal_activate().connect([this](){m_displaySize = 60;});
+
+		m_rcMenu->add(*rcmItem1);
+		m_rcMenu->add(*rcmItem2);
+		m_rcMenu->add(*rcmItem3);
+
+		m_rcMenu->show_all();
+		m_rcMenu->popup(event->button, event->time);
+	}
+	return false;
+}
+
