@@ -17,18 +17,18 @@
 	<property name="window_position">center</property>
 	<property name="default_width">800</property>
 	<property name="default_height">500</property>
-	
+
 	<child type="titlebar">
 	  <object class="GtkHeaderBar" id="headerBar">
 		<property name="visible">True</property>
 		<property name="title">gTorrent</property>
 		<property name="show_close_button">True</property>
-		
+
 		<child>
 		  <object class="GtkButton" id="addTorrentButton">
 			<property name="visible">True</property>
 			<property name="valign">center</property>
-			
+
 			<child>
               <object class="GtkImage" id="addTorrentImage">
 				<property name="visible">True</property>
@@ -69,7 +69,7 @@
 			<property name="pack_type">start</property>
 		  </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkButton" id="resumeButton">
 			<property name="visible">True</property>
@@ -88,7 +88,7 @@
 			<property name="pack_type">start</property>
           </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkButton" id="pauseButton">
 			<property name="visible">True</property>
@@ -107,7 +107,7 @@
 			<property name="pack_type">start</property>
           </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkButton" id="deleteButton">
 			<property name="visible">True</property>
@@ -126,7 +126,7 @@
 			<property name="pack_type">start</property>
           </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkSeparator" id="vSepTwo">
 			<property name="visible">True</property>
@@ -136,7 +136,7 @@
 			<property name="pack_type">start</property>
 		  </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkButton" id="preferencesButton">
 			<property name="visible">True</property>
@@ -155,7 +155,7 @@
 			<property name="pack_type">start</property>
           </packing>
 		</child>
-		
+
 		<child>
 		  <object class="GtkButton" id="settingsButton">
 			<property name="visible">True</property>
@@ -176,10 +176,10 @@
 		</child>
 	  </object>
 	</child>
-	
+
 	<child>
 	  <object class="GtkPaned" id="panel">
-		<property name="visible">True</property>	
+		<property name="visible">True</property>
 		<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 		<property name="position">200</property>
 		<child>
@@ -269,7 +269,7 @@
 					</child>
 
 					<child>
-					  <object class="GtkSeparator" id="infoBarStatusSeparator">
+					  <object class="GtkSeparator" id="infoBarGeneralSeparator">
 						<property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
 						<property name="visible">True</property>
 					  </object>
@@ -279,11 +279,11 @@
 					</child>
 
 					<child>
-					  <object class="GtkScrolledWindow" id="infoBarStatusScrolledWindow">
+					  <object class="GtkScrolledWindow" id="infoBarGeneralScrolledWindow">
 						<property name="visible">True</property>
 						<property name="expand">True</property>
 						<child>
-						  <object class="GtkGrid" id="infoBarStatusBox">
+						  <object class="GtkGrid" id="infoBarGeneralBox">
 							<property name="visible">True</property>
 							<property name="column_spacing">10</property>
 							<!-- Start of Titles -->
@@ -532,7 +532,7 @@
 								<property name="top_attach">2</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="TrackerStatus">
 								<property name="visible">True</property>
@@ -543,7 +543,7 @@
 								<property name="top_attach">5</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="UpLimit">
 								<property name="visible">True</property>
@@ -554,7 +554,7 @@
 								<property name="top_attach">3</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="Hash">
 								<property name="visible">True</property>
@@ -565,7 +565,7 @@
 								<property name="top_attach">9</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="Pieces">
 								<property name="visible">True</property>
@@ -576,7 +576,7 @@
 								<property name="top_attach">8</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="Remaining">
 								<property name="visible">True</property>
@@ -587,7 +587,7 @@
 								<property name="top_attach">1</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="SavePath">
 								<property name="visible">True</property>
@@ -598,7 +598,7 @@
 								<property name="top_attach">7</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="ShareRatio">
 								<property name="visible">True</property>
@@ -609,7 +609,7 @@
 								<property name="top_attach">1</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="TimeElapsed">
 								<property name="visible">True</property>
@@ -620,7 +620,7 @@
 								<property name="top_attach">1</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="TotalSize">
 								<property name="visible">True</property>
@@ -631,7 +631,7 @@
 								<property name="top_attach">8</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="TrackerURL">
 								<property name="visible">True</property>
@@ -642,7 +642,7 @@
 								<property name="top_attach">5</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="UploadSpeed">
 								<property name="visible">True</property>
@@ -653,7 +653,7 @@
 								<property name="top_attach">3</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="Uploaded">
 								<property name="visible">True</property>
@@ -664,7 +664,7 @@
 								<property name="top_attach">3</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="Downloaded">
 								<property name="visible">True</property>
@@ -675,7 +675,7 @@
 								<property name="top_attach">2</property>
 							  </packing>
 							</child>
-							
+
 							<child>
 							  <object class="GtkLabel" id="DownLimit">
 								<property name="visible">True</property>
@@ -686,7 +686,7 @@
 								<property name="top_attach">2</property>
 							  </packing>
 							</child>
-							
+
 							<!-- End of Dynamic Labels -->
 						  </object>
 						</child>
