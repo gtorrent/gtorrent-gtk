@@ -7,10 +7,9 @@
 class GtkGraph : public Gtk::DrawingArea
 {
 public:
-	GtkGraph(unsigned size = 60);
+	GtkGraph(const unsigned maxSize = 3600);
 	virtual ~GtkGraph();
-	int xoffset = 0;
-	void resize(unsigned size);
+	unsigned m_displaySize;
 	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
 	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
@@ -37,9 +36,10 @@ protected:
 private:
 	std::map<std::shared_ptr<gt::Torrent>, std::pair<std::queue<double>, std::queue<double>>> m_history;
 	std::shared_ptr<gt::Torrent> m_selected;
-	unsigned m_maxSize;
+	const unsigned m_maxSize;
 	static const unsigned m_labelLength = 40;
 	double max(std::queue<double> q);
+	std::queue<double> lastElements(std::queue<double> q, unsigned n);
 	inline double max(std::queue<double> q1, std::queue<double> q2)
 	{
 		return max(q1) > max(q2) ? max(q1) : max(q2);

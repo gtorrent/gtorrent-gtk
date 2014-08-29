@@ -10,13 +10,15 @@
 /**
  * Sets up the speed graph.
  */
-GtkGraph::GtkGraph(unsigned size) :
+GtkGraph::GtkGraph(const unsigned maxSize) :
 	//The GType name will actually be gtkmm__CustomObject_BlockBar
 	Glib::ObjectBase("DrawingArea"),
 	Gtk::DrawingArea(),
-	m_maxSize(size)
+	m_displaySize(maxSize),
+	m_maxSize(maxSize)
 {
 	set_has_window(true);
+	m_displaySize = 60; //FIXME: this needs to be replaced by user choice
 }
 bool upl = true;
 
@@ -183,17 +185,20 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	std::vector <double> dash = { 5 };
 	Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
 
-	double increment = (width - m_labelLength) / (m_maxSize-1);
+	double increment = (width - m_labelLength) / (m_displaySize-1);
+	std::queue<double> download = lastElements(m_history[m_selected].first, m_displaySize);
+	std::queue<double> upload = lastElements(m_history[m_selected].second, m_displaySize);
+
 	unsigned order;
-	if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
+	if(max(download, upload) <= 10 * 1024)
 		order = 1;
-	else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 100 * 1024)
+	else if(max(download, upload) <= 100 * 1024)
 		order = 10;
-	else if(max(m_history[m_selected].first, m_history[m_selected].second) <= 1000 * 1024)
+	else if(max(download, upload) <= 1000 * 1024)
 		order = 100;
 	else
 		order = 1000;
-	int maxValue = max(m_history[m_selected].first, m_history[m_selected].second) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
+	int maxValue = max(download, upload) + (order * 1024) - (double)((int)(max(m_history[m_selected].first, m_history[m_selected].second)) % (order * 1024));
 
 	// draw curves
 
@@ -210,7 +215,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	upl = true;
 	if(gt::Settings::settings["GraphUploadCurveStyle"] == "Dash")
 		cr->set_dash(dash, 0);
-	draw(m_history[m_selected].first, height, increment, maxValue, cr);
+	draw(download, height, increment, maxValue, cr);
 	cr->unset_dash();
 	upl = false;
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
@@ -226,7 +231,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	if(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash")
 		cr->set_dash(dash, 0);
-	draw(m_history[m_selected].second, height, increment, maxValue, cr);
+	draw(upload, height, increment, maxValue, cr);
 	cr->unset_dash();
 
 	// draw grid
@@ -274,10 +279,10 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 	// computers use numbers
 	// no magic
 	
-	double offset = increment * (m_maxSize - q.size());
+	double offset = increment * (m_displaySize - q.size());
 
 	cr->move_to(0, height);
-	for(unsigned i = 0; i< (m_maxSize - q.size());++i)
+	for(unsigned i = 0; i< (m_displaySize - q.size());++i)
 		cr->line_to(i*increment, height);
 
 
@@ -285,7 +290,7 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 	if(q.empty()) return;
 
 	oldy = height - (q.front() * height / maxValue);
-	cr->move_to(offset, oldy);
+	cr->line_to(offset, oldy);
 	q.pop();
 	double x = increment + offset;
 	while(!q.empty())
@@ -302,26 +307,12 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 		cr->stroke_preserve();
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]));
 		cr->line_to(x - increment, height);
-		cr->line_to(offset,height);
+		cr->line_to(0,height);
 		auto k = Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]);
 		cr->set_source_rgba(k.get_red(), k.get_green(), k.get_blue(), k.get_alpha() * 0.5);
 		cr->fill();
 	}
 	else cr->stroke();
-}
-/**
- * Resizes the history of the graph widget.
- */
-void GtkGraph::resize(unsigned size)
-{
-	m_maxSize = size;
-	for(auto &q : m_history)
-	{
-		while(q.second.first.size() > m_maxSize)
-			q.second.first.pop();
-		while(q.second.second.size() > m_maxSize)
-			q.second.second.pop();
-	}
 }
 
 /**
@@ -364,4 +355,11 @@ void GtkGraph::select(std::shared_ptr<gt::Torrent> s)
 {
 	m_selected = s;
 	queue_draw();
+}
+
+std::queue<double> GtkGraph::lastElements(std::queue<double> q, unsigned n)
+{
+	while(q.size() > n)
+		q.pop();
+	return q;
 }
