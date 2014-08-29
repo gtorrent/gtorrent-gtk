@@ -127,8 +127,11 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(   "settingsButton",   settingsButton);
 	builder->get_widget(            "panel",            panel);
 	builder->get_widget(   "scrolledWindow",   scrolledWindow);
-	builder->get_widget(          "vSepOne",    vSeparatorOne);
-	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
+	builder->get_widget(          "vSepZero",   	 separator0);
+	builder->get_widget(          "vSepOne",   		 separator1);
+	builder->get_widget(          "vSepTwo",   		 separator2);
+	builder->get_widget(          "vSepThree",   	 separator3);
+	builder->get_widget(          "vSepFour",   	 separator4);
 	builder->get_widget_derived(  "infobar",        m_infobar);
 
 	magEntry   = Gtk::manage(new Gtk::Entry());
@@ -159,6 +162,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	header->set_title("gTorrent");
 
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
+	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator3  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator4  = Gtk::manage(new Gtk::VSeparator());

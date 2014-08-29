@@ -61,8 +61,8 @@ public:
 		add(m_col_eta);
 		add(m_col_bage);
 		add(m_col_beta);
-		add(m_col_seeders);
-		add(m_col_leechers);
+		add(m_col_seeds);
+		add(m_col_peers);
 		add(m_col_ul_speed);
 		add(m_col_dl_speed);
 		add(m_col_bul_speed);
@@ -86,11 +86,9 @@ public:
 Gtk::TreeModelColumn<Glib::ustring>           m_col_name;
 
 	Gtk::TreeModelColumn<unsigned int>            m_col_queue;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_size;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_selected_size;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_completed;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_downloaded;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_remaining;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_done;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_status;
 	Gtk::TreeModelColumn<unsigned int>            m_col_seeds;
@@ -118,7 +116,6 @@ Gtk::TreeModelColumn<Glib::ustring>           m_col_name;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_codec;
 	Gtk::TreeModelColumn<unsigned int>            m_col_percent;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_percent_text;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_ratio;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_ul_total;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_total;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_size;
