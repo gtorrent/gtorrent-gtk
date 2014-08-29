@@ -24,8 +24,7 @@
 /**
 * Sets up the main window.
 */
-GtkMainWindow::GtkMainWindow() :
-	m_core(Application::getSingleton()->getCore())
+GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Window(win), builder(rbuilder), m_core(Application::getSingleton()->getCore())
 {
 	//TODO:This needs to be refactored
 	notify_init ("Hello world!");
@@ -117,24 +116,39 @@ GtkMainWindow::GtkMainWindow() :
 
 	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
 
-	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
+	notify_init ("gTorrent");
+
+	builder->get_widget( "addTorrentButton", addTorrentButton);
+	builder->get_widget(  "addMagnetButton",  addMagnetButton);
+	builder->get_widget(     "resumeButton",     resumeButton);
+	builder->get_widget(      "pauseButton",      pauseButton);
+	builder->get_widget(     "deleteButton",     removeButton);
+	builder->get_widget("preferencesButton", propertiesButton);
+	builder->get_widget(   "settingsButton",   settingsButton);
+	builder->get_widget(            "panel",            panel);
+	builder->get_widget(   "scrolledWindow",   scrolledWindow);
+	builder->get_widget(          "vSepOne",    vSeparatorOne);
+	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
+	builder->get_widget_derived(  "infobar",        m_infobar);
+
+	magEntry   = Gtk::manage(new Gtk::Entry());
+	magEntry->set_visible();
+	magEntry->set_width_chars(75);
+	magPopover = Gtk::manage(new Gtk::Popover());
+
+	magPopover->add(*magEntry);
+	magPopover->set_relative_to(*addMagnetButton);
+	addMagnetButton->set_popover(*magPopover);
+
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
+
 	m_infobar->set_margin_left(5);
 	m_infobar->set_margin_right(5);
+	m_infobar->set_visible();
 
-	m_swin->add(*m_treeview);
-
-	//m_main_table_layout = Gtk::manage(new Gtk::Table(2, 2, false));
-	//m_main_table_layout->set_col_spacings(5);
-
-	//m_main_table_layout->attach(*m_labels, 0, 2, 0, 1, Gtk::AttachOptions::SHRINK);
-	//m_main_table_layout->attach(*m_swin, 0, 1, 1, 2, Gtk::AttachOptions::SHRINK);
-	//m_main_table_layout->attach(*m_infobar, 1, 2, 1, 2, Gtk::AttachOptions::SHRINK);
-
-	//panel->add(*m_main_table_layout);
-
-	panel->pack1(*m_swin);
-	panel->pack2(*m_infobar);
+	m_treeview->set_visible();
+	scrolledWindow->add(*m_treeview);
+	panel->pack1(*scrolledWindow);
 
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
@@ -204,6 +218,13 @@ GtkMainWindow::GtkMainWindow() :
 
 	header->add(*btn_settings);
 	//header->pack_end(*btn_settings);
+	addTorrentButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked       ));
+	pauseButton     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked     ));
+	resumeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked    ));
+	removeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked    ));
+	settingsButton  ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked  ));
+	addMagnetButton ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked ));
+	propertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
 
 	// Let's add some DnD goodness
 	std::vector<Gtk::TargetEntry> listTargets;
@@ -227,6 +248,7 @@ GtkMainWindow::GtkMainWindow() :
 	//m_infobar->set_visible(false);
 
 	// for some reason, the treeview start with its first element selected
+
 	m_treeview->get_selection()->unselect_all();
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
@@ -234,10 +256,9 @@ GtkMainWindow::GtkMainWindow() :
 		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(tor);
 	}
-	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
 
 	if (gt::Settings::settings["FileAssociation"] == "" ||
-	        gt::Settings::settings["FileAssociation"] == "-1")
+		gt::Settings::settings["FileAssociation"] == "-1")
 	{
 		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
 		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
@@ -294,7 +315,7 @@ bool GtkMainWindow::onSecTick()
 		t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(t);
 	}
-	m_swin->get_vscrollbar()->set_child_visible(false);
+	scrolledWindow->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
 
@@ -356,22 +377,22 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 */
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
-	if(magPop->get_visible())
+	if(magPopover->get_visible())
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		std::string link = clip->wait_for_text();
 		if(gt::Core::isLink(link))
-			magtxt->set_text(link);
+			magEntry->set_text(link);
 	}
 	else
 	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
+		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
 		if (t)
 		{
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview->addCell(t);
 		}
-		magtxt->set_text("");
+		magEntry->set_text("");
 	}
 }
 
@@ -416,7 +437,8 @@ void GtkMainWindow::onPropertiesBtnClicked()
 */
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
-	m_treeview->saveColumns();
+	hide();
+//	m_treeview->saveColumns();
 	notify_uninit();
 	m_core->shutdown();
 	return false;
@@ -431,7 +453,7 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 {
 	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
 	short enter[] = { 36, 104 };
-	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) 
+	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8)
 	{
 		m_treeview->m_searchPopover->set_visible();
 		if(std::find(enter, enter + 2, event->hardware_keycode) != enter + 2)

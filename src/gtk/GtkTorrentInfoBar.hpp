@@ -4,6 +4,7 @@
 #include <gtkmm/table.h>
 
 #include <gtorrent/Torrent.hpp>
+#include <gtkmm/builder.h>
 
 #include "GtkGraph.hpp"
 
@@ -143,7 +144,8 @@ public:
 	GtkTrackerTreeView *m_trackers;
 
 public:
-	GtkTorrentInfoBar();
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	inline void removeInfo (std::shared_ptr<gt::Torrent> selected)
 	{
 		m_graph->removeHistory(selected);
