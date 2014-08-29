@@ -55,34 +55,66 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 	if(event->button == 3) // if right-click
 	{
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
-		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
-		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Remove"));
-		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
-		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
-		Gtk::MenuItem *rcmItem5        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
-		Gtk::SeparatorMenuItem *rcSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
-		Gtk::MenuItem *rcmItem6        = Gtk::manage(new Gtk::MenuItem("Property"));
-		rcmItemSeq                     = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
 
-		rcmItem1->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::startView_onClick));
-		rcmItem2->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::stopView_onClick));
-		rcmItem3->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::removeView_onClick));
-		rcmItem4->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::openView_onClick));
-		rcmItem5->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
-		rcmItem6->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
-		rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
-		rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
+		Gtk::MenuItem *rcmOpen        = Gtk::manage(new Gtk::MenuItem("Open"));
+		Gtk::MenuItem *rcmOpenContainingFolder        = Gtk::manage(new Gtk::MenuItem("Open Containing Folder"));
+		Gtk::SeparatorMenuItem *rcmSep0 = Gtk::manage(new Gtk::SeparatorMenuItem());
 
-		m_rcMenu->add(*rcmItem1);
-		m_rcMenu->add(*rcmItem2);
-		m_rcMenu->add(*rcmItem3);
-		m_rcMenu->add(*rcSep1);
-		m_rcMenu->add(*rcmItem4);
-		m_rcMenu->add(*rcmItem5);
-		m_rcMenu->add(*rcSep2);
-		m_rcMenu->add(*rcmItem6);
-		m_rcMenu->add(*rcmItemSeq);
+		Gtk::MenuItem *rcmCopyMagnetUrl        = Gtk::manage(new Gtk::MenuItem("Copy Magnet URL"));
+		Gtk::MenuItem *rcmOpenUrlInBrowser        = Gtk::manage(new Gtk::MenuItem("Open URL In Browser"));
+		Gtk::SeparatorMenuItem *rcmSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		Gtk::MenuItem *rcmForceStart        = Gtk::manage(new Gtk::MenuItem("Force Start"));
+		Gtk::MenuItem *rcmStart        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
+		Gtk::MenuItem *rcmPause        = Gtk::manage(new Gtk::MenuItem("Pause"));
+		Gtk::MenuItem *rcmStop        = Gtk::manage(new Gtk::MenuItem("Stop"));
+		Gtk::SeparatorMenuItem *rcmSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		Gtk::MenuItem *rcmRemove        = Gtk::manage(new Gtk::MenuItem("Remove"));
+		Gtk::MenuItem *rcmRemoveAnd        = Gtk::manage(new Gtk::MenuItem("Remove And"));
+		Gtk::SeparatorMenuItem *rcmSep3 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		Gtk::MenuItem *rcmForceReCheck        = Gtk::manage(new Gtk::MenuItem("Force Re-Check"));
+		Gtk::MenuItem *rcmAdvanced        = Gtk::manage(new Gtk::MenuItem("Advanced"));
+		Gtk::SeparatorMenuItem *rcmSep4 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		//Gtk::MenuItem *rcmPriority        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+		Gtk::MenuItem *rcmProperty        = Gtk::manage(new Gtk::MenuItem("Properties"));
+		//rcmItemSeq                     = Gtk::manage(new Gtk::CheckMenuItem("Sequential Download"));
+
+		rcmStart->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::startView_onClick));
+		rcmStop->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::stopView_onClick));
+		rcmRemove->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::removeView_onClick));
+		rcmOpen->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::openView_onClick));
+		//rcmPriority->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::priorityView_onClick));
+		rcmProperty->signal_activate ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::propertyView_onClick));
+		//rcmItemSeq->signal_realize().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onRealize));
+		//rcmItemSeq->signal_toggled().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::sequentialChange_onClick));
+
+		m_rcMenu->add(*rcmOpen);
+		m_rcMenu->add(*rcmOpenContainingFolder);
+		m_rcMenu->add(*rcmSep0);
+		m_rcMenu->add(*rcmCopyMagnetUrl);
+		m_rcMenu->add(*rcmOpenUrlInBrowser);
+		m_rcMenu->add(*rcmSep1);
+
+		m_rcMenu->add(*rcmForceStart);
+		m_rcMenu->add(*rcmStart);
+		m_rcMenu->add(*rcmPause);
+		m_rcMenu->add(*rcmStop);
+		m_rcMenu->add(*rcmSep2);
+
+		m_rcMenu->add(*rcmRemove);
+		m_rcMenu->add(*rcmRemoveAnd);
+		m_rcMenu->add(*rcmSep3);
+
+		m_rcMenu->add(*rcmForceReCheck);
+		m_rcMenu->add(*rcmAdvanced);
+		//m_rcMenu->add(*rcmPriority);
+		m_rcMenu->add(*rcmSep4);
+
+		m_rcMenu->add(*rcmProperty);
+		//m_rcMenu->add(*rcmItemSeq);
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
 	}
@@ -116,10 +148,10 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 		m_rcMenu = Gtk::manage(new Gtk::Menu());
 		for(auto c : get_columns())
 		{
-			Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
-			rcmItem1->set_active(c->get_visible());
-			rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
-			m_rcMenu->add(*rcmItem1);
+			Gtk::CheckMenuItem *rcmStart = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
+			rcmStart->set_active(c->get_visible());
+			rcmStart->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
+			m_rcMenu->add(*rcmStart);
 		}
 
 		m_rcMenu->show_all();
