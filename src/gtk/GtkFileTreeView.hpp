@@ -11,19 +11,20 @@ class GtkFileColumns : public Gtk::TreeModel::ColumnRecord
 public:
 	GtkFileColumns()
 	{
+		//name,path,size,done,%,first piece,# pieces,pieces, priority, mode
+			add(m_col_name);
+			add(m_col_fullpath);
 			add(m_col_size);
 			add(m_col_percent);
 			add(m_col_percent_text);
 			add(m_col_priority);
 			add(m_col_prioritylevel);
-			add(m_col_name);
 			add(m_col_entry);
 			add(m_col_activated);
 			add(m_col_inconsistent);
 			add(m_col_folder);
 			add(m_col_icon);
 			add(m_col_index);
-			add(m_col_fullpath);
 	}
 
 	/* Shown column */

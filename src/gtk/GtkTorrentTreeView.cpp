@@ -240,6 +240,9 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	Gtk::TreeModel::Row row      = *(m_liststore->append());
 	// if there's a % in the state std::string, then the torrent is downloading
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
+
+	row[m_cols.m_col_age]        = t->getTextActiveTime();
+	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->getName();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_seeds]      = t->getTotalSeeders();
@@ -288,7 +291,7 @@ void GtkTorrentTreeView::updateCells()
 		//c[m_cols.m_col_seeds_peers]       =
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
-		c[m_cols.m_col_eta]        = t->getTextTimeRemaining();
+		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		//c[m_cols.m_col_uploaded]       =
 		c[m_cols.m_col_dl_ratio]   = t->getTextState();//
 		//c[m_cols.m_col_avail]       =
@@ -492,6 +495,8 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	//m_parent->btn_pause ->set_visible(startedTorrents != 0);
 	//m_parent->btn_resume->set_visible( pausedTorrents != 0);
 
+	m_parent->btn_remove->set_visible(!selectedTorrents().empty());
+	m_parent->separator1->set_visible(m_parent->btn_remove->get_visible());
 }
 
 // columns are saved in a single settings, looking like this:

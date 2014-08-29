@@ -13,6 +13,7 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
+#include <gtkmm/separator.h>
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
@@ -50,7 +51,7 @@ public:
 	//We've Always Been Shameless About Stealing Great Ideas
 	Gtk::Popover    *magPop = Gtk::manage(new Gtk::Popover(*btn_add_link)); // We may need to provide a fallback CSS for those who use old themes
 	// thx prince
-	Gtk::Button *btn_add_torrent  				= Gtk::manage(new Gtk::Button());
+	Gtk::Button 		*btn_add_torrent  	= Gtk::manage(new Gtk::Button());
 	Gtk::Button 		*btn_add_rss  			= Gtk::manage(new Gtk::Button());
 	Gtk::Button 		*btn_create_torrent	= Gtk::manage(new Gtk::Button());
 	Gtk::Button 		*btn_remove       	= Gtk::manage(new Gtk::Button());
@@ -62,9 +63,7 @@ public:
 	Gtk::Button 		*btn_settings   		= Gtk::manage(new Gtk::Button());
 	Gtk::Statusbar 	*m_status_bar				= Gtk::manage(new Gtk::Statusbar());
 	Gtk::Label 			*m_status_label;
-
 	Gtk::Table 			*m_main_table_layout;
-
 
 	GtkMainWindow();
 	bool onDestroy(GdkEventAny *event);

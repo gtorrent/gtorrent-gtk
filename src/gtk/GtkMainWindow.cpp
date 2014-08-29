@@ -144,7 +144,6 @@ GtkMainWindow::GtkMainWindow() :
 	header->set_title("gTorrent");
 
 	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator3  = Gtk::manage(new Gtk::VSeparator());
 	Gtk::VSeparator *separator4  = Gtk::manage(new Gtk::VSeparator());
