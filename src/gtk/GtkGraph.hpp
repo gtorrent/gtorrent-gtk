@@ -3,11 +3,13 @@
 #include <gtkmm/drawingarea.h>
 #include <queue>
 #include <cmath>
+#include <gtkmm/builder.h>
 
 class GtkGraph : public Gtk::DrawingArea
 {
 public:
-	GtkGraph(unsigned size = 61);
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
 	virtual ~GtkGraph();
 	int xoffset = 0;
 	void resize(unsigned size);

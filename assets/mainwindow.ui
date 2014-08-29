@@ -192,9 +192,549 @@
 		  <object class="GtkBox" id="infobar">
 			<property name="visible">True</property>
 			<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+
+			<child>
+			  <object class="GtkLabel" id="infoBarTitle">
+				<property name="visible">True</property>
+			  </object>
+			  <packing>
+				<property name="pack_type">start</property>
+			  </packing>
+			</child>
+
+			<child>
+			  <object class="GtkNotebook" id="infoBarNotebook">
+				<property name="visible">True</property>
+				<property name="expand">True</property>
+
+				<!-- Start of Graph -->
+				<child>
+				  <object class="GtkDrawingArea" id="infoBarGraph">
+					<property name="visible">True</property>
+				  </object>
+				</child>
+
+				<child type="tab">
+				  <object class="GtkLabel" id="infoBarGraphLabel">
+					<property name="label">Info Graph</property>
+					<property name="visible">True</property>
+				  </object>
+				</child>
+				<!-- End of Graph -->
+
+				<!-- Start of Peers -->
+				<child>
+				  <object class="GtkScrolledWindow" id="infoBarPeersScrolledWindow">
+					<property name="visible">True</property>
+					<child>
+					  <object class="GtkTreeView" id="infoBarPeerTreeView">
+						<property name="visible">True</property>
+					  </object>
+					</child>
+				  </object>
+				</child>
+
+				<child type="tab">
+				  <object class="GtkLabel" id="infoBarPeersLabel">
+					<property name="label">Peers</property>
+					<property name="visible">True</property>
+				  </object>
+				</child>
+				<!-- End of Peers -->
+
+				<!-- Start of Torrent Info -->
+				<child>
+				  <object class="GtkBox" id="infoBarTorrentInfoBox">
+					<property name="visible">True</property>
+					<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+
+					<child>
+					  <object class="GtkBox" id="infoBarPieceBox">
+						<property name="visible">True</property>
+						<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+						<child>
+						  <object class="GtkWidget" id="infoBarBlockBar">
+							<property name="width_request">0</property>
+							<property name="height_request">20</property>
+							<property name="visible">True</property>
+						  </object>
+						  <packing>
+							<property name="pack_type">end</property>
+						  </packing>
+						</child>
+					  </object>
+					  <packing>
+						<property name="pack_type">start</property>
+					  </packing>
+					</child>
+
+					<child>
+					  <object class="GtkSeparator" id="infoBarStatusSeparator">
+						<property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+						<property name="visible">True</property>
+					  </object>
+					  <packing>
+						<property name="pack_type">start</property>
+					  </packing>
+					</child>
+
+					<child>
+					  <object class="GtkScrolledWindow" id="infoBarStatusScrolledWindow">
+						<property name="visible">True</property>
+						<property name="expand">True</property>
+						<child>
+						  <object class="GtkGrid" id="infoBarStatusBox">
+							<property name="visible">True</property>
+							<property name="column_spacing">10</property>
+							<!-- Start of Titles -->
+							<child>
+							  <object class="GtkLabel" id="TransfertLabel">
+								<property name="visible">True</property>
+								<property name="label">&lt;big&gt;Transfert&lt;/big&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">0</property>
+								<property name="top_attach">0</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="TrackerLabel">
+								<property name="visible">True</property>
+								<property name="label">&lt;big&gt;Tracker&lt;/big&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">0</property>
+								<property name="top_attach">4</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="GeneralLabel">
+								<property name="visible">True</property>
+								<property name="label">&lt;big&gt;General&lt;/big&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">0</property>
+								<property name="top_attach">6</property>
+							  </packing>
+							</child>
+							<!-- End of Titles -->
+							<!-- Start of Fixed Labels -->
+							<child>
+							  <object class="GtkLabel" id="timeelapsed">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Time Elapsed:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="shareratio">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Share Ratio:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">3</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="remaining">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Remaining:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">5</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="downloaded">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Downloaded:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="downspeed">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Download Speed:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">3</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="downlimit">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Download Limit:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">5</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="uploaded">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Uploaded:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="upspeed">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Upload Speed:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">3</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="uplimit">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Upload Limit:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">5</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="trackerurl">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Tracker URL:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">5</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="trackerstatus">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Tracker Status:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">3</property>
+								<property name="top_attach">5</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="savepath">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Save Path:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">7</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="tsize">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Total Size:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">8</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="pieces">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Pieces:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">3</property>
+								<property name="top_attach">8</property>
+							  </packing>
+							</child>
+
+							<child>
+							  <object class="GtkLabel" id="hash">
+								<property name="visible">True</property>
+								<property name="xalign">1.0</property>
+								<property name="label">&lt;b&gt;Hash:&lt;/b&gt;</property>
+								<property name="use_markup">True</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">9</property>
+							  </packing>
+							</child>
+
+							<!-- End of Fixed Labels -->
+							<!-- Start of Dynamic Labels -->
+
+							<child>
+							  <object class="GtkLabel" id="DownSpeed">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">4</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="TrackerStatus">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">4</property>
+								<property name="top_attach">5</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="UpLimit">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">6</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="Hash">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">9</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="Pieces">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">4</property>
+								<property name="top_attach">8</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="Remaining">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">6</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="SavePath">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">7</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="ShareRatio">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">4</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="TimeElapsed">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">1</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="TotalSize">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">8</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="TrackerURL">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">5</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="UploadSpeed">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">4</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="Uploaded">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">3</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="Downloaded">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">2</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+							
+							<child>
+							  <object class="GtkLabel" id="DownLimit">
+								<property name="visible">True</property>
+								<property name="xalign">0.0</property>
+							  </object>
+							  <packing>
+								<property name="left_attach">6</property>
+								<property name="top_attach">2</property>
+							  </packing>
+							</child>
+							
+							<!-- End of Dynamic Labels -->
+						  </object>
+						</child>
+					  </object>
+					  <packing>
+						<property name="pack_type">start</property>
+					  </packing>
+					</child>
+
+				  </object>
+				</child>
+
+				<child type="tab">
+				  <object class="GtkLabel" id="infoBarTorrentInfoLabel">
+					<property name="label">Torrent Info</property>
+					<property name="visible">True</property>
+				  </object>
+				</child>
+				<!-- End of Torrent Info -->
+				<!-- Start of File -->
+				<child>
+				  <object class="GtkScrolledWindow" id="infoBarFilesScrolledWindow">
+					<property name="visible">True</property>
+					<child>
+					  <object class="GtkTreeView" id="infoBarFileTreeView">
+						<property name="visible">True</property>
+					  </object>
+					</child>
+				  </object>
+				</child>
+
+				<child type="tab">
+				  <object class="GtkLabel" id="infoBarFilesLabel">
+					<property name="label">Files</property>
+					<property name="visible">True</property>
+				  </object>
+				</child>
+				<!-- End of File -->
+			  </object>
+			  <packing>
+				<property name="pack_type">end</property>
+			  </packing>
+			</child>
+
 		  </object>
 		</child>
       </object>
 	</child>
+
   </object>
 </interface>

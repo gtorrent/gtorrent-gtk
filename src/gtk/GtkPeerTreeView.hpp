@@ -1,5 +1,6 @@
 #include <gtorrent/Torrent.hpp>
 
+#include <gtkmm/builder.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
@@ -64,5 +65,5 @@ class GtkPeerTreeView : public Gtk::TreeView
 	public:
 		void update();
 		void select(std::shared_ptr<gt::Torrent> t);
-		GtkPeerTreeView();
+		GtkPeerTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 };

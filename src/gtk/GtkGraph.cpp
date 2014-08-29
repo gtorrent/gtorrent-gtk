@@ -10,10 +10,9 @@
 /**
  * Sets up the speed graph.
  */
-GtkGraph::GtkGraph(unsigned size) :
-	//The GType name will actually be gtkmm__CustomObject_BlockBar
-	Glib::ObjectBase("DrawingArea"),
-	Gtk::DrawingArea(),
+GtkGraph::GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size) :
+	Gtk::DrawingArea(da),
+	builder(rbuilder),
 	m_maxSize(size)
 {
 	set_has_window(true);

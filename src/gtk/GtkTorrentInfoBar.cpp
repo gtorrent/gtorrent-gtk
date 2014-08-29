@@ -22,56 +22,14 @@
 GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder)
 	: Gtk::Box(box), builder(rbuilder)
 {
-	//TODO: better layout
-	m_notebook = Gtk::manage(new Gtk::Notebook());
-	m_trackers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_peers_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_pieces_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_general_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_speed_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_log_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_piece_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_title = Gtk::manage(new Gtk::Label());
-  m_filebox = Gtk::manage(new Gtk::ScrolledWindow());
-	m_fileview = Gtk::manage(new GtkFileTreeView());
-  m_filebox->add(*m_fileview);
+	builder->get_widget        ("infoBarTitle"       , m_title     	);
+	builder->get_widget_derived("infoBarGeneralBox"  , m_general_box);
+	builder->get_widget_derived("infoBarPeerTreeView", m_peers     	);
+	builder->get_widget_derived("infoBarBlockBar"    , m_progress  	);
+	builder->get_widget_derived("infoBarFileTreeView", m_fileview  	);
+	builder->get_widget_derived("infoBarGraph"       , m_graph     	);
+	builder->get_widget_derived("infoBarLogBox"   	 , m_log_box		);
 
-	this->pack_start(*m_title, Gtk::PACK_SHRINK);
-
-	m_progress = Gtk::manage(new GtkBlockBar());
-	m_graph = Gtk::manage(new GtkGraph());
-
-	m_peer_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
-	m_peers      = Gtk::manage(new GtkPeerTreeView());
-	m_peer_scroll_box->add(*m_peers);
-
-	m_tracker_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
-	m_trackers      = Gtk::manage(new GtkTrackerTreeView());
-	m_tracker_scroll_box->add(*m_trackers);
-
-	m_filebox->add(*m_fileview);
-	pack_start(*m_title, Gtk::PACK_SHRINK);
-	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
-	m_progress->set_size_request(0, 20);
-
-	m_pieces_box->add(*m_piece_box);
-
-	m_scroll_box = Gtk::manage(new Gtk::ScrolledWindow());
-	m_gen_box = Gtk::manage(new GtkGeneralBox());
-	m_scroll_box->add(*m_gen_box);
-
-	m_general_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-	m_general_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
-
-	m_notebook->append_page(*m_general_box, "General");
-	m_notebook->append_page(*m_tracker_scroll_box, "Trackers");
-	m_notebook->append_page(*m_peer_scroll_box, "Peers");
-	m_notebook->append_page(*m_pieces_box, "Pieces");
-	m_notebook->append_page(*m_filebox, "Files");
-	m_notebook->append_page(*m_graph, "Speed");
-	m_notebook->append_page(*m_log_box, "Log");
-
-	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 	show_all();
 }
 
