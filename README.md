@@ -29,7 +29,7 @@ sizes? *Yes.* So let's all agree to use `tabsize=8`.
 gTorrent uses astyle to format our code. You can find more about it
 [here](http://astyle.sourceforge.net/)
 
-Install astyle, then run the convenient script somewhere at the root of the
+Install astyle, then run the `scripts/format.sh` from the root of the
 repo, so that somebody else doesn't have to fix your indents.
 
 #### Coding style
