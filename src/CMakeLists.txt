@@ -38,9 +38,6 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkFileTreeView.cpp
   gtk/utils/FileTree.cpp
   gtk/GtkGeneralBox.cpp
-	gtk/GtkPeersBox.cpp
-	gtk/GtkPiecesBox.cpp
-	gtk/GtkFilesBox.cpp
 	gtk/GtkLogBox.cpp
 	main.cpp
 	)
