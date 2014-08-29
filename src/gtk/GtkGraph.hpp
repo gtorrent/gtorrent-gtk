@@ -7,7 +7,7 @@
 class GtkGraph : public Gtk::DrawingArea
 {
 public:
-	GtkGraph(unsigned size = 30);
+	GtkGraph(unsigned size = 60);
 	virtual ~GtkGraph();
 	int xoffset = 0;
 	void resize(unsigned size);
