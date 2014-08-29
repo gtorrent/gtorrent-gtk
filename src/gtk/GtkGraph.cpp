@@ -183,7 +183,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	std::vector <double> dash = { 5 };
 	Gdk::Cairo::set_source_rgba(cr, get_style_context()->get_background_color());
 
-	double increment = width / 60;
+	double increment = (width - m_labelLength) / (m_maxSize-1);
 	unsigned order;
 	if(max(m_history[m_selected].first, m_history[m_selected].second) <= 10 * 1024)
 		order = 1;
@@ -237,8 +237,8 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->move_to(0, height);
 	cr->line_to(0, 0);
 
-	cr->move_to(width - 40, 0);
-	cr->line_to(width - 40, height);
+	cr->move_to(width - m_labelLength, 0);
+	cr->line_to(width - m_labelLength, height);
 	cr->stroke();
 
 	int lValue = maxValue + 5 - (maxValue % 5);
@@ -270,19 +270,28 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
  */
 void GtkGraph::draw(std::queue<double> q, double height, double increment, double maxValue, const Cairo::RefPtr<Cairo::Context>& cr)
 {
+	// wizards use computers
+	// computers use numbers
+	// no magic
+	
+	double offset = increment * (m_maxSize - q.size());
+
+	cr->move_to(0, height);
+	for(unsigned i = 0; i< (m_maxSize - q.size());++i)
+		cr->line_to(i*increment, height);
+
+
 	double oldy;
 	if(q.empty()) return;
 
-	oldy = height + (q.front() * height / maxValue);
-	cr->move_to(0, oldy);
+	oldy = height - (q.front() * height / maxValue);
+	cr->move_to(offset, oldy);
 	q.pop();
-	increment += 2 * increment / 60.0 - (double(40) / 60); //:^)
-
-	double x = increment * (60 - q.size());
-	while(q.size() >= 2)
+	double x = increment + offset;
+	while(!q.empty())
 	{
 		double y = height - (q.front() * height / maxValue);
-		cr->curve_to(x - (increment / 2), oldy, x - (increment / 2), y, x, y);
+		cr->curve_to(x - increment/2, oldy, x - increment/2, y, x, y);
 		q.pop();
 		oldy = y;
 		x += increment;
@@ -293,7 +302,7 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 		cr->stroke_preserve();
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]));
 		cr->line_to(x - increment, height);
-		cr->line_to(0,height);
+		cr->line_to(offset,height);
 		auto k = Gdk::RGBA(gt::Settings::settings[(upl) ? "GraphUploadFillColor" : "GraphDownloadFillColor"]);
 		cr->set_source_rgba(k.get_red(), k.get_green(), k.get_blue(), k.get_alpha() * 0.5);
 		cr->fill();
