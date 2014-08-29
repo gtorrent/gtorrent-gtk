@@ -22,41 +22,11 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 	: Gtk::Box(box), builder(rbuilder)
 {
 	rbuilder->get_widget("infoBarTitle", m_title);
-
 	rbuilder->get_widget_derived("infobarGraph"       , m_graph     );
 	rbuilder->get_widget_derived("infobarBlockBar"    , m_progress  );
 	rbuilder->get_widget_derived("infoBarPeerTreeView", m_peers     );
 	rbuilder->get_widget_derived("infoBarFileTreeView", m_fileview  );
 	rbuilder->get_widget_derived("infobarStatusBox"   , m_status_box);
-
-	//TODO: better layout
-//	m_notebook                        = Gtk::manage(new Gtk::Notebook());
-//	m_stat_box                        = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-//	m_piece_box                       = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-//	m_title                           = Gtk::manage(new Gtk::Label());
-//	m_filebox                         = Gtk::manage(new Gtk::ScrolledWindow());
-//	m_fileview                        = Gtk::manage(new GtkFileTreeView());
-//	m_progress                        = Gtk::manage(new GtkBlockBar());
-//	m_graph                           = Gtk::manage(new GtkGraph());
-//	m_scroll_box                      = Gtk::manage(new Gtk::ScrolledWindow());
-//	m_status_box                      = Gtk::manage(new GtkStatusBox());
-//	m_peer_scroll_box                 = Gtk::manage(new Gtk::ScrolledWindow());
-//	m_peers                           = Gtk::manage(new GtkPeerTreeView());
-
-//	m_peer_scroll_box->add(*m_peers);
-//	m_filebox->add(*m_fileview);
-//	pack_start(*m_title, Gtk::PACK_SHRINK);
-//	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
-//	m_progress->set_size_request(0, 20);
-//	m_scroll_box->add(*m_status_box);
-//	m_stat_box->add(*m_piece_box);
-//	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-//	m_stat_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
-//	m_notebook->append_page(*m_graph, "Info Graph");
-//	m_notebook->append_page(*m_peer_scroll_box, "Peers");
-//	m_notebook->append_page(*m_stat_box, "Torrent Info");
-//	m_notebook->append_page(*m_filebox, "Files");
-//	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
 	show_all();
 }
 
