@@ -59,11 +59,17 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
 		if(selectedRows().size() == 0) return false;
 
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem((selectedRows()[0][m_cols.m_col_prioritylevel] == 0) ? "Start" : "Stop"));
-		Gtk::MenuItem *rcmItem3        = Gtk::manage(new Gtk::MenuItem("Rename"));
+		Gtk::MenuItem *rcmOpen        = Gtk::manage(new Gtk::MenuItem("Open"));
+		Gtk::MenuItem *rcmOpenContainingFolder        = Gtk::manage(new Gtk::MenuItem("Open Containing Folder"));
 		Gtk::SeparatorMenuItem *rcSep1 = Gtk::manage(new Gtk::SeparatorMenuItem());
-		Gtk::MenuItem *rcmItem4        = Gtk::manage(new Gtk::MenuItem("Open"));
-		Gtk::MenuItem *rcmItem5        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+
+		Gtk::MenuItem*rcmPriority        = Gtk::manage(new Gtk::MenuItem("Priority")); // Also if you find a way to expand another menu from there
+Gtk::SeparatorMenuItem *rcSep2 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		Gtk::MenuItem *rcmStartStop        = Gtk::manage(new Gtk::MenuItem((selectedRows()[0][m_cols.m_col_prioritylevel] == 0) ? "Start" : "Stop"));
+		Gtk::SeparatorMenuItem *rcSep3 = Gtk::manage(new Gtk::SeparatorMenuItem());
+
+		Gtk::MenuItem *rcmRename        = Gtk::manage(new Gtk::MenuItem("Relocate"));
 
 		Gtk::Menu *submenu = Gtk::manage(new Gtk::Menu());
 
@@ -73,17 +79,25 @@ bool GtkFileTreeView::fileView_onClick(GdkEventButton *event)
 			smItem->signal_activate().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkFileTreeView::setSelectedPriorities), i));
 			submenu->add(*smItem);
 		}
-		rcmItem5->set_submenu(*submenu);
+		rcmPriority->set_submenu(*submenu);
 
-		rcmItem2->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::toggleView_onClick));
+		rcmStartStop->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::toggleView_onClick));
 //		rcmItem3->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::rename_onClick)); // not really sure who the fuck rename manually their files, btw, also may be hard to actually implement
-		rcmItem4->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::openView_onClick));
+		rcmOpen->signal_activate ().connect(sigc::mem_fun(*this, &GtkFileTreeView::openView_onClick));
 
-		m_rcMenu->add(*rcmItem2);
-		m_rcMenu->add(*rcmItem3);
+		m_rcMenu->add(*rcmOpen);
+		m_rcMenu->add(*rcmOpenContainingFolder);
+
 		m_rcMenu->add(*rcSep1);
-		m_rcMenu->add(*rcmItem4);
-		m_rcMenu->add(*rcmItem5);
+
+		m_rcMenu->add(*rcmPriority);
+		m_rcMenu->add(*rcSep2);
+
+		m_rcMenu->add(*rcmStartStop);
+		m_rcMenu->add(*rcSep3);
+
+		m_rcMenu->add(*rcmRename);
+
 		m_rcMenu->show_all();
 		m_rcMenu->popup(event->button, event->time);
 	}
