@@ -6,6 +6,7 @@ ADD_CUSTOM_COMMAND (
 	COMMENT "Generating resources.c..."
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/resources.xml
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/infobar.ui
 	)
 
 ADD_CUSTOM_TARGET (assets ALL

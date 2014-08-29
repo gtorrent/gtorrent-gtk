@@ -21,12 +21,12 @@
 GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder)
 	: Gtk::Box(box), builder(rbuilder)
 {
-	rbuilder->get_widget("infoBarTitle", m_title);
-	rbuilder->get_widget_derived("infobarGraph"       , m_graph     );
-	rbuilder->get_widget_derived("infobarBlockBar"    , m_progress  );
-	rbuilder->get_widget_derived("infoBarPeerTreeView", m_peers     );
-	rbuilder->get_widget_derived("infoBarFileTreeView", m_fileview  );
-	rbuilder->get_widget_derived("infobarStatusBox"   , m_status_box);
+	builder->get_widget        ("infoBarTitle"       , m_title     );
+	builder->get_widget_derived("infoBarGraph"       , m_graph     );
+	builder->get_widget_derived("infoBarBlockBar"    , m_progress  );
+	builder->get_widget_derived("infoBarPeerTreeView", m_peers     );
+	builder->get_widget_derived("infoBarFileTreeView", m_fileview  );
+	builder->get_widget_derived("infoBarStatusBox"   , m_status_box);
 	show_all();
 }
 
