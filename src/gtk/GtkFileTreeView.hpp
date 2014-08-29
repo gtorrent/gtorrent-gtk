@@ -4,6 +4,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
 #include "utils/FileTree.hpp"
+#include <gtkmm/builder.h>
 #include <glibmm.h>
 
 class GtkFileColumns : public Gtk::TreeModel::ColumnRecord
@@ -73,5 +74,5 @@ public:
 	void openView_onClick();
 	std::vector<Gtk::TreeRow> selectedRows();
 	void  setSelectedPriorities(int);
-	GtkFileTreeView();
+	GtkFileTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 };

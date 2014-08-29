@@ -24,7 +24,7 @@ void GtkPeerTreeView::insert(const gt::Peer &p)
 	}
 }
 
-GtkPeerTreeView::GtkPeerTreeView()
+GtkPeerTreeView::GtkPeerTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree) 
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	set_model(m_liststore);

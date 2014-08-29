@@ -6,7 +6,7 @@
 
 // TODO: remove all this boilerplate and replace it with initialize methods instead of doing the same thing a dozen times
 
-GtkStatusBox::GtkStatusBox()
+GtkStatusBox::GtkStatusBox(GtkGrid *grid, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Grid(grid), builder(rbuilder)
 {
 	set_margin_left    (5);
 	set_margin_right   (5);

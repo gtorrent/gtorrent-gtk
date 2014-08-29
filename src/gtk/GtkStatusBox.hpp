@@ -2,10 +2,15 @@
 
 #include <gtkmm/grid.h>
 #include <gtkmm/label.h>
+#include <gtkmm/builder.h>
 #include "../Application.hpp"
 
 class GtkStatusBox : public Gtk::Grid
 {
+public:
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkStatusBox(GtkGrid *grid, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	void update(std::shared_ptr<gt::Torrent> selected);
 private:
 
 	Gtk::Label m_transfer;
@@ -51,7 +56,4 @@ private:
 	Gtk::Label m_hash_label;
 	Gtk::Label m_hash;
 
-public:
-	GtkStatusBox();
-	void update(std::shared_ptr<gt::Torrent> selected);
 };

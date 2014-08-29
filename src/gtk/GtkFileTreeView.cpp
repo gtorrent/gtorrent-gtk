@@ -33,7 +33,7 @@ std::string prioStr[] =
 
 Glib::RefPtr<Gtk::IconTheme> iconTheme;
 
-GtkFileTreeView::GtkFileTreeView()
+GtkFileTreeView::GtkFileTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
 {
 	m_liststore = Gtk::TreeStore::create(m_cols);
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);

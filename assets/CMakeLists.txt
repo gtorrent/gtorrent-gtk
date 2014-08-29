@@ -5,6 +5,7 @@ ADD_CUSTOM_COMMAND (
 	COMMAND glib-compile-resources ARGS --target=${PROJECT_BINARY_DIR}/resources.c --generate-source resources.xml
 	COMMENT "Generating resources.c..."
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/resources.xml
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.ui
 	)
 
 ADD_CUSTOM_TARGET (assets ALL
