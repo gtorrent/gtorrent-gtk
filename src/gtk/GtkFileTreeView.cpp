@@ -233,6 +233,8 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 	{
 		m_liststore->clear();
 		torrent = selected;
+		if(!torrent) return;
+		if(!torrent->getInfo()) return;
 		torrent->getHandle().file_progress(progress_all, 1);
 
 		libtorrent::file_storage filestorage = torrent->getInfo()->files();
@@ -377,7 +379,7 @@ void GtkFileTreeView::loadColumns()
 
 void GtkFileTreeView::update()
 {
-	if(!torrent->getInfo().get()) return;
+	if(!torrent) return;
 	torrent->getHandle().file_progress(progress_all, 1);
 	for(auto child : m_liststore->children())
 		update(child);
@@ -385,6 +387,8 @@ void GtkFileTreeView::update()
 
 void GtkFileTreeView::update(Gtk::TreeRow &row)
 {
+	if(!torrent) return;
+	if(!torrent->getInfo()) return;
 	if(row.children().size() == 0)
 	{
 		Gtk::IconInfo iconInfo;

@@ -17,6 +17,7 @@
 	<property name="window_position">center</property>
 	<property name="default_width">800</property>
 	<property name="default_height">500</property>
+	<property name="visible">True</property>
 
 	<child type="titlebar">
 	  <object class="GtkHeaderBar" id="headerBar">
@@ -29,14 +30,17 @@
 			<property name="visible">True</property>
 			<property name="valign">center</property>
 
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
-              <object class="GtkImage" id="addTorrentImage">
+			  <object class="GtkImage" id="addTorrentImage">
 				<property name="visible">True</property>
 				<property name="icon_size">1</property>
 				<property name="icon_name">list-add-symbolic</property>
-              </object>
+			  </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">start</property>
@@ -46,8 +50,11 @@
 		<child>
 		  <object class="GtkMenuButton" id="addMagnetButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
 			<property name="use_popover">True</property>
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="addMagnetImage">
 				<property name="visible">True</property>
@@ -60,6 +67,7 @@
 			<property name="pack_type">start</property>
           </packing>
 		</child>
+
 		<child>
 		  <object class="GtkSeparator" id="vSepOne">
 			<property name="visible">True</property>
@@ -73,8 +81,10 @@
 		<child>
 		  <object class="GtkButton" id="resumeButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
-
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="resumeImage">
 				<property name="visible">True</property>
@@ -82,7 +92,6 @@
 				<property name="icon_name">media-playback-start-symbolic</property>
               </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">start</property>
@@ -92,8 +101,10 @@
 		<child>
 		  <object class="GtkButton" id="pauseButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
-
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="pauseImage">
 				<property name="visible">True</property>
@@ -101,7 +112,6 @@
 				<property name="icon_name">media-playback-pause-symbolic</property>
               </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">start</property>
@@ -111,8 +121,10 @@
 		<child>
 		  <object class="GtkButton" id="deleteButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
-
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="deleteImage">
 				<property name="visible">True</property>
@@ -120,7 +132,6 @@
 				<property name="icon_name">edit-delete-symbolic</property>
               </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">start</property>
@@ -140,8 +151,10 @@
 		<child>
 		  <object class="GtkButton" id="preferencesButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
-
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="preferencesImage">
 				<property name="visible">True</property>
@@ -149,7 +162,6 @@
 				<property name="icon_name">preferences-system-symbolic</property>
               </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">start</property>
@@ -159,8 +171,10 @@
 		<child>
 		  <object class="GtkButton" id="settingsButton">
 			<property name="visible">True</property>
-			<property name="valign">center</property>
-
+			<style>
+			  <class name="button"/>
+			  <class name="image-button"/>
+			</style>
 			<child>
               <object class="GtkImage" id="settingsImage">
 				<property name="visible">True</property>
@@ -168,7 +182,6 @@
 				<property name="icon_name">emblem-system-symbolic</property>
               </object>
 			</child>
-
           </object>
           <packing>
 			<property name="pack_type">end</property>
@@ -188,6 +201,7 @@
 		  </object>
 		</child>
 
+<<<<<<< HEAD
 		<child>
 		  <object class="GtkBox" id="infobar">
 			<property name="visible">True</property>
@@ -733,8 +747,6 @@
 
 		  </object>
 		</child>
-      </object>
-	</child>
 
   </object>
 </interface>

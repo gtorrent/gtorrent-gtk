@@ -7,7 +7,7 @@
 #include "GtkAssociationDialog.hpp"
 #include "GtkMainWindow.hpp"
 
-GtkAssociationDialog::GtkAssociationDialog(GtkMainWindow &Parent) : Gtk::Dialog("File Association", Parent, true)
+GtkAssociationDialog::GtkAssociationDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Dialog(dial)
 {
 	Gtk::Fixed *panel = Gtk::manage(new Gtk::Fixed());
 	m_magnetChk = Gtk::manage(new Gtk::CheckButton("Associate with magnets"));
@@ -27,9 +27,13 @@ GtkAssociationDialog::GtkAssociationDialog(GtkMainWindow &Parent) : Gtk::Dialog(
 	add_button("Remind me later", -1);
 	Gtk::Button *okButton = add_button("Ok", 0);
 	okButton->signal_released().connect(sigc::bind(sigc::mem_fun(*this, &GtkAssociationDialog::PlsFindMeAName), okButton));
+	rbuilder->get_widget("mag", m_magnetChk );
+	rbuilder->get_widget("tor", m_torrentChk);
+
 }
 
-void GtkAssociationDialog::PlsFindMeAName(Gtk::Button *butt)
+void GtkAssociationDialog::on_response(int response)
 {
-	response(m_magnetChk->get_active() << 1 | m_torrentChk->get_active());
+	aWithMagnets = m_magnetChk->get_active();
+	aWithTorrents = m_torrentChk->get_active();
 }

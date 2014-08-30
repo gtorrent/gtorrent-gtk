@@ -1,5 +1,5 @@
 #include "GtkMainWindow.hpp"
-
+#include <future>
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
 
@@ -142,16 +142,12 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magPopover->add(*magEntry);
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
-
+	magPopover->set_position(Gtk::POS_LEFT);
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
-
-	m_infobar->set_margin_left(5);
-	m_infobar->set_margin_right(5);
-	m_infobar->set_visible();
 
 	m_treeview->set_visible();
 	scrolledWindow->add(*m_treeview);
-	panel->pack1(*scrolledWindow);
+	panel->pack2(*m_infobar);
 
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
@@ -264,10 +260,13 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	if (gt::Settings::settings["FileAssociation"] == "" ||
 		gt::Settings::settings["FileAssociation"] == "-1")
 	{
-		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
-		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
+		GtkAssociationDialog *dialog = 0;
+		builder->get_widget_derived("fileAssociationDialog", dialog);
+		dialog->set_transient_for(*this);
+		dialog->set_default_response(1);
+		int code = dialog->run();
 		if(code != -1)
-			gt::Platform::associate(code & 2, code & 1);
+			gt::Platform::associate(dialog->aWithMagnets, dialog->aWithTorrents);
 		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
@@ -332,6 +331,7 @@ void GtkMainWindow::onAddBtnClicked()
 	fc.set_default_size(256, 256);
 	fc.set_select_multiple();
 	fc.set_transient_for(*this);
+	fc.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 	fc.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
 	fc.add_button("Select", Gtk::RESPONSE_OK);
 
@@ -441,10 +441,8 @@ void GtkMainWindow::onPropertiesBtnClicked()
 */
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
-	hide();
-//	m_treeview->saveColumns();
+	m_treeview->saveColumns();
 	notify_uninit();
-	m_core->shutdown();
 	return false;
 }
 

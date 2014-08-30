@@ -42,6 +42,7 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
+	std::cout << get_visible() << std::endl;
 	if(selected)
 		set_visible();
 	else
@@ -58,10 +59,10 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	m_graph->select(selected);
 	m_peers->select(selected);
 	m_fileview->select(selected);
-
 	if(previous != selected)
 		m_gen_box->update(selected);
 	previous = selected;
+	show_all();
 }
 
 void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
