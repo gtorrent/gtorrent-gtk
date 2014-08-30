@@ -76,6 +76,6 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(auto ptr : t)
-		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
+		m_graph->addValue(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
 
 }

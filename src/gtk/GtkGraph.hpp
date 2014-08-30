@@ -11,7 +11,7 @@ public:
 	//const Glib::RefPtr<Gtk::Builder> builder;
 	GtkGraph(const unsigned maxSize = 3600);
 	virtual ~GtkGraph();
-	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
+	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
 	unsigned m_displaySize;
 	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
@@ -28,6 +28,7 @@ private:
 	std::shared_ptr<gt::Torrent> m_selected;
 	const unsigned m_maxSize;
 	static const unsigned m_labelLength = 40;
+	static const unsigned m_labelHeight = 10;
 	double max(std::queue<double> q);
 	std::queue<double> lastElements(std::queue<double> q, unsigned n);
 	inline double max(std::queue<double> q1, std::queue<double> q2)
