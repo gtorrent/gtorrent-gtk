@@ -19,6 +19,34 @@ GtkGraph::GtkGraph(const unsigned maxSize) :
 }
 bool upl = true;
 
+std::string timestr(int64_t time_s)
+{
+	if(time_s < 0 )
+		return "∞";
+	else if(time_s == 0)
+		return "0s";
+
+	int64_t time_m = time_s / 60;
+	time_s %= 60;
+	int64_t time_h = time_m / 60;
+	time_m %= 60;
+	int64_t time_d = time_h / 24;
+	time_h %= 24;
+
+	std::ostringstream time_string;
+
+	if ( time_d > 0 )
+		time_string << time_d << "d ";
+	if ( time_h > 0 )
+		time_string << time_h << "h ";
+	if ( time_m > 0 )
+		time_string << time_m << "m ";
+	if(time_s > 0)
+		time_string << time_s << "s";
+
+	return time_string.str();
+}
+
 std::string speedstr(int64_t file_size)
 {
 	std::ostringstream fss;
@@ -71,14 +99,14 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if(gt::Settings::settings["ShowLegend"] != "No")
 	{
 		label = "Upload";
-		cr->move_to(10, height / 2 - 15);
+		cr->move_to(10, (height-m_labelHeight) / 2 - 15);
 		cr->text_path(label);
 		cr->fill();
 	}
 	upl = true;
 	if(gt::Settings::settings["GraphUploadCurveStyle"] == "Dash")
 		cr->set_dash(dash, 0);
-	draw(download, height, increment, maxValue, cr);
+	draw(download, (height-m_labelHeight), increment, maxValue, cr);
 	cr->unset_dash();
 	upl = false;
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphDownloadCurveColor"]));
@@ -86,7 +114,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if(gt::Settings::settings["ShowLegend"] != "No")
 	{
 		label = "Download";
-		cr->move_to(10, height / 2 - 30);
+		cr->move_to(10, (height-m_labelHeight) / 2 - 30);
 		cr->text_path(label);
 		cr->fill();
 		cr->stroke();
@@ -94,19 +122,36 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	if(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash")
 		cr->set_dash(dash, 0);
-	draw(upload, height, increment, maxValue, cr);
+	draw(upload, (height-m_labelHeight), increment, maxValue, cr);
 	cr->unset_dash();
 
 	// draw grid
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
 
-	cr->move_to(0, height);
-	cr->line_to(width, height);
-	cr->move_to(0, height);
+	for(unsigned i = 0, val = 0;i<6;++i)
+	{
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
+		cr->move_to(i * ((width-m_labelLength)/5), height);
+		std::string label = timestr(val);
+		cr->text_path(label);
+		cr->fill();
+		val += m_displaySize/5;
+
+		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
+		cr->move_to(i * ((width-m_labelLength)/5), (height-m_labelHeight)+2);
+		cr->line_to(i * ((width-m_labelLength)/5), 0);
+		cr->stroke();
+		cr->set_line_width(1.0);
+	}
+	cr->stroke();
+
+	cr->move_to(0, (height-m_labelHeight));
+	cr->line_to(width, (height-m_labelHeight));
+	cr->move_to(0, (height-m_labelHeight));
 	cr->line_to(0, 0);
 
 	cr->move_to(width - m_labelLength, 0);
-	cr->line_to(width - m_labelLength, height);
+	cr->line_to(width - m_labelLength, (height-m_labelHeight));
 	cr->stroke();
 
 	int lValue = maxValue + 5 - (maxValue % 5);
@@ -114,19 +159,19 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	{
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
 		std::string label = speedstr(lValue - ((lValue / 5) * (i - 1)));
-		cr->move_to(width - 37, 10 + ((height / 5) * (i - 1)));
+		cr->move_to(width - m_labelLength +2, 10 + (((height-m_labelHeight -10) / 5) * (i - 1)));
 		cr->text_path(label);
 		cr->fill();
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
 		cr->set_line_width(0.6);
-		cr->move_to(0, 13 + ((height / 5) * (i - 1)));
-		cr->line_to(width - 35, 13 + ((height / 5) * (i - 1)));
+		cr->move_to(0, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
+		cr->line_to(width - m_labelLength +2, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
 		cr->stroke();
 		cr->set_line_width(1.0);
 	}
 
 	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphBorderColor"]));
-	cr->move_to(width - 37, height - 5);
+	cr->move_to(width - 37, (height-m_labelHeight) - 5);
 	cr->text_path("0B/s");
 	cr->fill();
 

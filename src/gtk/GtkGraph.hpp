@@ -26,6 +26,7 @@ private:
 	std::shared_ptr<gt::Torrent> m_selected;
 	const unsigned m_maxSize;
 	static const unsigned m_labelLength = 40;
+	static const unsigned m_labelHeight = 10;
 	double max(std::queue<double> q);
 	std::queue<double> lastElements(std::queue<double> q, unsigned n);
 	inline double max(std::queue<double> q1, std::queue<double> q2)
