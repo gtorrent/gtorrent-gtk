@@ -226,7 +226,7 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 /**
  * Adds upload and download values to the history of the torrent identified by the index
  */
-void GtkGraph::add(std::shared_ptr<gt::Torrent> index, double upload, double download)
+void GtkGraph::addValue(std::shared_ptr<gt::Torrent> index, double upload, double download)
 {
 	if(upload == NAN)
 		upload = 0;

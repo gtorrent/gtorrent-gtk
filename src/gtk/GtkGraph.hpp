@@ -9,7 +9,7 @@ class GtkGraph : public Gtk::Button
 public:
 	GtkGraph(const unsigned maxSize = 3600);
 	virtual ~GtkGraph();
-	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
+	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
 	unsigned m_displaySize;
 	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
