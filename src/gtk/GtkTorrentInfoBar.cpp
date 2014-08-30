@@ -11,10 +11,9 @@
 #include "../Application.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
-#include "GtkPeerTreeView.hpp"
-#include "GtkTrackerTreeView.hpp"
-#include "GtkFileTreeView.hpp"
 #include "GtkGeneralBox.hpp"
+#include "GtkPeerTreeView.hpp"
+#include "GtkFileTreeView.hpp"
 
 /**
 * Sets up the torrent info bar.
@@ -22,14 +21,12 @@
 GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder)
 	: Gtk::Box(box), builder(rbuilder)
 {
-	builder->get_widget        ("infoBarTitle"       , m_title     	);
-	builder->get_widget_derived("infoBarGeneralBox"  , m_general_box);
-	builder->get_widget_derived("infoBarPeerTreeView", m_peers     	);
-	builder->get_widget_derived("infoBarBlockBar"    , m_progress  	);
-	builder->get_widget_derived("infoBarFileTreeView", m_fileview  	);
-	builder->get_widget_derived("infoBarGraph"       , m_graph     	);
-	builder->get_widget_derived("infoBarLogBox"   	 , m_log_box		);
-
+	builder->get_widget        ("infoBarTitle"       , m_title     );
+	builder->get_widget_derived("infoBarGraph"       , m_graph     );
+	builder->get_widget_derived("infoBarBlockBar"    , m_progress  );
+	builder->get_widget_derived("infoBarPeerTreeView", m_peers     );
+	builder->get_widget_derived("infoBarFileTreeView", m_fileview  );
+	builder->get_widget_derived("infoBarStatusBox"   , m_general_box);
 	show_all();
 }
 
@@ -47,8 +44,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		set_visible();
 	else
 	{
-		//set_visible(false);
-		set_visible(true);
+		set_visible(false);
 		return;
 	}
 
@@ -60,7 +56,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	m_peers->select(selected);
 	m_fileview->select(selected);
 	if(previous != selected)
-		m_gen_box->update(selected);
+		m_general_box->update(selected);
 	previous = selected;
 	show_all();
 }
@@ -71,12 +67,11 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	if(selected->getHandle().status().has_metadata)
 		m_progress->setBlocks(selected->getPieces());
 
-	m_gen_box->update(selected);
+	m_general_box->update(selected);
 	m_peers->update();
 	m_fileview->update();
-
 	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
 	for(auto ptr : t)
-		m_graph->addValue(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
+		m_graph->add(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
 
 }

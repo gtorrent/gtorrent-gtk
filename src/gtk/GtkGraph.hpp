@@ -1,36 +1,46 @@
 #pragma once
 
-#include <gtkmm/button.h>
+#include <gtkmm/drawingarea.h>
 #include <queue>
 #include <cmath>
 #include <gtkmm/builder.h>
 
-class GtkGraph : public Gtk::Button
+class GtkGraph : public Gtk::DrawingArea
 {
 public:
-	//const Glib::RefPtr<Gtk::Builder> builder;
-	GtkGraph(const unsigned maxSize = 3600);
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
 	virtual ~GtkGraph();
-	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
+	int xoffset = 0;
+	void resize(unsigned size);
+	void add(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
-	unsigned m_displaySize;
 	inline void removeHistory(std::shared_ptr<gt::Torrent> t)
 	{
 		m_history.erase(t);
 	}
 
 protected:
-	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
-	virtual bool on_button_press_event(GdkEventButton* event);
-private:
 
+	//Overrides:
+	virtual Gtk::SizeRequestMode get_request_mode_vfunc() const;
+	virtual void get_preferred_width_vfunc(int& minimum_width, int& natural_width) const;
+	virtual void get_preferred_height_for_width_vfunc(int width, int& minimum_height, int& natural_height) const;
+	virtual void get_preferred_height_vfunc(int& minimum_height, int& natural_height) const;
+	virtual void get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const;
+	virtual void on_size_allocate(Gtk::Allocation& allocation);
+	virtual void on_map();
+	virtual void on_unmap();
+	virtual void on_realize();
+	virtual void on_unrealize();
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
+
+	Glib::RefPtr<Gdk::Window> m_refGdkWindow;
+private:
 	std::map<std::shared_ptr<gt::Torrent>, std::pair<std::queue<double>, std::queue<double>>> m_history;
 	std::shared_ptr<gt::Torrent> m_selected;
-	const unsigned m_maxSize;
-	static const unsigned m_labelLength = 40;
-	static const unsigned m_labelHeight = 10;
+	unsigned m_maxSize;
 	double max(std::queue<double> q);
-	std::queue<double> lastElements(std::queue<double> q, unsigned n);
 	inline double max(std::queue<double> q1, std::queue<double> q2)
 	{
 		return max(q1) > max(q2) ? max(q1) : max(q2);
