@@ -32,6 +32,7 @@ GuiGtk::GuiGtk(int argc, char **argv)
 	try
 	{
 		refBuilder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
+		refBuilder->add_from_resource("/org/gtk/gtorrent/association.ui");
 	}
 	catch(const Glib::FileError& ex)
 	{

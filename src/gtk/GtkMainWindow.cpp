@@ -46,10 +46,11 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magEntry->set_width_chars(75);
 	magPopover = Gtk::manage(new Gtk::Popover());
 
+
 	magPopover->add(*magEntry);
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
-
+	magPopover->set_position(Gtk::POS_LEFT);
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
 	m_infobar->set_margin_left(5);
@@ -89,13 +90,18 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 		m_treeview->addCell(tor);
 	}
 
+	show();
+
 	if (gt::Settings::settings["FileAssociation"] == "" ||
 		gt::Settings::settings["FileAssociation"] == "-1")
 	{
-		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
-		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
+		GtkAssociationDialog *dialog = 0;
+		builder->get_widget_derived("fileAssociationDialog", dialog);
+		dialog->set_transient_for(*this);
+		dialog->set_default_response(1);
+		int code = dialog->run();
 		if(code != -1)
-			gt::Platform::associate(code & 2, code & 1);
+			gt::Platform::associate(dialog->aWithMagnets, dialog->aWithTorrents);
 		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
