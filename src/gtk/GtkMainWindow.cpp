@@ -1,5 +1,5 @@
 #include "GtkMainWindow.hpp"
-
+#include <future>
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
 
@@ -46,20 +46,15 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magEntry->set_width_chars(75);
 	magPopover = Gtk::manage(new Gtk::Popover());
 
-
 	magPopover->add(*magEntry);
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
 	magPopover->set_position(Gtk::POS_LEFT);
 	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
 
-	m_infobar->set_margin_left(5);
-	m_infobar->set_margin_right(5);
-	m_infobar->set_visible();
-
 	m_treeview->set_visible();
 	scrolledWindow->add(*m_treeview);
-	panel->pack1(*scrolledWindow);
+	panel->pack2(*m_infobar);
 
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
@@ -89,8 +84,6 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 		m_treeview->addCell(tor);
 	}
-
-	show();
 
 	if (gt::Settings::settings["FileAssociation"] == "" ||
 		gt::Settings::settings["FileAssociation"] == "-1")
@@ -276,10 +269,8 @@ void GtkMainWindow::onPropertiesBtnClicked()
 */
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
-	hide();
-//	m_treeview->saveColumns();
+	m_treeview->saveColumns();
 	notify_uninit();
-	m_core->shutdown();
 	return false;
 }
 

@@ -5,5 +5,6 @@
     <file compressed="true">settings.glade</file>
     <file compressed="true">mainwindow.ui</file>
     <file compressed="true">association.ui</file>
+    <file compressed="true">infobar.ui</file>
   </gresource>
 </gresources>

@@ -9,6 +9,7 @@ protected:
 
 public:
 	GuiBase();
+	virtual int run() = 0;
 	static void loadDefaultSettings();
 };
 
