@@ -54,7 +54,6 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 	m_graph->select(selected);
 	m_peers->select(selected);
 	m_fileview->select(selected);
-
 	if(previous != selected)
 		m_status_box->update(selected);
 	previous = selected;
