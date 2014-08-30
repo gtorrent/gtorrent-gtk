@@ -166,6 +166,7 @@ void GtkMainWindow::onAddBtnClicked()
 	fc.set_default_size(256, 256);
 	fc.set_select_multiple();
 	fc.set_transient_for(*this);
+	fc.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 	fc.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
 	fc.add_button("Select", Gtk::RESPONSE_OK);
 
