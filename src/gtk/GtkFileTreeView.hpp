@@ -12,6 +12,7 @@ public:
 	GtkFileColumns()
 	{
 			add(m_col_size);
+			add(m_col_bsize);
 			add(m_col_percent);
 			add(m_col_percent_text);
 			add(m_col_priority);
@@ -28,6 +29,7 @@ public:
 
 	/* Shown column */
 	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
+	Gtk::TreeModelColumn<unsigned int> m_col_bsize;
 
 	/* Columns that use a custom cell renderer */
 	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;

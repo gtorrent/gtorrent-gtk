@@ -24,7 +24,7 @@ class GtkMainWindow : public Gtk::Window
 	// Gtk::Statusbar *status;
 
 	// Signal Responders
-
+	bool onKeyPress(GdkEventKey *event);
 	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
@@ -40,7 +40,6 @@ public:
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
 	Gtk::ScrolledWindow *m_swin;
-
 
 	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
 	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
