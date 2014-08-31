@@ -276,22 +276,28 @@ bool GtkGraph::on_button_press_event(GdkEventButton *event)
 {
 	if(event->button == 3) // if right-click
 	{
-		Gtk::Menu   *m_rcMenu = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("1 hour"));
-		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("30 minutes"));
-		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("60 seconds"));
 
+		std::stringstream option("3600 10 1800 60");
+		std::vector<unsigned> intervals;
+		do
+		{
+			unsigned tmp;
+			option >> tmp;
+			intervals.push_back(tmp);
+		}while(!option.eof());
 
-		rcmItem1->signal_activate().connect([this](){m_displaySize = 3600;});
-		rcmItem2->signal_activate().connect([this](){m_displaySize = 1800;});
-		rcmItem3->signal_activate().connect([this](){m_displaySize = 60;});
+		Gtk::Menu   *rcMenu = Gtk::manage(new Gtk::Menu());
+		std::vector<Gtk::MenuItem*> rcItems;
+		rcItems.resize(intervals.size());
+		for(unsigned i = 0;i<intervals.size();++i)
+		{
+			rcItems[i] = Gtk::manage(new Gtk::MenuItem(timestr(intervals[i])));
+			rcItems[i]->signal_activate().connect([this,i,intervals](){m_displaySize = intervals[i];});
+			rcMenu->add(*(rcItems[i]));
+		}
 
-		m_rcMenu->add(*rcmItem1);
-		m_rcMenu->add(*rcmItem2);
-		m_rcMenu->add(*rcmItem3);
-
-		m_rcMenu->show_all();
-		m_rcMenu->popup(event->button, event->time);
+		rcMenu->show_all();
+		rcMenu->popup(event->button, event->time);
 	}
 	return false;
 }
