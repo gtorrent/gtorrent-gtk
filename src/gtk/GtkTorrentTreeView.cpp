@@ -17,18 +17,37 @@
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
+GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder) :
+	Gtk::TreeView(treeview)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+
+	rbuilder->get_widget("GtkMainWindow", m_parent);
+	rbuilder->get_widget("infobar", m_infobar);
+
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
-	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
-	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
+	signal_cursor_changed    ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged ), false);
+	signal_key_press_event   ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress         ), false);
+
 	set_model(m_liststore);
 	setupColumns();
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
+
+	std::vector<Gtk::TargetEntry> listTargets = 
+		{
+			Gtk::TargetEntry("STRING"),
+			Gtk::TargetEntry("text/plain"),
+			Gtk::TargetEntry("text/uri-list"),
+			Gtk::TargetEntry("application/x-bittorrent")
+		}
+
+	drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
+	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
+	get_selection()->unselect_all();
+
 }
 
 /**
@@ -187,10 +206,10 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
-	row[m_cols.m_col_name]       = t->getName();
-	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
+	row[m_cols.m_col_eta]        = t->status().is_finished || t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
+	row[m_cols.m_col_name]       = t->status().name;
+	row[m_cols.m_col_seeders]    = t->status().num_seeds;
+	row[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
@@ -223,14 +242,14 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
-		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
-		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
-		c[m_cols.m_col_name]       = t->getName();
+		c[m_cols.m_col_seeders]    = t->status().num_seeds;
+		c[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
+		c[m_cols.m_col_name]       = t->status().name;
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
 		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
+		c[m_cols.m_col_eta]        = t->status().is_finished|| t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 	}
@@ -312,7 +331,7 @@ void GtkTorrentTreeView::openView_onClick()
 {
 	std::shared_ptr<gt::Torrent> t = getFirstSelected();
 
-	if(t == nullptr || !t->hasMetadata())
+	if(t == nullptr || !t->status().has_metadata)
 		return;
 
 	gt::Platform::openTorrent(t);
@@ -356,7 +375,7 @@ void GtkTorrentTreeView::propertyView_onClick()
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
 	for (auto i : selectedTorrents())
-		i->setSequentialDownload(rcmItemSeq->get_active());
+		i->set_sequential_download(rcmItemSeq->get_active());
 }
 
 /**

@@ -46,22 +46,6 @@ public:
 	Gtk::MenuButton *addMagnetButton = nullptr;
 	Gtk::Paned *panel = nullptr;
 
-
-//	Gtk::ScrolledWindow *m_swin;
-
-/*	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
-	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
-	//We've Always Been Shameless About Stealing Great Ideas
-	Gtk::Popover    *magPop = Gtk::manage(new Gtk::Popover(*btn_add_link)); // We may need to provide a fallback CSS for those who use old themes
-	// thx prince
-	Gtk::Button *btn_add_torrent  = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_pause        = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_properties   = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
-*/
-
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();

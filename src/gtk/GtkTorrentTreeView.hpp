@@ -5,6 +5,7 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/builder.h>
 
 namespace Gtk
 {
@@ -67,8 +68,6 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-	GtkTorrentInfoBar *m_infobar;
-	GtkMainWindow *m_parent;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
@@ -94,7 +93,9 @@ private:
 	void sequentialChange_onRealize();
 
 public:
-	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
+	GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	GtkTorrentInfoBar *m_infobar;
+	GtkMainWindow *m_parent;
 
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);

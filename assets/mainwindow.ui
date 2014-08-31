@@ -189,17 +189,43 @@
 	</child>
 	
 	<child>
-	  <object class="GtkPaned" id="panel">
-		<property name="visible">True</property>	
-		<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
-		<property name="position">200</property>
+	  <object class="GtkBox" id="content">
+		<property name="visible">True</property>
+
 		<child>
-		  <object class="GtkScrolledWindow" id="scrolledWindow">
+		  <object class="GtkRevealer" id="sidebarRev">
 			<property name="visible">True</property>
+			<property name="modal">True</property>
+			<property name="transition_type">slide-right</property>
+			<property name="transition_duration">500</property>
+
+			<child>
+			  <object class="GtkTreeView" id="sidebar">
+				<property name="visible">True</property>
+			  </object>
+			</child>
+
 		  </object>
 		</child>
 
-      </object>
+		<child>
+		  <object class="GtkPaned" id="panel">
+			<property name="visible">True</property>	
+			<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+			<child>
+			  <object class="GtkScrolledWindow" id="scrolledWindow">
+				<property name="visible">True</property>
+				<child>
+				  <object class="GtkTreeView" id="treeview">
+					<property name="visible">True</property>
+				  </object>
+				</child>
+			  </object>
+			</child>
+		  </object>
+		</child>
+		
+	  </object>
 	</child>
 
   </object>

@@ -39,7 +39,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-	std::cout << get_visible() << std::endl;
 	if(selected)
 		set_visible();
 	else
