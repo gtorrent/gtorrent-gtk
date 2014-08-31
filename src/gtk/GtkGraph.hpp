@@ -7,7 +7,7 @@
 class GtkGraph : public Gtk::Button
 {
 public:
-	GtkGraph(const unsigned maxSize = 3600);
+	GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
 	virtual ~GtkGraph();
 	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
