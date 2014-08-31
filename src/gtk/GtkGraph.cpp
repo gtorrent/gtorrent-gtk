@@ -145,7 +145,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
 		cr->move_to(i * ((width-m_labelLength)/5), (height-m_labelHeight)+2);
-		cr->line_to(i * ((width-m_labelLength)/5), 0);
+		cr->line_to(i * ((width-m_labelLength)/5), gt::Settings::settings["ShowGrid"] == "Yes" ? 0 : (height-m_labelHeight));
 		cr->stroke();
 		cr->set_line_width(1.0);
 	}
@@ -170,8 +170,8 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->fill();
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
 		cr->set_line_width(0.6);
-		cr->move_to(0, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
-		cr->line_to(width - m_labelLength +2, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
+		cr->move_to(width - m_labelLength +2, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
+		cr->line_to(gt::Settings::settings["ShowGrid"] == "Yes" ? 0 : width - m_labelLength, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
 		cr->stroke();
 		cr->set_line_width(1.0);
 	}

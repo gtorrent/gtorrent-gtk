@@ -52,6 +52,7 @@ void GuiBase::loadDefaultSettings()
 	gt::Settings::settings["GraphGridColor"          ] = "grey";
 
 	gt::Settings::settings["ShowLegend"             ] = "Yes";
+	gt::Settings::settings["ShowGrid"               ] = "Yes";
 	gt::Settings::settings["EnableNotification"     ] = "Yes";
 
 }
