@@ -28,7 +28,7 @@
 
 		<child type="tab">
 		  <object class="GtkLabel" id="infoBarGraphLabel">
-			<property name="label">Info Graph</property>
+			<property name="label">Speed</property>
 			<property name="visible">True</property>
 		  </object>
 		</child>
@@ -344,7 +344,7 @@
 						<property name="top_attach">2</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="TrackerStatus">
 						<property name="visible">True</property>
@@ -355,7 +355,7 @@
 						<property name="top_attach">5</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="UpLimit">
 						<property name="visible">True</property>
@@ -366,7 +366,7 @@
 						<property name="top_attach">3</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="Hash">
 						<property name="visible">True</property>
@@ -377,7 +377,7 @@
 						<property name="top_attach">9</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="Pieces">
 						<property name="visible">True</property>
@@ -388,7 +388,7 @@
 						<property name="top_attach">8</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="Remaining">
 						<property name="visible">True</property>
@@ -399,7 +399,7 @@
 						<property name="top_attach">1</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="SavePath">
 						<property name="visible">True</property>
@@ -410,7 +410,7 @@
 						<property name="top_attach">7</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="ShareRatio">
 						<property name="visible">True</property>
@@ -421,7 +421,7 @@
 						<property name="top_attach">1</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="TimeElapsed">
 						<property name="visible">True</property>
@@ -432,7 +432,7 @@
 						<property name="top_attach">1</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="TotalSize">
 						<property name="visible">True</property>
@@ -443,7 +443,7 @@
 						<property name="top_attach">8</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="TrackerURL">
 						<property name="visible">True</property>
@@ -454,7 +454,7 @@
 						<property name="top_attach">5</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="UploadSpeed">
 						<property name="visible">True</property>
@@ -465,7 +465,7 @@
 						<property name="top_attach">3</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="Uploaded">
 						<property name="visible">True</property>
@@ -476,7 +476,7 @@
 						<property name="top_attach">3</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="Downloaded">
 						<property name="visible">True</property>
@@ -487,7 +487,7 @@
 						<property name="top_attach">2</property>
 					  </packing>
 					</child>
-					
+
 					<child>
 					  <object class="GtkLabel" id="DownLimit">
 						<property name="visible">True</property>
@@ -498,7 +498,7 @@
 						<property name="top_attach">2</property>
 					  </packing>
 					</child>
-					
+
 					<!-- End of Dynamic Labels -->
 				  </object>
 				</child>
@@ -513,7 +513,7 @@
 
 		<child type="tab">
 		  <object class="GtkLabel" id="infoBarTorrentInfoLabel">
-			<property name="label">Torrent Info</property>
+			<property name="label">General</property>
 			<property name="visible">True</property>
 		  </object>
 		</child>
