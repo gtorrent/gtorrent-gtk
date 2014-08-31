@@ -10,12 +10,18 @@
 /**
  * Sets up the speed graph.
  */
-GtkGraph::GtkGraph(const unsigned maxSize) :
-	Gtk::Button(),
-	m_displaySize(maxSize),
-	m_maxSize(maxSize)
+GtkGraph::GtkGraph() :
+	Gtk::Button()
 {
-	m_displaySize = 60; //FIXME: this needs to be replaced by user choice
+	std::stringstream option(gt::Settings::settings["GraphIntervals"]);
+	do
+	{
+		unsigned tmp;
+		option >> tmp;
+		if(tmp > m_maxSize)
+			m_maxSize = tmp;
+	}while(!option.eof());
+	m_displaySize = std::stoul(gt::Settings::settings["GraphPreferredInterval"]);
 }
 bool upl = true;
 

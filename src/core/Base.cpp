@@ -41,6 +41,7 @@ void GuiBase::loadDefaultSettings()
 
 	gt::Settings::settings["GraphStyle"] = "Curves"; // Can also be filled -> "Fill"	
 	gt::Settings::settings["GraphIntervals"] = "10 60 1800 3600"; // unsigned number of seconds in interval separated by spaces
+	gt::Settings::settings["GraphPreferredInterval"] = "60"; // default interval
 
 	gt::Settings::settings["GraphUploadFillColor"  ] = "red";
 	gt::Settings::settings["GraphDownloadFillColor"] = "green";
