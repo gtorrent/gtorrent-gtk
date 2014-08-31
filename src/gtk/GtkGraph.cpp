@@ -277,7 +277,7 @@ bool GtkGraph::on_button_press_event(GdkEventButton *event)
 	if(event->button == 3) // if right-click
 	{
 
-		std::stringstream option("3600 10 1800 60");
+		std::stringstream option(gt::Settings::settings["GraphIntervals"]);
 		std::vector<unsigned> intervals;
 		do
 		{
