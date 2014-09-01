@@ -196,8 +196,8 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 	}
 
 	Gtk::TreeRow childr = row
-		? childr = *m_liststore->append(row->children())
-		: childr = *m_liststore->append();
+		? *m_liststore->append(row->children())
+		: *m_liststore->append();
 
 	/* If the FileTree contains children */
 	for(auto i : ft.children)
