@@ -19,41 +19,6 @@
 		<property name="visible">True</property>
 		<property name="expand">True</property>
 
-		<!-- Start of Graph -->
-		<child>
-		  <object class="GtkButton" id="infoBarGraph">
-			<property name="visible">True</property>
-		  </object>
-		</child>
-
-		<child type="tab">
-		  <object class="GtkLabel" id="infoBarGraphLabel">
-			<property name="label">Speed</property>
-			<property name="visible">True</property>
-		  </object>
-		</child>
-		<!-- End of Graph -->
-
-		<!-- Start of Peers -->
-		<child>
-		  <object class="GtkScrolledWindow" id="infoBarPeersScrolledWindow">
-			<property name="visible">True</property>
-			<child>
-			  <object class="GtkTreeView" id="infoBarPeerTreeView">
-				<property name="visible">True</property>
-			  </object>
-			</child>
-		  </object>
-		</child>
-
-		<child type="tab">
-		  <object class="GtkLabel" id="infoBarPeersLabel">
-			<property name="label">Peers</property>
-			<property name="visible">True</property>
-		  </object>
-		</child>
-		<!-- End of Peers -->
-
 		<!-- Start of Torrent Info -->
 		<child>
 		  <object class="GtkBox" id="infoBarTorrentInfoBox">
@@ -518,6 +483,27 @@
 		  </object>
 		</child>
 		<!-- End of Torrent Info -->
+
+    <!-- Start of Peers -->
+    <child>
+      <object class="GtkScrolledWindow" id="infoBarPeersScrolledWindow">
+      <property name="visible">True</property>
+      <child>
+        <object class="GtkTreeView" id="infoBarPeerTreeView">
+        <property name="visible">True</property>
+        </object>
+      </child>
+      </object>
+    </child>
+
+    <child type="tab">
+      <object class="GtkLabel" id="infoBarPeersLabel">
+      <property name="label">Peers</property>
+      <property name="visible">True</property>
+      </object>
+    </child>
+    <!-- End of Peers -->
+    
 		<!-- Start of File -->
 		<child>
 		  <object class="GtkScrolledWindow" id="infoBarFilesScrolledWindow">
@@ -537,6 +523,22 @@
 		  </object>
 		</child>
 		<!-- End of File -->
+
+    <!-- Start of Graph -->
+    <child>
+      <object class="GtkButton" id="infoBarGraph">
+      <property name="visible">True</property>
+      </object>
+    </child>
+
+    <child type="tab">
+      <object class="GtkLabel" id="infoBarGraphLabel">
+      <property name="label">Speed</property>
+      <property name="visible">True</property>
+      </object>
+    </child>
+    <!-- End of Graph -->
+
 	  </object>
 	  <packing>
 		<property name="pack_type">end</property>
