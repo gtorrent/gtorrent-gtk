@@ -31,12 +31,12 @@ class GtkMainWindow : public Gtk::Window
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
-	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
 	GtkTorrentTreeView *m_treeview = nullptr;
 	GtkTorrentInfoBar  *m_infobar = nullptr;
+	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 
 	Gtk::Button *addTorrentButton = nullptr, *resumeButton = nullptr, *pauseButton = nullptr, *removeButton = nullptr, *propertiesButton = nullptr, *settingsButton = nullptr;
 	Gtk::Separator *vSeparatorOne = nullptr, *vSeparatorTwo = nullptr; 

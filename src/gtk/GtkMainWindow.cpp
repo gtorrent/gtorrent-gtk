@@ -96,37 +96,6 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 }
 
 /**
-* Does something when a file is dropped onto the window.
-*/
-void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
-{
-	std::string sel_data = selection_data.get_data_as_string();
-	if(m_core->isLink(sel_data))
-	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
-		if (t)//Checks if t is not null
-			m_treeview->addCell(t);
-	}
-	else
-	{
-		std::string fn = Glib::filename_from_uri(sel_data);
-		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
-		bool want_uncertain = true;
-		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
-		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
-		{
-			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
-			if (t)//Checks if t is not null
-			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
-				m_treeview->addCell(t);
-			}
-			//TODO Add error dialogue if torrent add is unsuccessful
-		}
-	}
-}
-
-/**
 * Does something each second.
 */
 bool GtkMainWindow::onSecTick()

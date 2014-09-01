@@ -82,6 +82,8 @@ private:
 	bool      torrentColumns_onClick(GdkEventButton *event);
 	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
+	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+
 	/* Event handlers for the torrent view context menu */
 	void           stopView_onClick();
 	void           openView_onClick();

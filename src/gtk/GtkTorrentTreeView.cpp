@@ -42,10 +42,10 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 			Gtk::TargetEntry("text/plain"),
 			Gtk::TargetEntry("text/uri-list"),
 			Gtk::TargetEntry("application/x-bittorrent")
-		}
+		};
 
 	drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
-	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
+	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onFileDropped));
 	get_selection()->unselect_all();
 
 }
@@ -505,4 +505,39 @@ bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 	event->send_event = true;
 	Gdk::Event((GdkEvent*)event).put();
 	return false;
+}
+
+void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+	std::string sel_data = selection_data.get_data_as_string();
+	if(Application::getSingleton()->getCore()->isLink(sel_data))
+	{
+		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
+		if (t)//Checks if t is not null
+		{
+			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+			addCell(t);
+		}
+	}
+	else
+	{
+		std::string fn = Glib::filename_from_uri(sel_data);
+		//I'm not even sure why we needed to trim the filename
+		//boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
+		fn.erase(0, fn.find_first_not_of(' '));
+		fn.erase(fn.find_last_not_of(' ') + 1);
+
+		bool want_uncertain = true;
+		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
+		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
+		{
+			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
+			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+				addCell(t);
+			}
+			//TODO Add error dialogue if torrent add is unsuccessful
+		}
+	}
 }
