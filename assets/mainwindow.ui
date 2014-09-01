@@ -137,36 +137,6 @@
 		</child>
 
 		<child>
-		  <object class="GtkSeparator" id="vSepTwo">
-			<property name="visible">True</property>
-			<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
-		  </object>
-		  <packing>
-			<property name="pack_type">start</property>
-		  </packing>
-		</child>
-
-		<child>
-		  <object class="GtkButton" id="preferencesButton">
-			<property name="visible">True</property>
-			<style>
-			  <class name="button"/>
-			  <class name="image-button"/>
-			</style>
-			<child>
-              <object class="GtkImage" id="preferencesImage">
-				<property name="visible">True</property>
-				<property name="icon_size">1</property>
-				<property name="icon_name">preferences-system-symbolic</property>
-              </object>
-			</child>
-          </object>
-          <packing>
-			<property name="pack_type">start</property>
-          </packing>
-		</child>
-
-		<child>
 		  <object class="GtkButton" id="settingsButton">
 			<property name="visible">True</property>
 			<style>

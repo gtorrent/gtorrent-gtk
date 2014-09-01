@@ -46,7 +46,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(      "resumeButton",     resumeButton);
 	builder->get_widget(       "pauseButton",      pauseButton);
 	builder->get_widget(      "deleteButton",     removeButton);
-	builder->get_widget( "preferencesButton", propertiesButton);
+	//builder->get_widget( "preferencesButton", propertiesButton);
 	builder->get_widget(    "settingsButton",   settingsButton);
 	builder->get_widget(             "panel",            panel);
 	builder->get_widget(    "scrolledWindow",   scrolledWindow);
@@ -69,9 +69,10 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked();});
 	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked();});
 	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
-	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
+	//propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
 	magEntry   = Gtk::manage(new Gtk::Entry());
+	revealer->set_reveal_child(true);
 	magEntry->set_visible();
 	magEntry->set_width_chars(75);
 	magPopover = Gtk::manage(new Gtk::Popover());

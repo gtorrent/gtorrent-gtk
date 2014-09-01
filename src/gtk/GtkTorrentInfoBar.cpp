@@ -43,7 +43,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		set_visible();
 	else
 	{
-		set_visible(false);
+		set_visible();
 		return;
 	}
 
