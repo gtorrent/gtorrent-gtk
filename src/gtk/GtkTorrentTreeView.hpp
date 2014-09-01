@@ -144,8 +144,8 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-	GtkTorrentInfoBar *m_infobar;
-	GtkMainWindow *m_parent;
+	//GtkTorrentInfoBar *m_infobar;
+	//GtkMainWindow *m_parent;
 	Gtk::Entry *m_searchEntry;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;

@@ -342,8 +342,8 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_beta]       = t->getEta();
 	row[m_cols.m_col_eta]        = t->status().is_finished || t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->status().name;
-	row[m_cols.m_col_seeders]    = t->status().num_seeds;
-	row[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
+	row[m_cols.m_col_seeds]    = t->status().num_seeds;
+	row[m_cols.m_col_peers]   = t->status().num_peers - t->status().num_seeds;
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_seeds]      = t->getTotalSeeders();
 	row[m_cols.m_col_peers]   	 = t->getTotalPeers();
