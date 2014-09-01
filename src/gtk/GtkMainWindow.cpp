@@ -250,3 +250,17 @@ void GtkMainWindow::onSettingsBtnClicked()
 {
 	d->run();
 }
+
+bool GtkMainWindow::onKeyPress(GdkEventKey *event)
+{
+	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
+	short enter[] = { 36, 104 };
+	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) 
+	{
+		m_treeview->m_searchPopover->set_visible();
+		if(std::find(enter, enter + 2, event->hardware_keycode) != enter + 2)
+			m_treeview->m_searchPopover->set_visible(false);
+		m_treeview->m_filter->refilter();
+	}
+	return false;
+}

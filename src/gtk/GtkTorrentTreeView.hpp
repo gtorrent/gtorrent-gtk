@@ -4,8 +4,11 @@
 
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/treemodelfilter.h>
+#include <gtkmm/treemodelsort.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/popover.h>
 
 namespace Gtk
 {
@@ -26,16 +29,24 @@ public:
 		add(m_col_queue);
 		add(m_col_age);
 		add(m_col_eta);
+		add(m_col_bage);
+		add(m_col_beta);
 		add(m_col_seeders);
 		add(m_col_leechers);
 		add(m_col_ul_speed);
 		add(m_col_dl_speed);
+		add(m_col_bul_speed);
+		add(m_col_bdl_speed);
 		add(m_col_percent);
 		add(m_col_percent_text);
 		add(m_col_ul_total);
 		add(m_col_dl_total);
+		add(m_col_bul_total);
+		add(m_col_bdl_total);
 		add(m_col_size);
 		add(m_col_remaining);
+		add(m_col_bsize);
+		add(m_col_bremaining);
 		add(m_col_dl_ratio);
 		add(m_col_background);
 		add(m_col_foreground);
@@ -46,7 +57,6 @@ public:
 	Gtk::TreeModelColumn<unsigned int>            m_col_seeders;
 	Gtk::TreeModelColumn<unsigned int>            m_col_leechers;
 	Gtk::TreeModelColumn<unsigned int>            m_col_percent;
-	Gtk::TreeModelColumn<unsigned int>            m_col_empty;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_percent_text;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_age;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_eta;
@@ -58,7 +68,19 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_size;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_remaining;
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_ratio;
+
+	// Data
+	Gtk::TreeModelColumn<unsigned int>           m_col_bage;
+	Gtk::TreeModelColumn<unsigned int>           m_col_beta;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bul_speed;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bdl_speed;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bul_total;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bdl_total;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bsize;
+	Gtk::TreeModelColumn<unsigned int>           m_col_bremaining;
+
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_background;
+
 	Gtk::TreeModelColumn<Glib::ustring>           m_col_foreground;
 	Gtk::TreeModelColumn<std::shared_ptr<gt::Torrent>> m_col_torrent;
 };
@@ -68,6 +90,7 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
+	Gtk::Entry *m_searchEntry;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
@@ -77,6 +100,7 @@ private:
 	void setupColumns();
 
 	/* Event handlers for clicks on the controls */
+	bool				 showMatches(const Gtk::TreeModel::const_iterator& iter);
 	bool				  onKeyPress(GdkEventKey *event);
 	bool         torrentView_onClick(GdkEventButton *event);
 	bool      torrentColumns_onClick(GdkEventButton *event);
@@ -98,6 +122,11 @@ public:
 	GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	GtkTorrentInfoBar *m_infobar;
 	GtkMainWindow *m_parent;
+
+	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
+	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
+	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;
+	Gtk::Popover *m_searchPopover;
 
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
