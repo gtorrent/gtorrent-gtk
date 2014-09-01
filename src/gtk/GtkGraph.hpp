@@ -7,11 +7,8 @@
 class GtkGraph : public Gtk::Button
 {
 public:
-<<<<<<< HEAD
-	GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
-=======
+
 	GtkGraph();
->>>>>>> origin/master
 	virtual ~GtkGraph();
 	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
