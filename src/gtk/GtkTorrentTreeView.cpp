@@ -270,7 +270,7 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_bdl_speed]  = t->getDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
 		c[m_cols.m_col_bsize]      = t->getSize();
-		c[m_cols.m_col_beta]       = t->getTimeRemaining();
+		c[m_cols.m_col_beta]       = t->getEta();
 		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
