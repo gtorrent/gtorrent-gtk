@@ -16,8 +16,6 @@
 #include "../Application.hpp"
 #include "GtkFileTreeView.hpp"
 
-
-int _index = 0; // TODO: Indexing is broken in FileTree, this is a temporary measure
 std::string prioStr[] = 
 {
 	"Off",
@@ -235,8 +233,6 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 		else // if 1 node-deep then there is no root folder
 			for(auto i : ft.children)
 				populateTree(*i.second, nullptr);
-		_index = 0;
-		set_model(m_liststore);
 	}
 }
 

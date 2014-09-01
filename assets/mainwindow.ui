@@ -195,13 +195,14 @@
 		<child>
 		  <object class="GtkRevealer" id="sidebarRev">
 			<property name="visible">True</property>
-			<property name="modal">True</property>
 			<property name="transition_type">slide-right</property>
 			<property name="transition_duration">500</property>
-
 			<child>
 			  <object class="GtkTreeView" id="sidebar">
 				<property name="visible">True</property>
+				<style>
+				  <class name="sidebar"></class>
+				</style>
 			  </object>
 			</child>
 

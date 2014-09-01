@@ -53,9 +53,26 @@ GuiGtk::GuiGtk(int argc, char **argv)
 
 int GuiGtk::run()
 {
-	GtkMainWindow *mainWindow = 0;
-	refBuilder->get_widget_derived("GtkMainWindow", mainWindow);
-	mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
-	kit->run(*mainWindow);
+	try
+	{
+		GtkMainWindow *mainWindow = 0;
+		refBuilder->get_widget_derived("GtkMainWindow", mainWindow);
+		mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
+		kit->run(*mainWindow);
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " << ex.what() << std::endl;
+	}
+
+
 	return 1;
 }
