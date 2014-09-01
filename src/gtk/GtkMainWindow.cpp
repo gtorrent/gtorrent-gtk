@@ -13,6 +13,7 @@
 #include <gtkmm/main.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm.h>
 #include <gtkmm/stock.h>
 
 #include "../Application.hpp"
@@ -20,6 +21,12 @@
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkSettingsDialog.hpp"
+
+// TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
+//       so remove the header, cutomize the cells, and enable the revealer with the property button
+//       Also find a way to darken the treeview when the sidebar is shown, the same way the window is
+//       darkened when a modal dialog is opened.
+
 
 /**
 * Sets up the main window.
@@ -40,20 +47,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(          "vSepOne",    vSeparatorOne);
 	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
 	builder->get_widget_derived(  "infobar",        m_infobar);
+	builder->get_widget_derived( "treeview",        m_treeview);
 
-	magEntry   = Gtk::manage(new Gtk::Entry());
-	magEntry->set_visible();
-	magEntry->set_width_chars(75);
-	magPopover = Gtk::manage(new Gtk::Popover());
-
-	magPopover->add(*magEntry);
-	magPopover->set_relative_to(*addMagnetButton);
-	addMagnetButton->set_popover(*magPopover);
-	magPopover->set_position(Gtk::POS_LEFT);
-	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
-
-	m_treeview->set_visible();
-	scrolledWindow->add(*m_treeview);
 	panel->pack2(*m_infobar);
 
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
@@ -67,17 +62,15 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	addMagnetButton ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked ));
 	propertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
 
-	// Let's add some DnD goodness
-	std::vector<Gtk::TargetEntry> listTargets;
-	listTargets.push_back(Gtk::TargetEntry("STRING"));
-	listTargets.push_back(Gtk::TargetEntry("text/plain"));
-	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
-	listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
+	magEntry   = Gtk::manage(new Gtk::Entry());
+	magEntry->set_visible();
+	magEntry->set_width_chars(75);
+	magPopover = Gtk::manage(new Gtk::Popover());
 
-	m_treeview->drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
-	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
-
-	m_treeview->get_selection()->unselect_all();
+	magPopover->add(*magEntry);
+	magPopover->set_relative_to(*addMagnetButton);
+	addMagnetButton->set_popover(*magPopover);
+	magPopover->set_position(Gtk::POS_LEFT);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
@@ -100,37 +93,6 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	}
 
 	d = new GtkSettingsDialog(this);
-}
-
-/**
-* Does something when a file is dropped onto the window.
-*/
-void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
-{
-	std::string sel_data = selection_data.get_data_as_string();
-	if(m_core->isLink(sel_data))
-	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
-		if (t)//Checks if t is not null
-			m_treeview->addCell(t);
-	}
-	else
-	{
-		std::string fn = Glib::filename_from_uri(sel_data);
-		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
-		bool want_uncertain = true;
-		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
-		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
-		{
-			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
-			if (t)//Checks if t is not null
-			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
-				m_treeview->addCell(t);
-			}
-			//TODO Add error dialogue if torrent add is unsuccessful
-		}
-	}
 }
 
 /**
@@ -191,12 +153,12 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 {
 	NotifyNotification *Hello = nullptr;
 
-	int newstate = t->getState();
+	int newstate = t->status().state;
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
-		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has finished downloading.").c_str(), "dialog-information");
+		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  &&
 			oldstate == libtorrent::torrent_status::downloading_metadata)
-		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has started downloading.").c_str(), "dialog-information");
+		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
 	else
 		return; //:^)
 

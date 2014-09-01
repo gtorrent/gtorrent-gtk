@@ -39,7 +39,6 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
-	std::cout << get_visible() << std::endl;
 	if(selected)
 		set_visible();
 	else
@@ -48,10 +47,10 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		return;
 	}
 
-	if(selected->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+	if(selected->status().has_metadata) // torrentless torrents (magnet links) can't have pieces
 		m_progress->setBlocks(selected->getPieces());
 
-	m_title->set_text(selected->getName());
+	m_title->set_text(selected->status().name);
 	m_graph->select(selected);
 	m_peers->select(selected);
 	m_fileview->select(selected);
@@ -64,7 +63,7 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 {
 	if(!selected) return updateInfo(selected);
-	if(selected->getHandle().status().has_metadata)
+	if(selected->status().has_metadata)
 		m_progress->setBlocks(selected->getPieces());
 
 	m_general_box->update(selected);
