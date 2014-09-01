@@ -39,6 +39,7 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(     "activsspin",     activsspin);
 	builder->get_widget(     "showtoggle",     showtoggle);
 	builder->get_widget(     "anontoggle",     anontoggle);
+	builder->get_widget(     "gridtoggle",     gridtoggle);
 	builder->get_widget(     "chokecombo",     chokecombo);
 	builder->get_widget(     "ddashcheck",     ddashcheck);
 	builder->get_widget(     "udashcheck",     udashcheck);
@@ -147,6 +148,7 @@ int GtkSettingsDialog::run()
 	dhtswitch    ->set_active(gt::Settings::settings["DHTEnabled"        ] == "Yes");
 	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
 	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
+	gridtoggle   ->set_active(gt::Settings::settings["ShowGrid"          ] == "Yes");
 	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
 	notifytoggle ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
 
@@ -166,6 +168,7 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["DHTEnabled"             ] = (dhtswitch    ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["ShowLegend"             ] = (showtoggle   ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["AnonymousMode"          ] = (anontoggle   ->get_active()) ?  "Yes" :     "No";
+	gt::Settings::settings["ShowGrid"               ] = (gridtoggle   ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["EnableNotification"     ] = (notifytoggle ->get_active()) ?  "Yes" :     "No";
 	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck   ->get_active()) ? "Dash" :   "Line";

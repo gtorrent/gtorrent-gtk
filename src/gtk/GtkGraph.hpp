@@ -7,7 +7,11 @@
 class GtkGraph : public Gtk::Button
 {
 public:
+<<<<<<< HEAD
 	GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
+=======
+	GtkGraph();
+>>>>>>> origin/master
 	virtual ~GtkGraph();
 	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
@@ -24,7 +28,7 @@ private:
 
 	std::map<std::shared_ptr<gt::Torrent>, std::pair<std::queue<double>, std::queue<double>>> m_history;
 	std::shared_ptr<gt::Torrent> m_selected;
-	const unsigned m_maxSize;
+	unsigned m_maxSize;
 	static const unsigned m_labelLength = 40;
 	static const unsigned m_labelHeight = 10;
 	double max(std::queue<double> q);

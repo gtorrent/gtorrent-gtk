@@ -10,12 +10,27 @@
 /**
  * Sets up the speed graph.
  */
+<<<<<<< HEAD
 GtkGraph::GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size) :
 	Gtk::Button(da),
 	builder(rbuilder),
 	m_maxSize(size)
 {
 	set_has_window(true);
+=======
+GtkGraph::GtkGraph() :
+	Gtk::Button()
+{
+	std::stringstream option(gt::Settings::settings["GraphIntervals"]);
+	do
+	{
+		unsigned tmp;
+		option >> tmp;
+		if(tmp > m_maxSize)
+			m_maxSize = tmp;
+	}while(!option.eof());
+	m_displaySize = std::stoul(gt::Settings::settings["GraphPreferredInterval"]);
+>>>>>>> origin/master
 }
 bool upl = true;
 
@@ -273,7 +288,7 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
 		cr->move_to(i * ((width-m_labelLength)/5), (height-m_labelHeight)+2);
-		cr->line_to(i * ((width-m_labelLength)/5), 0);
+		cr->line_to(i * ((width-m_labelLength)/5), gt::Settings::settings["ShowGrid"] == "Yes" ? 0 : (height-m_labelHeight));
 		cr->stroke();
 		cr->set_line_width(1.0);
 	}
@@ -298,8 +313,8 @@ bool GtkGraph::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->fill();
 		Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA(gt::Settings::settings["GraphHLineColor"]));
 		cr->set_line_width(0.6);
-		cr->move_to(0, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
-		cr->line_to(width - m_labelLength +2, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
+		cr->move_to(width - m_labelLength +2, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
+		cr->line_to(gt::Settings::settings["ShowGrid"] == "Yes" ? 0 : width - m_labelLength, 13 + (((height-m_labelHeight-13) / 5) * (i - 1)));
 		cr->stroke();
 		cr->set_line_width(1.0);
 	}
@@ -410,22 +425,28 @@ bool GtkGraph::on_button_press_event(GdkEventButton *event)
 {
 	if(event->button == 3) // if right-click
 	{
-		Gtk::Menu   *m_rcMenu = Gtk::manage(new Gtk::Menu());
-		Gtk::MenuItem *rcmItem1 = Gtk::manage(new Gtk::MenuItem("1 hour"));
-		Gtk::MenuItem *rcmItem2 = Gtk::manage(new Gtk::MenuItem("30 minutes"));
-		Gtk::MenuItem *rcmItem3 = Gtk::manage(new Gtk::MenuItem("60 seconds"));
 
+		std::stringstream option(gt::Settings::settings["GraphIntervals"]);
+		std::vector<unsigned> intervals;
+		do
+		{
+			unsigned tmp;
+			option >> tmp;
+			intervals.push_back(tmp);
+		}while(!option.eof());
 
-		rcmItem1->signal_activate().connect([this](){m_displaySize = 3600;});
-		rcmItem2->signal_activate().connect([this](){m_displaySize = 1800;});
-		rcmItem3->signal_activate().connect([this](){m_displaySize = 60;});
+		Gtk::Menu   *rcMenu = Gtk::manage(new Gtk::Menu());
+		std::vector<Gtk::MenuItem*> rcItems;
+		rcItems.resize(intervals.size());
+		for(unsigned i = 0;i<intervals.size();++i)
+		{
+			rcItems[i] = Gtk::manage(new Gtk::MenuItem(timestr(intervals[i])));
+			rcItems[i]->signal_activate().connect([this,i,intervals](){m_displaySize = intervals[i];});
+			rcMenu->add(*(rcItems[i]));
+		}
 
-		m_rcMenu->add(*rcmItem1);
-		m_rcMenu->add(*rcmItem2);
-		m_rcMenu->add(*rcmItem3);
-
-		m_rcMenu->show_all();
-		m_rcMenu->popup(event->button, event->time);
+		rcMenu->show_all();
+		rcMenu->popup(event->button, event->time);
 	}
 	return false;
 }
