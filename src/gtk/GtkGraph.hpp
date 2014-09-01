@@ -3,11 +3,11 @@
 #include <gtkmm/button.h>
 #include <queue>
 #include <cmath>
+#include <gtkmm/builder.h>
 
 class GtkGraph : public Gtk::Button
 {
 public:
-
 	const Glib::RefPtr<Gtk::Builder> builder;
 	GtkGraph(GtkButton *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
 	virtual ~GtkGraph();
