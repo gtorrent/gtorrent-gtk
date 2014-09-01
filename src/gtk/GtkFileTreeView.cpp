@@ -17,7 +17,6 @@
 #include "GtkFileTreeView.hpp"
 
 
-int _index = 0; // TODO: Indexing is broken in FileTree, this is a temporary measure
 std::string prioStr[] =
 {
 	"Off",
@@ -251,8 +250,6 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 		else // if 1 node-deep then there is no root folder
 			for(auto i : ft.children)
 				populateTree(*i.second, nullptr);
-		_index = 0;
-		set_model(m_liststore);
 	}
 }
 
@@ -397,10 +394,10 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 
-		row[m_cols.m_col_prioritylevel] = torrent->getHandle().file_priority(row[m_cols.m_col_index]);
 		row[m_cols.m_col_priority] = prioStr[torrent->file_priority(row[m_cols.m_col_index])];
 		row[m_cols.m_col_activated] = torrent->file_priority(row[m_cols.m_col_index]) != 0;
 		row[m_cols.m_col_percent] = int(progress_all[row[m_cols.m_col_index]] * 100 / torrent->torrent_file()->files().file_size(row[m_cols.m_col_index]));
+		row[m_cols.m_col_prioritylevel] = torrent->file_priority(row[m_cols.m_col_index]);
 		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
 		row[m_cols.m_col_icon] = iconInfo.load_icon();
 

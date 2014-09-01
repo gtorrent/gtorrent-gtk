@@ -16,6 +16,8 @@
 #include <gtkmm.h>
 #include <gtkmm/stock.h>
 
+#include "GtkTorrentSideBar.hpp"
+
 #include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
@@ -35,32 +37,39 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 {
 	notify_init ("gTorrent");
 
-	builder->get_widget( "addTorrentButton", addTorrentButton);
-	builder->get_widget(  "addMagnetButton",  addMagnetButton);
-	builder->get_widget(     "resumeButton",     resumeButton);
-	builder->get_widget(      "pauseButton",      pauseButton);
-	builder->get_widget(     "deleteButton",     removeButton);
-	builder->get_widget("preferencesButton", propertiesButton);
-	builder->get_widget(   "settingsButton",   settingsButton);
-	builder->get_widget(            "panel",            panel);
-	builder->get_widget(   "scrolledWindow",   scrolledWindow);
-	builder->get_widget(          "vSepOne",    vSeparatorOne);
-	builder->get_widget(          "vSepTwo",    vSeparatorTwo);
-	builder->get_widget_derived(  "infobar",        m_infobar);
-	builder->get_widget_derived( "treeview",        m_treeview);
+	GtkTorrentSideBar *sidebar;
+	Gtk::Revealer *revealer;
+
+	builder->get_widget(  "addTorrentButton", addTorrentButton);
+	builder->get_widget(  "addTorrentButton", addTorrentButton);
+	builder->get_widget(   "addMagnetButton",  addMagnetButton);
+	builder->get_widget(      "resumeButton",     resumeButton);
+	builder->get_widget(       "pauseButton",      pauseButton);
+	builder->get_widget(      "deleteButton",     removeButton);
+	builder->get_widget( "preferencesButton", propertiesButton);
+	builder->get_widget(    "settingsButton",   settingsButton);
+	builder->get_widget(             "panel",            panel);
+	builder->get_widget(    "scrolledWindow",   scrolledWindow);
+	builder->get_widget(           "vSepOne",    vSeparatorOne);
+	builder->get_widget(           "vSepTwo",    vSeparatorTwo);
+	builder->get_widget(        "sidebarRev",         revealer);
+	builder->get_widget_derived(   "infobar",        m_infobar);
+	builder->get_widget_derived(  "treeview",       m_treeview);
+	builder->get_widget_derived(   "sidebar",          sidebar);
 
 	panel->pack2(*m_infobar);
 
+	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
-	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
+	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
-	addTorrentButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked       ));
-	pauseButton     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked     ));
-	resumeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked    ));
-	removeButton    ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked    ));
-	settingsButton  ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked  ));
-	addMagnetButton ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked ));
-	propertiesButton->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
+	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked();});
+	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked();});
+	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked();});
+	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked();});
+	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked();});
+	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
+	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
 	magEntry   = Gtk::manage(new Gtk::Entry());
 	magEntry->set_visible();
@@ -74,7 +83,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
-		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		tor->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(tor);
 	}
 
@@ -105,7 +114,7 @@ bool GtkMainWindow::onSecTick()
 	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 	{
-		t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(t);
 	}
 	scrolledWindow->get_vscrollbar()->set_child_visible(false);
@@ -140,7 +149,7 @@ void GtkMainWindow::onAddBtnClicked()
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
 			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+				t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 				m_treeview->addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful
@@ -154,6 +163,7 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 	NotifyNotification *Hello = nullptr;
 
 	int newstate = t->status().state;
+	std::cout << t->status().name << ": Old state was " << oldstate << " and new state is " << newstate << std::endl;
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
 		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  &&

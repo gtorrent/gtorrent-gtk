@@ -21,7 +21,7 @@
 
 		<!-- Start of Graph -->
 		<child>
-		  <object class="GtkDrawingArea" id="infoBarGraph">
+		  <object class="GtkButton" id="infoBarGraph">
 			<property name="visible">True</property>
 		  </object>
 		</child>

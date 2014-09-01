@@ -20,9 +20,11 @@ INCLUDE_DIRECTORIES (
 INCLUDE_DIRECTORIES (${PROJECT_BINARY_DIR})
 
 SET_SOURCE_FILES_PROPERTIES(${PROJECT_BINARY_DIR}/resources.c PROPERTIES GENERATED 1)
+SET_SOURCE_FILES_PROPERTIES(${PROJECT_BINARY_DIR}/style.c PROPERTIES GENERATED 1)
 
 ADD_EXECUTABLE ( ${PROJECT_NAME}
 	${PROJECT_BINARY_DIR}/resources.c
+	${PROJECT_BINARY_DIR}/style.c
 	Application.cpp
 	core/Base.cpp
 	gtk/Gtk.cpp
@@ -36,9 +38,10 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkPeerTreeView.cpp
 	gtk/GtkTrackerTreeView.cpp
 	gtk/GtkFileTreeView.cpp
-  gtk/utils/FileTree.cpp
   gtk/GtkGeneralBox.cpp
 	gtk/GtkLogBox.cpp
+	gtk/GtkTorrentSideBar.cpp
+	gtk/utils/FileTree.cpp
 	main.cpp
 	)
 

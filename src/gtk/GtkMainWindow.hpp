@@ -23,6 +23,8 @@ class GtkMainWindow : public Gtk::Window
 	GtkSettingsDialog *d = nullptr;
 
 	// Signal Responders
+
+	bool onKeyPress(GdkEventKey *event);
 	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();

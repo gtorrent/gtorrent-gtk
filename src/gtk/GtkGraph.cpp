@@ -10,16 +10,16 @@
 /**
  * Sets up the speed graph.
  */
-<<<<<<< HEAD
 GtkGraph::GtkGraph(GtkDrawingArea *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size) :
 	Gtk::Button(da),
 	builder(rbuilder),
 	m_maxSize(size)
 {
 	set_has_window(true);
-=======
-GtkGraph::GtkGraph() :
-	Gtk::Button()
+
+GtkGraph::GtkGraph(GtkButton *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size) :
+	Gtk::Button(da),
+	builder(rbuilder)
 {
 	std::stringstream option(gt::Settings::settings["GraphIntervals"]);
 	do
@@ -30,7 +30,6 @@ GtkGraph::GtkGraph() :
 			m_maxSize = tmp;
 	}while(!option.eof());
 	m_displaySize = std::stoul(gt::Settings::settings["GraphPreferredInterval"]);
->>>>>>> origin/master
 }
 bool upl = true;
 

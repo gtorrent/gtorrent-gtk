@@ -7,8 +7,8 @@
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/treeview.h>
-#include <gtkmm/popover.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/popover.h>
 
 namespace Gtk
 {
@@ -144,8 +144,6 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-	//GtkTorrentInfoBar *m_infobar;
-	//GtkMainWindow *m_parent;
 	Gtk::Entry *m_searchEntry;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
@@ -176,11 +174,14 @@ private:
 
 public:
 	GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder);
+
+	GtkTorrentInfoBar *m_infobar;
+	GtkMainWindow *m_parent;
+
+	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
 	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;
 	Gtk::Popover *m_searchPopover;
-	GtkTorrentInfoBar *m_infobar;
-	GtkMainWindow *m_parent;
 
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);

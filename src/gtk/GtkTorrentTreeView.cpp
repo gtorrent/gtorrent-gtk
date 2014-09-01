@@ -31,10 +31,10 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 
-	signal_cursor_changed    ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged ), false);
-	signal_key_press_event   ().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress         ), false);
+	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
+	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
+	set_model(m_filtersort);
 
-	set_model(m_liststore);
 	setupColumns();
 	set_enable_search();
 	m_searchEntry = Gtk::manage(new Gtk::Entry());
@@ -338,12 +338,12 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_bage]       = t->getActiveTime();
-	row[m_cols.m_col_beta]       = t->getEta();
 	row[m_cols.m_col_eta]        = t->status().is_finished || t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 	row[m_cols.m_col_name]       = t->status().name;
 	row[m_cols.m_col_seeds]    = t->status().num_seeds;
 	row[m_cols.m_col_peers]   = t->status().num_peers - t->status().num_seeds;
+	row[m_cols.m_col_bage]       = t->status().active_time;
+	row[m_cols.m_col_beta]       = t->getEta();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_seeds]      = t->getTotalSeeders();
 	row[m_cols.m_col_peers]   	 = t->getTotalPeers();
@@ -351,8 +351,8 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
-	row[m_cols.m_col_bsize]      = t->getSize();
-	row[m_cols.m_col_bremaining] = t->getRemaining();
+	row[m_cols.m_col_bsize]      = t->status().total_wanted;
+	row[m_cols.m_col_bremaining] = t->status().total_wanted - t->status().total_download;
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
 	row[m_cols.m_col_background] =  m_colors[fgbg].first;
@@ -381,6 +381,7 @@ void GtkTorrentTreeView::updateCells()
 
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 		c[m_cols.m_col_name]       = t->getName();
+		c[m_cols.m_col_bremaining] = t->status().total_wanted - t->status().total_download;
 		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_size]       = t->getTextSize();
 		//c[m_cols.m_col_selected_size]       =
@@ -395,7 +396,7 @@ void GtkTorrentTreeView::updateCells()
 		//c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		//c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
-		c[m_cols.m_col_bage]       = t->getActiveTime();
+		c[m_cols.m_col_bage]       = t->status().active_time;
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
 		c[m_cols.m_col_seeds]    = t->status().num_seeds;
 		c[m_cols.m_col_peers]   = t->status().num_peers - t->status().num_seeds;
@@ -405,8 +406,8 @@ void GtkTorrentTreeView::updateCells()
 		c[m_cols.m_col_bul_speed]  = t->getUploadRate();
 		c[m_cols.m_col_bdl_speed]  = t->getDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
-		c[m_cols.m_col_bsize]      = t->getSize();
-		c[m_cols.m_col_beta]       = t->getTimeRemaining();
+		c[m_cols.m_col_bsize]      = t->status().total_wanted;
+		c[m_cols.m_col_beta]       = (t->getDownloadRate() > 0) ? t->status().total_wanted / t->getDownloadRate() : 0;
 		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		//c[m_cols.m_col_uploaded]       =
@@ -705,21 +706,6 @@ bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 	return false;
 }
 
-bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
-{
-	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered
-
-	std::string toMatch = iter->get_value(m_cols.m_col_name);
-	std::string matching(this->get_search_entry()->get_text());
-
-	std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), tolower);
-	std::transform(matching.begin(), matching.end(), matching.begin(), tolower);
-
-	Glib::PatternSpec matcher("*" + matching + "*");
-
-	return matcher.match(toMatch);
-}
-
 void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
 	std::string sel_data = selection_data.get_data_as_string();
@@ -753,4 +739,19 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 	}
+}
+
+bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
+{
+	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered
+
+	std::string toMatch = iter->get_value(m_cols.m_col_name);
+	std::string matching(this->get_search_entry()->get_text());
+
+	std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), tolower);
+	std::transform(matching.begin(), matching.end(), matching.begin(), tolower);
+
+	Glib::PatternSpec matcher("*" + matching + "*");
+
+	return matcher.match(toMatch);
 }
