@@ -1,4 +1,8 @@
+#include <gtkmm/stylecontext.h>
+#include <gtkmm/cssprovider.h>
+
 #include "GtkTorrentSideBar.hpp"
+
 
 GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
 {
@@ -11,6 +15,7 @@ GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::
 	override_color(get_style_context()->get_background_color());
 	override_background_color(get_style_context()->get_color());
 	signal_row_activated().connect([this](const Gtk::TreeModel::Path& Path, Gtk::TreeViewColumn *col){ this->onRowClicked(*m_liststore->get_iter(Path)); });
+
 }
 
 void GtkTorrentSideBar::onRowClicked(Gtk::TreeRow clickedRow)
