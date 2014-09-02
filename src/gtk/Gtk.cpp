@@ -1,12 +1,12 @@
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
+#include <gtkmm.h>
+#include <glibmm.h>
+
+#include <gtorrent/Platform.hpp>
+
 #include <exception>
 #include <stdexcept>
 #include <sys/stat.h>
-#include <gtkmm/settings.h>
-#include <gtkmm/main.h>
 
-#include <gtorrent/Platform.hpp>
 
 #include "GtkMainWindow.hpp"
 #include "Gtk.hpp"
@@ -51,6 +51,8 @@ GuiGtk::GuiGtk(int argc, char **argv)
 	}
 }
 
+extern unsigned char style_css[];
+
 int GuiGtk::run()
 {
 	try
@@ -58,6 +60,14 @@ int GuiGtk::run()
 		GtkMainWindow *mainWindow = 0;
 		refBuilder->get_widget_derived("GtkMainWindow", mainWindow);
 		mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
+
+		auto css = Gtk::CssProvider::create();
+		css->load_from_data(std::string((char*)style_css));
+		auto screen = Gdk::Screen::get_default();
+		Gtk::StyleContext::add_provider_for_screen(screen, css, 800); //Gtk::STYLE_PROVIDER_PRIORITY_APPLICATION); <= compiler can't find it's definition so i'm using the literal value
+
+		
+		std::cout << std::string((char*)style_css) << std::endl;
 		kit->run(*mainWindow);
 	}
 	catch(const Glib::FileError& ex)

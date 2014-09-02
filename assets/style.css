@@ -1,1 +1,6 @@
-topkek
+.sidebar .view
+{
+	color: @theme_text_color;
+	border-color: @theme_base_color;
+	background-color: @sidebar_bg;
+}
