@@ -100,9 +100,9 @@
 					<property name="column_spacing">10</property>
 					<!-- Start of Titles -->
 					<child>
-					  <object class="GtkLabel" id="TransfertLabel">
+					  <object class="GtkLabel" id="TransferLabel">
 						<property name="visible">True</property>
-						<property name="label">&lt;big&gt;Transfert&lt;/big&gt;</property>
+						<property name="label">&lt;big&gt;Transfer&lt;/big&gt;</property>
 						<property name="use_markup">True</property>
 					  </object>
 					  <packing>
