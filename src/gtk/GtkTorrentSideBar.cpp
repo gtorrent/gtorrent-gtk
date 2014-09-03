@@ -7,7 +7,7 @@
 GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
 {
 	rbuilder->get_widget_derived("GtkMainWindow", m_parent);
-	m_liststore = Gtk::ListStore::create(cols);
+	m_liststore = Gtk::TreeStore::create(cols);
 	set_headers_visible(true);
 	setupColumns();
 	set_model(m_liststore);
@@ -29,7 +29,7 @@ void GtkTorrentSideBar::setupColumns()
 	Gtk::CellRendererText *cell = Gtk::manage(new Gtk::CellRendererText());
 
 	cell->set_padding(10, 0);
-	cid = append_column(*Gtk::manage(new Gtk::TreeViewColumn("")));
+	cid = append_column(*Gtk::manage(new Gtk::TreeViewColumn("Name")));
 	col = get_column(cid - 1);
 	col->pack_start(*cell);
 	col->add_attribute(cell->property_markup(), cols.name);
