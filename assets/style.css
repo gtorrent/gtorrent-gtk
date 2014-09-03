@@ -1,1 +1,6 @@
-topkek
+.sidebar .view.cell:hover
+{
+	color: @theme_text_color;
+	border-color: @theme_base_color;
+	background-color: alpha(white, 0.2);
+}

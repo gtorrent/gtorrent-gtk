@@ -1,4 +1,5 @@
 #include <gtkmm/liststore.h>
+#include <gtkmm/treestore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/builder.h>
@@ -26,7 +27,7 @@ class GtkTorrentSideBar : public Gtk::TreeView
 	GtkMainWindow *m_parent = nullptr;
 public:
 	GtkSideBarColumns cols;
-	Glib::RefPtr<Gtk::ListStore> m_liststore;
+	Glib::RefPtr<Gtk::TreeStore> m_liststore;
 	bool sideBar_onClick(GdkEventButton *event);
 	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	void setupColumns();

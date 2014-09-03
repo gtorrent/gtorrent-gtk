@@ -24,9 +24,9 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/settings.glade");
 	builder->get_widget("dialog1", dial);
-	dial->set_modal();
 	if(Parent) dial->set_transient_for(*Parent);
 	backup = gt::Settings::settings;
+	dial->set_default_response(1);
 
 	builder->get_widget(         "okbutt",         okbutt);
 	builder->get_widget(       "forebutt",       forebutt);
