@@ -19,7 +19,7 @@ shared_ptr<gt::Core> &Application::getCore()
 
 int Application::run(int argc, char **argv)
 {
-	gt::Log::Debug("GTorrent v." GTORRENT_VERSION);
+	gt::Log::Debug("gTorrent v." GTORRENT_VERSION);
 	gt::Log::Debug("Starting up core library...");
 	m_gui->loadDefaultSettings();
 	m_core = make_shared<gt::Core>(argc, argv);
