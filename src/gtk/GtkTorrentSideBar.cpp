@@ -12,8 +12,6 @@ GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::
 	setupColumns();
 	set_model(m_liststore);
 	set_activate_on_single_click();
-	override_color(get_style_context()->get_background_color());
-	override_background_color(get_style_context()->get_color());
 	signal_row_activated().connect([this](const Gtk::TreeModel::Path& Path, Gtk::TreeViewColumn *col){ this->onRowClicked(*m_liststore->get_iter(Path)); });
 
 }
