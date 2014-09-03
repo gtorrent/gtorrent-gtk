@@ -1,6 +1,6 @@
-.sidebar .view
+.sidebar .view.cell:hover
 {
 	color: @theme_text_color;
 	border-color: @theme_base_color;
-	background-color: @sidebar_bg;
+	background-color: alpha(white, 0.2);
 }
