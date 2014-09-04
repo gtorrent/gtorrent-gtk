@@ -58,6 +58,7 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	builder->get_widget(  "suggesttoggle",  suggesttoggle);
 	builder->get_widget(  "overridecombo",  overridecombo);
 	builder->get_widget( "seedchokecombo", seedchokecombo);
+	builder->get_widget( "polylinetoggle", polylinetoggle);
 	builder->get_widget( "dcurvefillbutt", dcurvefillbutt);
 	builder->get_widget("ucurvefillbutt",  ucurvefillbutt);
 	builder->get_widget("filechooserbutt",       filebutt);
@@ -131,11 +132,12 @@ int GtkSettingsDialog::run()
 	savepathbox ->set_text(gt::Settings::settings["SavePath" ]);
 	useragentbox->set_text(gt::Settings::settings["UserAgent"]);
 
-	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
-	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
-	gridtoggle   ->set_active(gt::Settings::settings["ShowGrid"          ] == "Yes");
-	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
-	notifytoggle ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
+	showtoggle    ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
+	anontoggle    ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
+	gridtoggle    ->set_active(gt::Settings::settings["ShowGrid"          ] == "Yes");
+	suggesttoggle ->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
+	notifytoggle  ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
+	polylinetoggle->set_active(gt::Settings::settings["GraphCurveStyle"   ] == "Polyline");
 
 	ddashcheck->set_active(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash");
 	udashcheck->set_active(gt::Settings::settings["GraphUploadCurveStyle"  ] == "Dash");
@@ -150,14 +152,15 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["SavePath"       ] = savepathbox->get_text();
 	gt::Settings::settings["UserAgent"      ] = useragentbox->get_text();
 
-	gt::Settings::settings["GraphStyle"             ] = (filltoggle   ->get_active()) ? "Fill" : "Curves";
-	gt::Settings::settings["ShowLegend"             ] = (showtoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["AnonymousMode"          ] = (anontoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["ShowGrid"               ] = (gridtoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["EnableNotification"     ] = (notifytoggle ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck   ->get_active()) ? "Dash" :   "Line";
-	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck   ->get_active()) ? "Dash" :   "Line";
+	gt::Settings::settings["GraphStyle"             ] = (filltoggle    ->get_active()) ?  "Fill"     : "Curves";
+	gt::Settings::settings["ShowLegend"             ] = (showtoggle    ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["AnonymousMode"          ] = (anontoggle    ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["ShowGrid"               ] = (gridtoggle    ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["GraphCurveStyle"        ] = (polylinetoggle->get_active()) ?  "Polyline" : "Curve";
+	gt::Settings::settings["EnableNotification"     ] = (notifytoggle  ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck    ->get_active()) ?  "Dash"     : "Line";
+	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck    ->get_active()) ?  "Dash"     : "Line";
 
 	backup = gt::Settings::settings;
 	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings
