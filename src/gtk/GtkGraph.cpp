@@ -211,7 +211,10 @@ void GtkGraph::draw(std::queue<double> q, double height, double increment, doubl
 	while(!q.empty())
 	{
 		double y = height - (q.front() * height / maxValue);
-		cr->curve_to(x - increment/2, oldy, x - increment/2, y, x, y);
+		if(gt::Settings::settings["GraphCurveStyle"] == "Polyline")
+			cr->line_to(x, y);
+		else
+			cr->curve_to(x - increment/2, oldy, x - increment/2, y, x, y);
 		q.pop();
 		oldy = y;
 		x += increment;
