@@ -28,23 +28,23 @@ public:
 	}
 
 	/* Shown column */
-	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
-	Gtk::TreeModelColumn<unsigned int> m_col_bsize;
+	Gtk::TreeModelColumn<Glib::ustring>	        m_col_size;
+	Gtk::TreeModelColumn<unsigned int>	        m_col_bsize;
 
 	/* Columns that use a custom cell renderer */
-	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_priority;
+	Gtk::TreeModelColumn<Glib::ustring>	        m_col_percent_text;
+	Gtk::TreeModelColumn<Glib::ustring>	        m_col_priority;
 
 	/* Colomns used to keep data */
-	Gtk::TreeModelColumn<libtorrent::file_entry> m_col_entry;
-	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-	Gtk::TreeModelColumn<unsigned int> m_col_prioritylevel;
-	Gtk::TreeModelColumn<unsigned int> m_col_percent;
-	Gtk::TreeModelColumn<unsigned int> m_col_index;
-	Gtk::TreeModelColumn<std::string> m_col_fullpath;
-	Gtk::TreeModelColumn<bool> m_col_activated;
-	Gtk::TreeModelColumn<bool> m_col_inconsistent;
-	Gtk::TreeModelColumn<bool> m_col_folder;
+	Gtk::TreeModelColumn<libtorrent::file_entry>	m_col_entry;
+	Gtk::TreeModelColumn<Glib::ustring>		m_col_name;
+	Gtk::TreeModelColumn<unsigned int>		m_col_prioritylevel;
+	Gtk::TreeModelColumn<unsigned int>		m_col_percent;
+	Gtk::TreeModelColumn<unsigned int>		m_col_index;
+	Gtk::TreeModelColumn<std::string>		m_col_fullpath;
+	Gtk::TreeModelColumn<bool>			m_col_activated;
+	Gtk::TreeModelColumn<bool>			m_col_inconsistent;
+	Gtk::TreeModelColumn<bool>			m_col_folder;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> m_col_icon;
 
 };
