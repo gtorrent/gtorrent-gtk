@@ -1,4 +1,4 @@
-[![Build Status](http://jenkins.gtorre.net/buildStatus/icon?job=gtorrent-core)](http://jenkins.gtorre.net/job/gtorrent-core/)
+[![Build Status](http://jenkins.gtorre.net/buildStatus/icon?job=gtorrent-gtk)](http://jenkins.gtorre.net/job/gtorrent-gtk/)
 # gtorrent
 
 *Gtk torrent client built on libtorrent-rasterbar*
