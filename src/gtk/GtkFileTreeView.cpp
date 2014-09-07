@@ -113,7 +113,8 @@ void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, d
 		size += ft.fs.at(ft.index).size;
 		priority = (priority == -1 ? ft.t->getHandle().file_priority(ft.index) : (priority != ft.t->getHandle().file_priority(ft.index) ? 8 : priority));
 		state = priority == 8 ? 2 : priority != 0;
-		progress += double(progress_all[ft.index]) / ft.fs.file_size(ft.index);
+		int file_size = ft.fs.file_size(ft.index); // FIXME Find a better way to deal with 0 size files.
+		progress += double(file_size ? progress_all[ft.index] / ft.fs.file_size(ft.index) : 100);
 		return;
 	}
 
@@ -173,7 +174,8 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		childr[m_cols.m_col_size]          = getFileSizeString(ft.fs.at(ft.index).size);
 		childr[m_cols.m_col_bsize]         = ft.fs.at(ft.index).size;
 		childr[m_cols.m_col_icon]          = iconInfo.load_icon();
-		childr[m_cols.m_col_percent]       = int(progress_all[ft.index] * 100 / ft.fs.file_size(ft.index));
+		int file_size = ft.fs.file_size(ft.index); // FIXME Find a better way to deal with 0 size files.
+		childr[m_cols.m_col_percent]       = (file_size ? progress_all[ft.index] * 100 / ft.fs.file_size(ft.index) : 100);
 		childr[m_cols.m_col_priority]      = prioStr[ft.t->getHandle().file_priority(ft.index)];
 		childr[m_cols.m_col_prioritylevel] = ft.t->getHandle().file_priority(ft.index);
 		childr[m_cols.m_col_percent_text]  = std::to_string(childr[m_cols.m_col_percent]) + '%';
@@ -382,7 +384,8 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 		row[m_cols.m_col_prioritylevel] = torrent->getHandle().file_priority(row[m_cols.m_col_index]);
 		row[m_cols.m_col_priority] = prioStr[row[m_cols.m_col_prioritylevel]];
 		row[m_cols.m_col_activated] = torrent->getHandle().file_priority(row[m_cols.m_col_index]) != 0;
-		row[m_cols.m_col_percent] = int(progress_all[row[m_cols.m_col_index]] * 100 / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]));
+		int file_size = torrent->getInfo()->files().file_size(row[m_cols.m_col_index]); // FIXME Find a better way to deal with 0 size files.
+		row[m_cols.m_col_percent] = int(file_size ? progress_all[row[m_cols.m_col_index]] * 100 / file_size : 100);
 		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
 		row[m_cols.m_col_icon] = iconInfo.load_icon();
 
