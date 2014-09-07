@@ -7,22 +7,22 @@
 void GtkPeerTreeView::insert(const gt::Peer &p)
 {
 	Gtk::TreeModel::iterator i = m_liststore->children().begin();
-	while(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) < p.ip)
+	while(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) < p.getIP())
 		++i;
-	if(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) == p.ip)
+	if(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) == p.getIP())
 	{
-		(*i)[m_cols.m_col_ip] = p.ip;
-		(*i)[m_cols.m_col_client] = p.client;
-		(*i)[m_cols.m_col_down] = p.downloadSpeed;
-		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+		(*i)[m_cols.m_col_ip] = p.getIP();
+		(*i)[m_cols.m_col_client] = p.getClient();
+		(*i)[m_cols.m_col_down] = p.getDownloadSpeed();
+		(*i)[m_cols.m_col_up] = p.getUploadSpeed();
 	}
 	else
 	{
 		i = m_liststore->insert(i);
-		(*i)[m_cols.m_col_ip] = p.ip;
-		(*i)[m_cols.m_col_client] = p.client;
-		(*i)[m_cols.m_col_down] = p.downloadSpeed;
-		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+		(*i)[m_cols.m_col_ip] = p.getIP();
+		(*i)[m_cols.m_col_client] = p.getClient();
+		(*i)[m_cols.m_col_down] = p.getDownloadSpeed();
+		(*i)[m_cols.m_col_up] = p.getUploadSpeed();
 	}
 }
 
