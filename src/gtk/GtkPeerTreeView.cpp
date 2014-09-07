@@ -36,6 +36,7 @@ void GtkPeerTreeView::update()
 {
 	for (auto &peer : torrent->getPeers())
 		insert(peer);
+	queue_draw();
 }
 
 void GtkPeerTreeView::setupColumns()
