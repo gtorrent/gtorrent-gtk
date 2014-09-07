@@ -22,12 +22,17 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 OPTION (WIN_DEBUG                "Disable -mwindows for debugging purposes" OFF)
 OPTION (ENABLE_TESTEXCUTABLE     "Enable the compilation of a simple test"  OFF)
 OPTION (USE_LOGGING              "Turns logging on/off"                     ON)
+OPTION (USE_DEBUG                "Produce debugging infomation"             ON)
 OPTION (Boost_USE_STATIC_LIBS    "Use static version of Boost libraries."   ON)
 OPTION (Boost_USE_MULTITHREADED  "Use multithreaded version of Boost."      ON)  
 OPTION (Boost_USE_STATIC_RUNTIME "Use Boost static runtime."                OFF) 
 
 IF (USE_LOGGING)
 ADD_DEFINITIONS(-DUSE_LOGGING=1)
+ENDIF()
+
+IF (USE_DEBUG)
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 ENDIF()
 
 # adds Windows flag necessary to prevent console window spawning and allows override to disable this for debugging purposes
@@ -38,7 +43,7 @@ ELSE ()
 ENDIF ()
 
 # Set compiler flags
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall ${WIN32_CXXFLAGS}")
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall ${WIN32_CXXFLAGS}")
 
 # Fuck libboost for not providing boost.pc or fucking something
 SET (Boost_USE_STATIC_LIBS     ON) 
