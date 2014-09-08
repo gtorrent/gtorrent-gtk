@@ -201,34 +201,11 @@
 			  <class name="sidebar"></class>
 			</style>
 			<child>
-			  <object class="GtkVBox" id="sidebarbox">
+			  <object class="GtkTreeView" id="sidebar">
 				<property name="visible">True</property>
-				<child>
-				  <object class="GtkTreeView" id="sidebar">
-					<property name="show_expanders">False</property>
-					<property name="visible">True</property>
-				  </object>
-				  <packing>
-					<property name="expand">False</property>
-					<property name="fill">False</property>
-				  </packing>
-				</child>
-
-				<child>
-				  <object class="GtkBox" id="sidebarmascot">
-					<property name="visible">True</property>
-					<style>
-					  <class name="sidemascot"></class>
-					</style>
-				  </object>
-				  <packing>
-					<property name="expand">True</property>
-					<property name="fill">True</property>
-				  </packing>
-				</child>
-
 			  </object>
 			</child>
+
 		  </object>
 		</child>
 
@@ -240,31 +217,8 @@
 			  <object class="GtkScrolledWindow" id="scrolledWindow">
 				<property name="visible">True</property>
 				<child>
-				  <object class="GtkVBox" id="mainBox">
+				  <object class="GtkTreeView" id="treeview">
 					<property name="visible">True</property>
-					<child>
-					  <object class="GtkTreeView" id="treeview">
-						<property name="visible">True</property>
-					  </object>
-					  <packing>
-					  	<property name="expand">False</property>
-						<property name="fill">False</property>
-						</packing>
-					</child>
-
-					<child>
-					  <object class="GtkBox" id="mascot2">
-						<property name="visible">True</property>
-						<style>
-						  <class name="mascot"></class>
-						</style>
-					  </object>
-					  <packing>
-						<property name="expand">True</property>
-						<property name="fill">True</property>
-					  </packing>
-					</child>
-
 				  </object>
 				</child>
 			  </object>

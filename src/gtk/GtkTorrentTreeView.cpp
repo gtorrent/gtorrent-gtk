@@ -44,6 +44,8 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	m_searchEntry->show();
 	set_search_entry(*m_searchEntry);
 	set_search_column(m_cols.m_col_name);
+	set_hexpand();
+	set_vexpand();
 	reloadColors();
 
 	std::vector<Gtk::TargetEntry> listTargets = 
@@ -56,7 +58,6 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 
 	drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
 	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onFileDropped));
-	set_hexpand();
 	get_selection()->unselect_all();
 
 }
