@@ -5,6 +5,7 @@
 #include <gtkmm/builder.h>
 
 #include "GtkMainWindow.hpp"
+#include "GtkRSSDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 
 class GtkSideBarColumns : public Gtk::TreeModel::ColumnRecord
@@ -13,17 +14,22 @@ public:
 	GtkSideBarColumns()
 	{
 			add(name);
-			add(title);
+			add(editable);
 			add(clickCallback);
+			add(icon);
+			add(filter);
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> name;
-	Gtk::TreeModelColumn<bool> title;
+	Gtk::TreeModelColumn<Glib::ustring> filter; // used to filter the main treeview
+	Gtk::TreeModelColumn<bool> editable; // Unediatble items are only titles and already existing labels/groups
 	Gtk::TreeModelColumn<std::function<void(void)>> clickCallback;
+	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> icon;
 };
 
 class GtkTorrentSideBar : public Gtk::TreeView
 {
+	GtkRSSDialog  *m_rss    = nullptr;
 	GtkMainWindow *m_parent = nullptr;
 public:
 	GtkSideBarColumns cols;
@@ -32,4 +38,8 @@ public:
 	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	void setupColumns();
 	void onRowClicked(Gtk::TreeRow);
+	Gtk::TreeModel::Row Torrents;
+	Gtk::TreeModel::Row RSSFeeds;
+	void addedItem(std::string path, std::string name);
+
 };
