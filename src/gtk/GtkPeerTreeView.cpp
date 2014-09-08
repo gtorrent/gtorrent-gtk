@@ -2,31 +2,29 @@
 
 #include <gtkmm/liststore.h>
 
-// Sort will be a bit fucked because the Peer class was written without being able to keep numerical values of the speed
-// nor the ip, so for example 2 B/S is considered faster than 100 kB/s and 123.42.21.54 is considered lower than 82.12.54.31
 void GtkPeerTreeView::insert(const gt::Peer &p)
 {
 	Gtk::TreeModel::iterator i = m_liststore->children().begin();
-	while(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) < p.ip)
+	while(i != m_liststore->children().end() && boost::asio::ip::address::from_string(std::string((*i)[m_cols.m_col_ip])) < p.getIP())
 		++i;
-	if(i != m_liststore->children().end() && std::string((*i)[m_cols.m_col_ip]) == p.ip)
+	if(i != m_liststore->children().end() && boost::asio::ip::address::from_string(std::string((*i)[m_cols.m_col_ip])) == p.getIP())
 	{
-		(*i)[m_cols.m_col_ip] = p.ip;
-		(*i)[m_cols.m_col_client] = p.client;
-		(*i)[m_cols.m_col_down] = p.downloadSpeed;
-		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+		(*i)[m_cols.m_col_ip] = p.getIP().to_string();
+		(*i)[m_cols.m_col_client] = p.getClient();
+		(*i)[m_cols.m_col_down] = getRateString(p.getDownloadSpeed());
+		(*i)[m_cols.m_col_up] = getRateString(p.getUploadSpeed());
 	}
 	else
 	{
 		i = m_liststore->insert(i);
-		(*i)[m_cols.m_col_ip] = p.ip;
-		(*i)[m_cols.m_col_client] = p.client;
-		(*i)[m_cols.m_col_down] = p.downloadSpeed;
-		(*i)[m_cols.m_col_up] = p.uploadSpeed;
+		(*i)[m_cols.m_col_ip] = p.getIP().to_string();
+		(*i)[m_cols.m_col_client] = p.getClient();
+		(*i)[m_cols.m_col_down] = getRateString(p.getDownloadSpeed());
+		(*i)[m_cols.m_col_up] = getRateString(p.getUploadSpeed());
 	}
 }
 
-GtkPeerTreeView::GtkPeerTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree) 
+GtkPeerTreeView::GtkPeerTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	set_model(m_liststore);
@@ -54,6 +52,7 @@ void GtkPeerTreeView::update()
 
 	for (auto &peer : torrent->getPeers())
 		insert(peer);
+	queue_draw();
 }
 
 void GtkPeerTreeView::setupColumns()
@@ -86,7 +85,7 @@ void GtkPeerTreeView::setupColumns()
 	append_column("MaxUp", m_cols.m_col_max_up);
 	append_column("Queued", m_cols.m_col_queued);
 	append_column("Inactive", m_cols.m_col_inactive);
-	append_column("Debug", m_cols.m_col_debug);	
+	append_column("Debug", m_cols.m_col_debug);
 }
 
 void GtkPeerTreeView::select(std::shared_ptr<gt::Torrent> t)
