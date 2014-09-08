@@ -4,19 +4,3 @@
 	border-color: @theme_base_color;
 	background-color: alpha(white, 0.2);
 }
-
-.sidemascot
-{
-	background-image: url("/home/mirai/mascot4.png");
-	background-position: bottom right;
-	background-size: 100%;
-	background-repeat: no-repeat;
-}
-
-.mascot
-{
-	background-image: url("/home/mirai/mascot3.png");
-	background-position: bottom right;
-	background-size: 207px;
-	background-repeat: no-repeat;
-}
