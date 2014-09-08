@@ -78,10 +78,15 @@ int GuiGtk::run()
 	{
 		std::cerr << "MarkupError: " << ex.what() << std::endl;
 	}
+	catch(const Glib::Error& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+	}
 	catch(const Gtk::BuilderError& ex)
 	{
 		std::cerr << "BuilderError: " << ex.what() << std::endl;
 	}
+
 
 
 	return 1;
