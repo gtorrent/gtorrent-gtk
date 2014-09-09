@@ -2,13 +2,15 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/treeview.h>
 
 class GtkMainWindow;
 
 class GtkRSSDialog : public Gtk::Dialog
 {
-	// TODO: Add controls pointers here
+	Gtk::Button   *cancelButton = nullptr, *okButton = nullptr, *addFeedButton = nullptr, *removeFeedButton = nullptr, *aTogButton = nullptr, *gToaButton = nullptr, *addFilterBtn = nullptr, *removeFilterBtn = nullptr, *addFunBtn = nullptr, *removeFunBtn = nullptr;
+	Gtk::TreeView *globalTree = nullptr, *activeTreeView = nullptr, *filterTreeView = nullptr, *funTreeView = nullptr;
 public:
-	GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder>) { /* TODO: Actually implement the contructor here */};
-	virtual void on_response(int response) {}; // TODO: implement this
+	GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	virtual void on_response(int response); // TODO: implement this
 };

@@ -31,6 +31,7 @@ class GtkTorrentSideBar : public Gtk::TreeView
 {
 	GtkRSSDialog  *m_rss    = nullptr;
 	GtkMainWindow *m_parent = nullptr;
+	Glib::RefPtr<Gtk::Builder> builder;
 public:
 	GtkSideBarColumns cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;

@@ -39,6 +39,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkFileTreeView.cpp
 	gtk/GtkStatusBox.cpp
 	gtk/GtkTorrentSideBar.cpp
+	gtk/GtkRSSDialog.cpp
 	gtk/utils/FileTree.cpp
 	main.cpp
 	)

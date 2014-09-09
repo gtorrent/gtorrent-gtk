@@ -4,10 +4,12 @@
 
 #include "GtkTorrentSideBar.hpp"
 
-GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
+GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree), builder(rbuilder)
 {
 	rbuilder->get_widget_derived("GtkMainWindow", m_parent);
 	rbuilder->get_widget_derived("rssDialog"    , m_rss);
+	m_rss->set_transient_for(*m_parent);
+
 	m_liststore = Gtk::TreeStore::create(cols);
 	set_headers_visible(false);
 	setupColumns();
@@ -95,6 +97,9 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		newrow[cols.editable] = true;
 		newrow[cols.icon] = Glib::RefPtr<Gdk::Pixbuf>();
 		newrow[cols.clickCallback] = [row](){};
+		m_rss->set_default_response(1);
+		m_rss->run();
+		abort();
 		// TODO: implement RSS dialog and pop it up here
 	}
 }

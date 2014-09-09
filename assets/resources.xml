@@ -6,5 +6,6 @@
     <file compressed="true">mainwindow.ui</file>
     <file compressed="true">association.ui</file>
     <file compressed="true">infobar.ui</file>
+    <file compressed="true">rss.ui</file>
   </gresource>
 </gresources>
