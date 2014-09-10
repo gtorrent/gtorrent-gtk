@@ -7,7 +7,7 @@
 GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree), builder(rbuilder)
 {
 	rbuilder->get_widget_derived("GtkMainWindow", m_parent);
-	rbuilder->get_widget_derived("rssDialog"    , m_rss);
+	rbuilder->get_widget_derived("rssDialog", m_rss);
 	m_rss->set_transient_for(*m_parent);
 
 	m_liststore = Gtk::TreeStore::create(cols);

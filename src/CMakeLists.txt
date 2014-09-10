@@ -40,6 +40,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkStatusBox.cpp
 	gtk/GtkTorrentSideBar.cpp
 	gtk/GtkRSSDialog.cpp
+	gtk/GtkGenericAddDialog.cpp
 	gtk/utils/FileTree.cpp
 	main.cpp
 	)
