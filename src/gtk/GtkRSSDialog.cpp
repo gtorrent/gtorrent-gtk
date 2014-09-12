@@ -1,12 +1,12 @@
 #include "GtkRSSDialog.hpp"
 #include "GtkGenericAddDialog.hpp"
-#include "Application.hpp"
+#include "../Application.hpp"
 
 // TODO: Rename "Functions" to "Criterions" or equivalent ?
 
 GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Dialog(dial)
 {
-	m_core = Application::getSingleton()->get_core();
+	m_core = Application::getSingleton()->getCore();
 
 	rbuilder->get_widget(    "cancelButton",     cancelButton);
 	rbuilder->get_widget(        "okButton",         okButton);
