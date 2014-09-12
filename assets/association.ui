@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkDialog" id="fileAssociationDialog">
-	<property name="use-header-bar">1</property>
-	<property name="modal">True</property>
-	<property name="can_default">True</property>
-	<property name="window_position">center-on-parent</property>
-	<child internal-child="headerbar">
-      <object class="GtkHeaderBar" id="headerbar">
+	<!-- interface-requires gtk+ 3.10 -->
+	<object class="GtkDialog" id="fileAssociationDialog">
+		<property name="use-header-bar">1</property>
+		<property name="modal">True</property>
 		<property name="can_default">True</property>
-		<property name="title">File Association</property>
-		<property name="show-close-button">False</property>
-		<property name="visible">True</property>
-		<child>
-          <object class="GtkButton" id="cancelButton">
-			<property name="visible">True</property>
-			<property name="label">Cancel</property>
-		  </object>
-		  <packing>
-			<property name="pack_type">start</property>
-		  </packing>
+		<property name="window_position">center-on-parent</property>
+		<child internal-child="headerbar">
+			<object class="GtkHeaderBar" id="headerbar">
+				<property name="can_default">True</property>
+				<property name="title">File Association</property>
+				<property name="show-close-button">False</property>
+				<property name="visible">True</property>
+				<child>
+					<object class="GtkButton" id="cancelButton">
+						<property name="visible">True</property>
+						<property name="label">Cancel</property>
+					</object>
+					<packing>
+						<property name="pack_type">start</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkButton" id="okButton">
+						<property name="label">Ok</property>
+						<property name="can_default">True</property>
+						<property name="visible">True</property>
+					</object>
+					<packing>
+						<property name="pack_type">end</property>
+					</packing>
+				</child>
+			</object>
 		</child>
-		<child>
-          <object class="GtkButton" id="okButton">
-			<property name="label">Ok</property>
-			<property name="can_default">True</property>
-			<property name="visible">True</property>
-		  </object>
-		  <packing>
-			<property name="pack_type">end</property>
-		  </packing>
+		<child internal-child="vbox">
+			<object class="GtkVBox" id="vbox">
+				<child>
+					<object class="GtkLabel" id="msg">
+						<property name="visible">True</property>
+						<property name="label">Welcome to gTorrent!</property>
+					</object>
+				</child>
+				<child>
+					<object class="GtkLabel" id="welcome">
+						<property name="visible">True</property>
+						<property name="label">Would you like to associate this with some files before continuing ?</property>
+					</object>
+				</child>
+				<child>
+					<placeholder/>
+				</child>
+				<child>
+					<object class="GtkCheckButton" id="mag">
+						<property name="visible">True</property>
+						<property name="active">True</property>
+						<property name="label">Associate with magnets</property>
+					</object>
+				</child>
+				<child>
+					<object class="GtkCheckButton" id="tor">
+						<property name="active">True</property>
+						<property name="visible">True</property>
+						<property name="label">Associate with torrents</property>
+					</object>
+				</child>
+			</object>
 		</child>
-      </object>
-	</child>
-	<child internal-child="vbox">
-	  <object class="GtkVBox" id="vbox">
-		<child>
-		  <object class="GtkLabel" id="msg">
-			<property name="visible">True</property>
-			<property name="label">Welcome to gTorrent!</property>
-		  </object>
-		</child>
-		<child>
-		  <object class="GtkLabel" id="welcome">
-			<property name="visible">True</property>
-			<property name="label">Would you like to associate this with some files before continuing ?</property>
-		  </object>
-		</child>
-		<child>
-		  <placeholder/>
-		</child>
-		<child>
-		  <object class="GtkCheckButton" id="mag">
-			<property name="visible">True</property>
-			<property name="active">True</property>
-			<property name="label">Associate with magnets</property>
-		  </object>
-		</child>
-		<child>
-		  <object class="GtkCheckButton" id="tor">
-			<property name="active">True</property>
-			<property name="visible">True</property>
-			<property name="label">Associate with torrents</property>
-		  </object>
-		</child>
-	  </object>
-	</child>
-	<action-widgets>
-	  <action-widget response="-1">cancelButton</action-widget>
-	  <action-widget response="1">okButton</action-widget>
-	</action-widgets>
-  </object>
+		<action-widgets>
+			<action-widget response="-1">cancelButton</action-widget>
+			<action-widget response="1">okButton</action-widget>
+		</action-widgets>
+	</object>
 </interface>
