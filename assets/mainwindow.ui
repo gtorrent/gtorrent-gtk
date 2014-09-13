@@ -18,13 +18,11 @@
 				<property name="default_width">800</property>
 				<property name="default_height">500</property>
 				<property name="visible">True</property>
-
 				<child type="titlebar">
 						<object class="GtkHeaderBar" id="headerBar">
 								<property name="visible">True</property>
 								<property name="title">gTorrent</property>
 								<property name="show_close_button">True</property>
-
 								<child>
 										<object class="GtkButton" id="addTorrentButton">
 												<property name="visible">True</property>
@@ -44,7 +42,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkMenuButton" id="addMagnetButton">
 												<property name="visible">True</property>
@@ -65,7 +62,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkSeparator" id="vSepOne">
 												<property name="visible">True</property>
@@ -75,7 +71,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkButton" id="resumeButton">
 												<property name="visible">True</property>
@@ -95,7 +90,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkButton" id="pauseButton">
 												<property name="visible">True</property>
@@ -115,7 +109,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkButton" id="deleteButton">
 												<property name="visible">True</property>
@@ -135,7 +128,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkSeparator" id="vSepTwo">
 												<property name="visible">True</property>
@@ -145,7 +137,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkButton" id="preferencesButton">
 												<property name="visible">True</property>
@@ -165,7 +156,6 @@
 												<property name="pack_type">start</property>
 										</packing>
 								</child>
-
 								<child>
 										<object class="GtkButton" id="settingsButton">
 												<property name="visible">True</property>
@@ -187,11 +177,9 @@
 								</child>
 						</object>
 				</child>
-
 				<child>
 						<object class="GtkBox" id="content">
 								<property name="visible">True</property>
-
 								<child>
 										<object class="GtkRevealer" id="sidebarRev">
 												<property name="visible">True</property>
@@ -201,17 +189,20 @@
 														<class name="sidebar"></class>
 												</style>
 												<child>
-														<object class="GtkTreeView" id="sidebar">
+														<object class="GtkScrolledWindow" id="sidebarscroll">
 																<property name="visible">True</property>
+																<child>
+																		<object class="GtkTreeView" id="sidebar">
+																				<property name="visible">True</property>
+																		</object>
+																</child>
 														</object>
 												</child>
-
 										</object>
 								</child>
-
 								<child>
 										<object class="GtkPaned" id="panel">
-												<property name="visible">True</property>	
+												<property name="visible">True</property>
 												<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 												<child>
 														<object class="GtkScrolledWindow" id="scrolledWindow">
@@ -225,9 +216,7 @@
 												</child>
 										</object>
 								</child>
-
 						</object>
 				</child>
-
 		</object>
 </interface>

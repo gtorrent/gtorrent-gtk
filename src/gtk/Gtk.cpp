@@ -1,12 +1,11 @@
+#include <sys/stat.h> // Why is this still needed?
+#include <exception>
+#include <stdexcept>
+
 #include <gtkmm.h>
 #include <glibmm.h>
 
 #include <gtorrent/Platform.hpp>
-
-#include <exception>
-#include <stdexcept>
-#include <sys/stat.h>
-
 
 #include "GtkMainWindow.hpp"
 #include "Gtk.hpp"
@@ -24,7 +23,7 @@ bool exists (const std::string& name)
 /**
  * Sets up the main window.
  */
-GuiGtk::GuiGtk(int argc, char **argv)
+gt::GuiGtk::GuiGtk(int argc, char **argv)
 {
 	kit = new Gtk::Main(argc, argv);
 	refBuilder = Gtk::Builder::create();
@@ -54,7 +53,7 @@ GuiGtk::GuiGtk(int argc, char **argv)
 
 extern unsigned char style_css[];
 
-int GuiGtk::run()
+int gt::GuiGtk::run()
 {
 	try
 	{
