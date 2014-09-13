@@ -191,7 +191,6 @@
 												<child>
 														<object class="GtkScrolledWindow" id="sidebarscroll">
 																<property name="visible">True</property>
-																<property name="show_expanders">True</property>
 																<child>
 																		<object class="GtkTreeView" id="sidebar">
 																				<property name="visible">True</property>
