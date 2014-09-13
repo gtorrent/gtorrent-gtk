@@ -36,17 +36,25 @@ class GtkMainWindow : public Gtk::Window
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
-	GtkTorrentTreeView *m_treeview = nullptr;
-	GtkTorrentInfoBar  *m_infobar = nullptr;
 	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 
-	Gtk::Button *addTorrentButton = nullptr, *resumeButton = nullptr, *pauseButton = nullptr, *removeButton = nullptr, *propertiesButton = nullptr, *settingsButton = nullptr;
-	Gtk::Separator *vSeparatorOne = nullptr, *vSeparatorTwo = nullptr; 
-	Gtk::Popover *magPopover = nullptr;
-	Gtk::Entry *magEntry = nullptr;
-	Gtk::ScrolledWindow *scrolledWindow = nullptr;
-	Gtk::MenuButton *addMagnetButton = nullptr;
-	Gtk::Paned *panel = nullptr;
+	GtkTorrentTreeView *m_treeview = nullptr;
+	GtkTorrentInfoBar  *m_infobar  = nullptr;
+
+	Gtk::Button         *addTorrentButton       = nullptr;
+	Gtk::Button         *resumeButton           = nullptr;
+	Gtk::Button         *pauseButton            = nullptr;
+	Gtk::Button         *removeButton           = nullptr;
+	Gtk::Button         *propertiesButton       = nullptr;
+	Gtk::Button         *settingsButton         = nullptr;
+	Gtk::Separator      *vSeparatorOne          = nullptr;
+	Gtk::Separator      *vSeparatorTwo          = nullptr; 
+	Gtk::Popover        *magPopover             = nullptr;
+	Gtk::Entry          *magEntry               = nullptr;
+	Gtk::ScrolledWindow *scrolledWindow         = nullptr; // Whichever chucklefuck made this member, get the right name.
+	Gtk::ScrolledWindow *sidebar_scrolledwindow = nullptr;
+	Gtk::MenuButton     *addMagnetButton        = nullptr;
+	Gtk::Paned          *panel                  = nullptr; // Whichever chucklefuck made this member, get the right name.
 
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);

@@ -16,13 +16,12 @@
 #include <gtkmm.h>
 #include <gtkmm/stock.h>
 
-#include "GtkTorrentSideBar.hpp"
-
 #include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkSettingsDialog.hpp"
+#include "GtkTorrentSideBar.hpp"
 
 // TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
 //       so remove the header, cutomize the cells, and enable the revealer with the property button
@@ -40,22 +39,23 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	GtkTorrentSideBar *sidebar;
 	Gtk::Revealer *revealer;
 
-	builder->get_widget(  "addTorrentButton", addTorrentButton);
-	builder->get_widget(  "addTorrentButton", addTorrentButton);
-	builder->get_widget(   "addMagnetButton",  addMagnetButton);
-	builder->get_widget(      "resumeButton",     resumeButton);
-	builder->get_widget(       "pauseButton",      pauseButton);
-	builder->get_widget(      "deleteButton",     removeButton);
-	builder->get_widget( "preferencesButton", propertiesButton);
-	builder->get_widget(    "settingsButton",   settingsButton);
-	builder->get_widget(             "panel",            panel);
-	builder->get_widget(    "scrolledWindow",   scrolledWindow);
-	builder->get_widget(           "vSepOne",    vSeparatorOne);
-	builder->get_widget(           "vSepTwo",    vSeparatorTwo);
-	builder->get_widget(        "sidebarRev",         revealer);
-	builder->get_widget_derived(   "infobar",        m_infobar);
-	builder->get_widget_derived(  "treeview",       m_treeview);
-	builder->get_widget_derived(   "sidebar",          sidebar);
+	builder->get_widget(  "addTorrentButton",       addTorrentButton);
+	builder->get_widget(  "addTorrentButton",       addTorrentButton);
+	builder->get_widget(   "addMagnetButton",        addMagnetButton);
+	builder->get_widget(      "resumeButton",           resumeButton);
+	builder->get_widget(       "pauseButton",            pauseButton);
+	builder->get_widget(      "deleteButton",           removeButton);
+	builder->get_widget( "preferencesButton",       propertiesButton);
+	builder->get_widget(    "settingsButton",         settingsButton);
+	builder->get_widget(             "panel",                  panel);
+	builder->get_widget(    "scrolledWindow",         scrolledWindow);
+	builder->get_widget(           "vSepOne",          vSeparatorOne);
+	builder->get_widget(           "vSepTwo",          vSeparatorTwo);
+	builder->get_widget(        "sidebarRev",               revealer);
+	builder->get_widget(     "sidebarscroll", sidebar_scrolledwindow);
+	builder->get_widget_derived(   "infobar",              m_infobar);
+	builder->get_widget_derived(  "treeview",             m_treeview);
+	builder->get_widget_derived(   "sidebar",                sidebar);
 
 	panel->pack2(*m_infobar);
 
@@ -80,6 +80,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
 	magPopover->set_position(Gtk::POS_LEFT);
+	
+	sidebar_scrolledwindow->set_min_content_width(150);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
