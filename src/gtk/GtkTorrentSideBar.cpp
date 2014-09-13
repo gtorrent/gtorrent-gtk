@@ -98,7 +98,7 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		newrow[cols.icon] = Glib::RefPtr<Gdk::Pixbuf>();
 		newrow[cols.clickCallback] = [row](){};
 		m_rss->set_default_response(1);
-		m_rss->run();
+		m_rss->run(name);
 		abort();
 		// TODO: implement RSS dialog and pop it up here
 	}

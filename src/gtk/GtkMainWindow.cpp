@@ -163,7 +163,7 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 	NotifyNotification *Hello = nullptr;
 
 	int newstate = t->status().state;
-	std::cout << t->status().name << ": Old state was " << oldstate << " and new state is " << newstate << std::endl;
+
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
 		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  && 

@@ -7,7 +7,6 @@
 GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Dialog(dial)
 {
 	m_core = Application::getSingleton()->getCore();
-
 	rbuilder->get_widget(    "cancelButton",     cancelButton);
 	rbuilder->get_widget(        "okButton",         okButton);
 	rbuilder->get_widget(   "addFeedButton",    addFeedButton);
@@ -24,6 +23,18 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	rbuilder->get_widget(  "globalTreeView",   globalTreeView);
 	rbuilder->get_widget(     "rssTreeView",      rssTreeView);
 
+	rssItemsList    = Gtk::ListStore::create(    items);
+	globalFeedsList = Gtk::ListStore::create(   global);
+	activeFeedsList = Gtk::ListStore::create(   active);
+	filtersList     = Gtk::ListStore::create(  filters);
+	functionsList   = Gtk::ListStore::create(functions);
+
+	rssTreeView   ->set_model(   rssItemsList);
+	funTreeView   ->set_model(  functionsList);
+	filterTreeView->set_model(    filtersList);
+	globalTreeView->set_model(globalFeedsList);
+	activeTreeView->set_model(activeFeedsList);
+
 	addFeedButton   ->signal_clicked().connect([this](){addNewFeed      ();});
 	removeFeedButton->signal_clicked().connect([this](){removeFeed      ();});
 	aTogButton      ->signal_clicked().connect([this](){moveToActive    ();});
@@ -33,15 +44,75 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	addFunBtn       ->signal_clicked().connect([this](){addFunction     ();});
 	removeFunBtn    ->signal_clicked().connect([this](){removeFunction  ();});
 
+	funTreeView   ->append_column("", functions.eval);
+	filterTreeView->append_column("", filters.name);
+	activeTreeView->append_column("", active.name);
+	globalTreeView->append_column("", global.name);
+	rssTreeView   ->append_column("", items.name);
 
-	//Need to rewrite a part of wip/rss in core to continue
-/*
-	funTreeView
-	filterTreeView
-	activeTreeView
-	globalTreeView
-	rssTreeView
-*/
+}
+
+int GtkRSSDialog::run(std::string fName)
+{
+	// If run is called with a valid parameter, then we edit the passed feed, else we create a new
+	feedg = m_core->addFeedGroup(fName); // returns a pointer to existing one if one with same name exists
+
+	set_title(fName);
+
+	filtersList    ->clear();
+	rssItemsList   ->clear();
+	functionsList  ->clear();
+	globalFeedsList->clear();
+	activeFeedsList->clear();
+
+	rssTreeView   ->set_model(   rssItemsList);
+	funTreeView   ->set_model(  functionsList);
+	filterTreeView->set_model(    filtersList);
+	globalTreeView->set_model(globalFeedsList);
+	activeTreeView->set_model(activeFeedsList);
+
+	rssTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	funTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	filterTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	globalTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	activeTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+
+	for(auto f : m_core->m_feedhandles)
+	{
+		if(std::find(feedg->m_feeds.begin(), feedg->m_feeds.end(), f) != feedg->m_feeds.end()) continue; //if the feed is used in the group, then it'll be added to the active view
+
+		Gtk::TreeRow row = *globalFeedsList->append();
+		if(f->get_feed_status().title != "")
+			row[global.name] = f->get_feed_status().title;
+		else
+			row[global.name] = f->get_feed_status().url;
+		row[global.feed] = f;
+	}
+
+	for(auto f : feedg->m_feeds)
+	{
+		Gtk::TreeRow row = *activeFeedsList->append();
+		if(f->get_feed_status().title != "")
+			row[active.name] = f->get_feed_status().title;
+		else
+			row[active.name] = f->get_feed_status().url;
+		row[active.feed] = f;
+	}
+
+	for(auto f : feedg->filters)
+	{
+		Gtk::TreeRow row = *filtersList->append();
+		row[filters.name]  = f.first;
+		row[filters.regex] = f.second;
+	}
+
+	for(auto f : feedg->functions)
+	{
+		Gtk::TreeRow row = *functionsList->append();
+		row[functions.eval]  = f;
+	}
+
+	return Gtk::Dialog::run();
 }
 
 void GtkRSSDialog::on_response(int response)
@@ -62,11 +133,19 @@ void GtkRSSDialog::addNewFeed()
 	addFeedDialog->set_title("Add Feed");
 	addFeedDialog->label1->set_text("Feed Name:");
 	addFeedDialog->label2->set_text("Feed URL:");
+
 	if(addFeedDialog->run() == 1)
 	{
-		// create and update feed and add it to the global feeds
-		abort();
+		std::cout << "name " << addFeedDialog->entry1->get_text() << std::endl;
+		std::cout << "feed " << addFeedDialog->entry2->get_text() << std::endl;
+		if(addFeedDialog->entry1->get_text() != "" && addFeedDialog->entry2->get_text() != "")
+		{
+			Gtk::TreeRow row = *globalFeedsList->append();
+			row[global.name] = addFeedDialog->entry1->get_text();
+			row[global.feed] = m_core->addFeed(addFeedDialog->entry2->get_text());
+		}
 	}
+	delete addFeedDialog;
 }
 
 // there's no constraint in removing a feed from the active list nor the global list since filters don't depend on them
@@ -80,6 +159,12 @@ void GtkRSSDialog::moveToActive()
 {
 	// when a feed is moved from the global list to the active list for a group, it is made available
 	// in the global list of other groups
+	auto sel   = globalTreeView->get_selection();
+	auto paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeRow> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(globalTreeView->get_model(), path));
 }
 
 void GtkRSSDialog::removeFromActive()
