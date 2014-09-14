@@ -33,14 +33,15 @@ class GtkTorrentSideBar : public Gtk::TreeView
 	GtkMainWindow *m_parent = nullptr;
 	Glib::RefPtr<Gtk::Builder> builder;
 public:
-	GtkSideBarColumns cols;
-	Glib::RefPtr<Gtk::TreeStore> m_liststore;
-	bool sideBar_onClick(GdkEventButton *event);
 	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	void setupColumns();
 	void onRowClicked(Gtk::TreeRow);
+	void addedItem(std::string path, std::string name);
+	bool sideBar_onClick(GdkEventButton *event);
+
+	GtkSideBarColumns m_cols;
+	Glib::RefPtr<Gtk::TreeStore> m_liststore;
+
 	Gtk::TreeModel::Row Torrents;
 	Gtk::TreeModel::Row RSSFeeds;
-	void addedItem(std::string path, std::string name);
-
 };
