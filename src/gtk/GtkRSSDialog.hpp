@@ -53,10 +53,12 @@ public:
 		{
 			add(enabled);
 			add(name);
+			add(item);
 		}
 
 	Gtk::TreeModelColumn<bool> enabled;
 	Gtk::TreeModelColumn<std::string> name;
+	Gtk::TreeModelColumn<libtorrent::feed_item> item;
 };
 
 class GtkRSSDialog : public Gtk::Dialog
