@@ -3,6 +3,7 @@
 #include <gtkmm/cssprovider.h>
 
 #include "GtkTorrentSideBar.hpp"
+#include "../Application.hpp"
 
 GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree), builder(rbuilder)
 {
@@ -72,6 +73,16 @@ void GtkTorrentSideBar::setupColumns()
 	auto rss_icon_scaled =  rss_icon->scale_simple(16, 16, Gdk::INTERP_BILINEAR);
 	RSSFeeds[m_cols.icon] = rss_icon_scaled;
 
+	for(auto fg : Application::getSingleton()->getCore()->m_feeds)
+	{
+		row = *(m_liststore->append(RSSFeeds.children()));
+		row[m_cols.name] = fg->name;
+		row[m_cols.editable] = false;
+		// TODO change icon to some sort of generic RSS icon
+		row[m_cols.clickCallback] = [this, fg](){m_rss->run(fg->name);m_rss->hide();};
+
+	}
+	
 	row = *(m_liststore->append(RSSFeeds.children()));
 	row[m_cols.name] = "Add an RSS group";
 	row[m_cols.editable] = true;
@@ -109,10 +120,12 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		newrow[m_cols.name] = name + " (" + '0' + ")";
 		newrow[m_cols.editable] = true;
 		newrow[m_cols.icon] = Glib::RefPtr<Gdk::Pixbuf>();
-		newrow[m_cols.clickCallback] = [row](){};
+		newrow[m_cols.clickCallback] = [this, name](){m_rss->run(name);	m_rss->hide();};
 		m_rss->set_default_response(1);
-		m_rss->run(name);
-		abort();
+		int code = m_rss->run(name);
+		m_rss->hide();
+		if(code == 1)
+			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->feedg);
 		// TODO: implement RSS dialog and pop it up here
 	}
 }

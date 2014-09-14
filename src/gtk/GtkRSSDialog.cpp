@@ -1,5 +1,6 @@
 #include "GtkRSSDialog.hpp"
 #include "GtkGenericAddDialog.hpp"
+#include "GtkFunctionDialog.hpp"
 #include "../Application.hpp"
 
 // TODO: Rename "Functions" to "Criterions" or equivalent ?
@@ -22,6 +23,7 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	rbuilder->get_widget(  "activeTreeView",   activeTreeView);
 	rbuilder->get_widget(  "globalTreeView",   globalTreeView);
 	rbuilder->get_widget(     "rssTreeView",      rssTreeView);
+	set_default_response(1);
 
 	rssItemsList    = Gtk::ListStore::create(    items);
 	globalFeedsList = Gtk::ListStore::create(   global);
@@ -131,24 +133,26 @@ void GtkRSSDialog::addNewFeed()
 {
 	auto refBuilder = Gtk::Builder::create();
 	refBuilder->add_from_resource("/org/gtk/gtorrent/genericdialog.ui");
-	GtkGenericAddDialog *addFeedDialog = nullptr;
-	refBuilder->get_widget_derived("genericDialog", addFeedDialog);
-	addFeedDialog->set_transient_for(*this);
-	addFeedDialog->set_default_response(1);
-	addFeedDialog->set_title("Add Feed");
-	addFeedDialog->label1->set_text("Feed Name:");
-	addFeedDialog->label2->set_text("Feed URL:");
+	GtkGenericAddDialog *addFilterDialog = nullptr;
+	refBuilder->get_widget_derived("genericDialog", addFilterDialog);
+	addFilterDialog->set_transient_for(*this);
+	addFilterDialog->set_default_response(1);
+	addFilterDialog->set_title("Add Feed");
+	addFilterDialog->label1->set_text("Feed Name:");
+	addFilterDialog->label2->set_text("Feed URL:");
 
-	if(addFeedDialog->run() == 1)
+	if(addFilterDialog->run() == 1)
 	{
-		if(addFeedDialog->entry1->get_text() != "" && addFeedDialog->entry2->get_text() != "")
+		if(addFilterDialog->entry1->get_text() != "" && addFilterDialog->entry2->get_text() != "")
 		{
 			Gtk::TreeRow row = *globalFeedsList->append();
-			row[global.name] = addFeedDialog->entry1->get_text();
-			row[global.feed] = m_core->addFeed(addFeedDialog->entry2->get_text());
+			row[global.name] = addFilterDialog->entry1->get_text();
+			auto f = m_core->addFeed(addFilterDialog->entry2->get_text());
+			row[global.feed] = f;
+			f->owners.insert(feedg);
 		}
 	}
-	delete addFeedDialog;
+	delete addFilterDialog;
 }
 
 // there's no constraint in removing a feed from the active list nor the global list since filters don't depend on them
@@ -156,6 +160,37 @@ void GtkRSSDialog::removeFeed()
 {
 	// a feed can be removed only from the global list, and will be removed from the active list of every other rss group
 	// unless the feed isn't used in any other group, the user will be warned that removing this feeds will impact other rss groups
+	
+	bool doAnyway = false;
+	// when a feed is moved from the global list to the active list for a group, it is made available
+	// in the global list of other groups
+	auto sel   = globalTreeView->get_selection();
+	auto paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(globalTreeView->get_model(), path));
+	for (auto i : rows)
+	{
+		std::shared_ptr<gt::Feed> f = (*globalFeedsList->get_iter(i.get_path()))[global.feed];
+		if(!doAnyway && !f->owners.empty())
+		{
+			auto errorDial = std::make_shared<Gtk::MessageDialog>("This feed is used in other groups!\nRemoving it will also remove it from every other groups.\nProceed ?",
+																  false,
+																  Gtk::MESSAGE_QUESTION,
+																  Gtk::BUTTONS_YES_NO);
+			errorDial->set_default_response(Gtk::RESPONSE_NO);
+			switch(errorDial->run())
+			{
+			case Gtk::RESPONSE_YES: doAnyway = true; break;
+			default: return;
+			}
+		}
+		for(auto group : f->owners)
+			group->m_feeds.erase(f);
+		f->owners.clear();
+		globalFeedsList->erase(globalTreeView->get_model()->get_iter(i.get_path()));
+	}
 }
 
 void GtkRSSDialog::moveToActive()
@@ -177,6 +212,7 @@ void GtkRSSDialog::moveToActive()
 	for(auto f : moving)
 	{
 		Gtk::TreeRow row = *activeFeedsList->append();
+		feedg->m_feeds.insert(f);
 		if(f->get_feed_status().title != "")
 			row[active.name] = f->get_feed_status().title;
 		else
@@ -189,7 +225,6 @@ void GtkRSSDialog::moveToActive()
 			row[items.item] = item;
 		}
 	}
-
 }
 
 void GtkRSSDialog::removeFromActive()
@@ -225,6 +260,7 @@ void GtkRSSDialog::removeFromActive()
 	for(auto f : moving)
 	{
 		Gtk::TreeRow row = *globalFeedsList->append();
+		f->owners.erase(feedg);
 		if(f->get_feed_status().title != "")
 			row[active.name] = f->get_feed_status().title;
 		else
@@ -239,22 +275,24 @@ void GtkRSSDialog::addFilter()
 	// Filter have uniques names, but can have same regexes
 	auto refBuilder = Gtk::Builder::create();
 	refBuilder->add_from_resource("/org/gtk/gtorrent/genericdialog.ui");
-	GtkGenericAddDialog *addFeedDialog = nullptr;
-	refBuilder->get_widget_derived("genericDialog", addFeedDialog);
-	addFeedDialog->set_transient_for(*this);
-	addFeedDialog->set_title("Add Filter");
-	addFeedDialog->label1->set_text("Filter Name:");
-	addFeedDialog->label2->set_text("Filter Regex:");
-	if(addFeedDialog->run() == 1)
+	GtkGenericAddDialog *addFilterDialog = nullptr;
+	refBuilder->get_widget_derived("genericDialog", addFilterDialog);
+	addFilterDialog->set_transient_for(*this);
+	addFilterDialog->set_default_response(1);
+	addFilterDialog->set_title("Add Filter");
+	addFilterDialog->label1->set_text("Filter Name:");
+	addFilterDialog->label2->set_text("Filter Regex:");
+	if(addFilterDialog->run() == 1)
 	{
-		if(addFeedDialog->entry1->get_text() != "" && addFeedDialog->entry2->get_text() != "")
+		if(addFilterDialog->entry1->get_text() != "" && addFilterDialog->entry2->get_text() != "")
 		{
 			Gtk::TreeRow row = *filtersList->append();
-			feedg->filters[addFeedDialog->entry1->get_text()] = addFeedDialog->entry2->get_text();
-			row[filters.name] = addFeedDialog->entry1->get_text();
-			row[filters.regex] = addFeedDialog->entry2->get_text();
+			feedg->filters[addFilterDialog->entry1->get_text()] = addFilterDialog->entry2->get_text();
+			row[filters.name] = addFilterDialog->entry1->get_text();
+			row[filters.regex] = addFilterDialog->entry2->get_text();
 		}
-	}	
+	}
+	delete addFilterDialog;
 }
 
 void GtkRSSDialog::removeFilter()
@@ -287,9 +325,51 @@ void GtkRSSDialog::addFunction()
 	// you can add a function only if the the filter specified in the lhs exists
 	// if the specified filter doesn't exist, the user should warned, and if he
 	// wants to proceed, a "New Filter" dialog will be shown before adding the function
+	if(feedg->filters.empty())
+	{
+		auto errorDial = std::make_shared<Gtk::MessageDialog>("You need to add filters in order to add functions !");
+		errorDial->run();
+		return;
+	}
+
+	auto refBuilder = Gtk::Builder::create();
+	refBuilder->add_from_resource("/org/gtk/gtorrent/functiondialog.ui");
+	GtkFunctionDialog *addFunctionDialog = nullptr;
+	refBuilder->get_widget_derived("functiondialog", addFunctionDialog);
+	addFunctionDialog->set_transient_for(*this);
+	addFunctionDialog->set_default_response(1);
+	addFunctionDialog->set_title("Function");
+	addFunctionDialog->setFeedGroup(feedg);
+
+	if(addFunctionDialog->run() == 1)
+	{
+		Gtk::TreeRow row = *functionsList->append();
+		std::string fun = addFunctionDialog->filter->get_active_text();
+		int op = addFunctionDialog->filter->get_active_row_number();
+		std::string ops = "<>=!";
+		fun += " " + ops[op] + ' ';
+		fun += addFunctionDialog->constant->get_text();
+		feedg->functions.insert(fun);
+		row[functions.eval] = fun;
+	}
+	delete addFunctionDialog;
 }
 
 void GtkRSSDialog::removeFunction()
 {
-	// there's no constraint in removing a function
+	std::vector<std::shared_ptr<gt::Feed>> removing;
+	auto sel   = funTreeView->get_selection();
+	auto paths = sel->get_selected_rows();
+	std::vector<Gtk::TreeModel::RowReference> rows;
+
+	for (auto path : paths)
+		rows.push_back(Gtk::TreeModel::RowReference(functionsList, path));
+
+	for (auto i : rows)
+	{
+		Gtk::TreeRow row = *functionsList->get_iter(i.get_path());
+		std::string name = row[functions.eval];
+		feedg->functions.erase(name);
+		functionsList->erase(functionsList->get_iter(i.get_path()));
+	}
 }

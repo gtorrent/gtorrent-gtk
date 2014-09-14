@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkDialog" id="functiondialog">
+	<property name="use-header-bar">1</property>
+	<property name="modal">True</property>
+	<property name="can_default">True</property>
+	<property name="window_position">center-on-parent</property>
+	<child internal-child="headerbar">
+	  <object class="GtkHeaderBar" id="headerbar">
+		<property name="can_default">True</property>
+		<property name="title">File Association</property>
+		<property name="show-close-button">False</property>
+		<property name="visible">True</property>
+		<child>
+		  <object class="GtkButton" id="cancelButton">
+			<property name="visible">True</property>
+			<property name="label">Cancel</property>
+		  </object>
+		  <packing>
+			<property name="pack_type">start</property>
+		  </packing>
+		</child>
+		<child>
+		  <object class="GtkButton" id="okButton">
+			<property name="label">Ok</property>
+			<property name="can_default">True</property>
+			<property name="visible">True</property>
+		  </object>
+		  <packing>
+			<property name="pack_type">end</property>
+		  </packing>
+		</child>
+	  </object>
+	</child>
+
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox1">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkBox" id="box1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkComboBoxText" id="filter">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="comparison">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">0</property>
+                <items>
+                  <item translatable="yes">Lesser Than</item>
+                  <item translatable="yes">Greater Than</item>
+                  <item translatable="yes">Equal</item>
+                  <item translatable="yes">Not Equal</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="constant">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">none</property>
+                <property name="placeholder_text" translatable="yes">Constant...</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+
+	<action-widgets>
+	  <action-widget response="-1">cancelButton</action-widget>
+	  <action-widget response="1">okButton</action-widget>
+	</action-widgets>
+  </object>
+</interface>

@@ -66,7 +66,6 @@ int gt::GuiGtk::run()
 		auto screen = Gdk::Screen::get_default();
 		Gtk::StyleContext::add_provider_for_screen(screen, css, 800); //Gtk::STYLE_PROVIDER_PRIORITY_APPLICATION); <= compiler can't find it's definition so i'm using the literal value
 		
-		std::cout << std::string((char*)style_css) << std::endl;
 		kit->run(*mainWindow);
 	}
 	catch(const Glib::FileError& ex)
