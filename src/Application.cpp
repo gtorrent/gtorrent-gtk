@@ -3,7 +3,7 @@
 
 using namespace std;
 
-shared_ptr<Application> Application::m_app = nullptr;
+shared_ptr<Application> Application::m_app = nullptr; // This thould just a be a static var of getSingleton, holy shit.
 
 shared_ptr<Application> Application::getSingleton()
 {
@@ -25,7 +25,7 @@ int Application::run(int argc, char **argv)
 	m_core = make_shared<gt::Core>(argc, argv);
 
 	gt::Log::Debug("Starting up GUI layer...");
-	m_gui = make_shared<GuiGtk>(argc, argv);// Who thought it was a good idea to run a GUI from an uninitialized object ?
+	m_gui = make_shared<gt::GuiGtk>(argc, argv);// Who thought it was a good idea to run a GUI from an uninitialized object ?
 	m_gui->run();
 	m_core->shutdown();
 	return 0;

@@ -16,13 +16,12 @@
 #include <gtkmm.h>
 #include <gtkmm/stock.h>
 
-#include "GtkTorrentSideBar.hpp"
-
 #include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkSettingsDialog.hpp"
+#include "GtkTorrentSideBar.hpp"
 
 // TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
 //       so remove the header, cutomize the cells, and enable the revealer with the property button
@@ -81,6 +80,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
 	magPopover->set_position(Gtk::POS_LEFT);
+	
+	sidebar_scrolledwindow->set_min_content_width(150);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
@@ -164,7 +165,7 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 	NotifyNotification *Hello = nullptr;
 
 	int newstate = t->status().state;
-	std::cout << t->status().name << ": Old state was " << oldstate << " and new state is " << newstate << std::endl;
+
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
 		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  &&

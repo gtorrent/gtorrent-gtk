@@ -1,12 +1,11 @@
+#include <sys/stat.h> // Why is this still needed?
+#include <exception>
+#include <stdexcept>
+
 #include <gtkmm.h>
 #include <glibmm.h>
 
 #include <gtorrent/Platform.hpp>
-
-#include <exception>
-#include <stdexcept>
-#include <sys/stat.h>
-
 
 #include "GtkMainWindow.hpp"
 #include "Gtk.hpp"
@@ -24,13 +23,14 @@ bool exists (const std::string& name)
 /**
  * Sets up the main window.
  */
-GuiGtk::GuiGtk(int argc, char **argv)
+gt::GuiGtk::GuiGtk(int argc, char **argv)
 {
 	kit = new Gtk::Main(argc, argv);
 	refBuilder = Gtk::Builder::create();
 	try
 	{
 		refBuilder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
+		refBuilder->add_from_resource("/org/gtk/gtorrent/rss.ui");
 		refBuilder->add_from_resource("/org/gtk/gtorrent/association.ui");
 		refBuilder->add_from_resource("/org/gtk/gtorrent/infobar.ui");
 	}
@@ -53,7 +53,7 @@ GuiGtk::GuiGtk(int argc, char **argv)
 
 extern unsigned char style_css[];
 
-int GuiGtk::run()
+int gt::GuiGtk::run()
 {
 	try
 	{
@@ -65,9 +65,7 @@ int GuiGtk::run()
 		css->load_from_data(std::string((char*)style_css));
 		auto screen = Gdk::Screen::get_default();
 		Gtk::StyleContext::add_provider_for_screen(screen, css, 800); //Gtk::STYLE_PROVIDER_PRIORITY_APPLICATION); <= compiler can't find it's definition so i'm using the literal value
-
 		
-		std::cout << std::string((char*)style_css) << std::endl;
 		kit->run(*mainWindow);
 	}
 	catch(const Glib::FileError& ex)

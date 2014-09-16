@@ -1,64 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkBox" id="infobar">
-	<property name="visible">True</property>
-	<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
-
-	<child>
-	  <object class="GtkLabel" id="infoBarTitle">
+	<!-- interface-requires gtk+ 3.10 -->
+	<object class="GtkBox" id="infobar">
 		<property name="visible">True</property>
-	  </object>
-	  <packing>
-		<property name="pack_type">start</property>
-	  </packing>
-	</child>
+		<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 
-	<child>
-	  <object class="GtkNotebook" id="infoBarNotebook">
-		<property name="visible">True</property>
-		<property name="expand">True</property>
 
-		<!-- Start of Torrent Info -->
-		<child>
-		  <object class="GtkBox" id="infoBarTorrentInfoBox">
-			<property name="visible">True</property>
-			<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 
-			<child>
-			  <object class="GtkBox" id="infoBarPieceBox">
-				<property name="visible">True</property>
-				<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+
+				<!-- Start of Peers -->
 				<child>
-				  <object class="GtkWidget" id="infoBarBlockBar">
-					<property name="width_request">0</property>
-					<property name="height_request">20</property>
-					<property name="visible">True</property>
-				  </object>
-				  <packing>
-					<property name="pack_type">end</property>
-				  </packing>
+					<object class="GtkScrolledWindow" id="infoBarPeersScrolledWindow">
+						<property name="visible">True</property>
+						<child>
+							<object class="GtkTreeView" id="infoBarPeerTreeView">
+								<property name="visible">True</property>
+							</object>
+						</child>
+					</object>
 				</child>
-			  </object>
-			  <packing>
-				<property name="pack_type">start</property>
-			  </packing>
-			</child>
 
-			<child>
-			  <object class="GtkSeparator" id="infoBarStatusSeparator">
-				<property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-				<property name="visible">True</property>
-			  </object>
-			  <packing>
-				<property name="pack_type">start</property>
-			  </packing>
-			</child>
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarPeersLabel">
+						<property name="label">Peers</property>
+						<property name="visible">True</property>
+					</object>
+				</child>
+				<!-- End of Peers -->
 
-			<child>
-			  <object class="GtkScrolledWindow" id="infoBarStatusScrolledWindow">
-				<property name="visible">True</property>
-				<property name="expand">True</property>
+				<!-- Start of Torrent Info -->
 				<child>
 				  <object class="GtkGrid" id="infoBarStatusBox">
 					<property name="visible">True</property>
@@ -466,15 +436,27 @@
 
 					<!-- End of Dynamic Labels -->
 				  </object>
-				</child>
-			  </object>
-			  <packing>
-				<property name="pack_type">start</property>
-			  </packing>
-			</child>
 
-		  </object>
-		</child>
+				</child>
+
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarTorrentInfoLabel">
+						<property name="label">Torrent Info</property>
+						<property name="visible">True</property>
+					</object>
+				</child>
+				<!-- End of Torrent Info -->
+				<!-- Start of File -->
+				<child>
+					<object class="GtkScrolledWindow" id="infoBarFilesScrolledWindow">
+						<property name="visible">True</property>
+						<child>
+							<object class="GtkTreeView" id="infoBarFileTreeView">
+								<property name="visible">True</property>
+							</object>
+						</child>
+					</object>
+				</child>
 
 		<child type="tab">
 		  <object class="GtkLabel" id="infoBarTorrentInfoLabel">
@@ -546,4 +528,5 @@
 	</child>
 
   </object>
+
 </interface>
