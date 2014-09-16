@@ -89,6 +89,12 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 		m_treeview->addCell(tor);
 	}
 
+	for(auto feedg : Application::getSingleton()->getCore()->m_feeds)
+	{
+		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f)   { feedStateChangedCallback(oldstate, f); };
+		feedg->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){ itemAvailableCallback(fi, fg); };
+	}
+
 	if (gt::Settings::settings["FileAssociation"] == "" ||
 		gt::Settings::settings["FileAssociation"] == "-1")
 	{
@@ -162,20 +168,20 @@ void GtkMainWindow::onAddBtnClicked()
 
 void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
 {
-	NotifyNotification *Hello = nullptr;
+	NotifyNotification *tNotify = nullptr;
 
 	int newstate = t->status().state;
 
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
-		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
+		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  && 
 			oldstate == libtorrent::torrent_status::downloading_metadata)
-		Hello = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
+		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
 	else 
 		return; //:^)
 
-	notify_notification_show (Hello, NULL);
-	g_object_unref(G_OBJECT(Hello));
+	notify_notification_show (tNotify, NULL);
+	g_object_unref(G_OBJECT(tNotify));
 }
 
 /**
@@ -265,4 +271,32 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 		m_treeview->m_filter->refilter();
 	}
 	return false;
+}
+
+void GtkMainWindow::feedStateChangedCallback(int oldstate, std::shared_ptr<gt::Feed> fg)
+{
+// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
+// if the item passes all the filters of an owner that wants auto-adding, add it here.
+}
+
+void GtkMainWindow::itemAvailableCallback(const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg)
+{
+	bool notify = gt::Settings::settings["RSSNotify"] == "Yes";
+	for(auto group : fg->owners)
+		if(group->passFilters(fi))
+		{
+			if(notify)
+			{
+				NotifyNotification *rssNotify = notify_notification_new ("New torrent available", std::string(fi.title + " is available.").c_str(), "dialog-information");
+				notify_notification_show(rssNotify, nullptr);
+				g_object_unref(G_OBJECT(rssNotify));
+			}
+			if(group->autoAddNewItem)
+			{
+				auto tor = m_core->addTorrent(fi.url);
+				m_treeview->addCell(tor);
+			}
+		}
+// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
+// if the item passes all the filters of an owner that wants auto-adding, add it here.
 }

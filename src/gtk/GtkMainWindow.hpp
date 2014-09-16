@@ -11,6 +11,8 @@
 #include <gtkmm/window.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/paned.h>
+#include <FeedGroup.hpp>
+
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
@@ -37,6 +39,8 @@ class GtkMainWindow : public Gtk::Window
 
 public:
 	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
+	void feedStateChangedCallback(int oldstate, std::shared_ptr<gt::Feed> fg);
+	void itemAvailableCallback(const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg);
 
 	GtkTorrentTreeView *m_treeview = nullptr;
 	GtkTorrentInfoBar  *m_infobar  = nullptr;

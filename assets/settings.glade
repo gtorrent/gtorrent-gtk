@@ -1418,6 +1418,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="row_spacing">1</property>
                                 <property name="column_spacing">5</property>
+
                                 <child>
                                   <object class="GtkLabel" id="label46">
                                     <property name="visible">True</property>
@@ -1438,6 +1439,28 @@
                                   <packing>
                                     <property name="left_attach">1</property>
                                     <property name="top_attach">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="labelRssnotify">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="halign">end</property>
+                                    <property name="label" translatable="yes">Notify me when a new item in an RSS feed is available</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkSwitch" id="rssnotifyswitch">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                               </object>
