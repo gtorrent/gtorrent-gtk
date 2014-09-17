@@ -8,21 +8,22 @@
 GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Dialog(dial)
 {
 	m_core = Application::getSingleton()->getCore();
-	rbuilder->get_widget(    "cancelButton",     cancelButton);
-	rbuilder->get_widget(        "okButton",         okButton);
-	rbuilder->get_widget(   "addFeedButton",    addFeedButton);
-	rbuilder->get_widget("removeFeedButton", removeFeedButton);
-	rbuilder->get_widget(      "aTogButton",       aTogButton);
-	rbuilder->get_widget(      "gToaButton",       gToaButton);
-	rbuilder->get_widget(    "addFilterBtn",     addFilterBtn);
-	rbuilder->get_widget( "removeFilterBtn",  removeFilterBtn);
-	rbuilder->get_widget(    "addFunButton",        addFunBtn);
-	rbuilder->get_widget( "removeFunButton",     removeFunBtn);
-	rbuilder->get_widget("functionTreeView",      funTreeView);
-	rbuilder->get_widget(  "filterTreeView",   filterTreeView);
-	rbuilder->get_widget(  "activeTreeView",   activeTreeView);
-	rbuilder->get_widget(  "globalTreeView",   globalTreeView);
-	rbuilder->get_widget(     "rssTreeView",      rssTreeView);
+	rbuilder->get_widget(     "cancelButton",     cancelButton);
+	rbuilder->get_widget(         "okButton",         okButton);
+	rbuilder->get_widget(    "addFeedButton",    addFeedButton);
+	rbuilder->get_widget( "removeFeedButton", removeFeedButton);
+	rbuilder->get_widget(       "aTogButton",       aTogButton);
+	rbuilder->get_widget(       "gToaButton",       gToaButton);
+	rbuilder->get_widget(     "addFilterBtn",     addFilterBtn);
+	rbuilder->get_widget(  "removeFilterBtn",  removeFilterBtn);
+	rbuilder->get_widget(     "addFunButton",        addFunBtn);
+	rbuilder->get_widget(  "removeFunButton",     removeFunBtn);
+	rbuilder->get_widget( "functionTreeView",      funTreeView);
+	rbuilder->get_widget(   "filterTreeView",   filterTreeView);
+	rbuilder->get_widget(   "activeTreeView",   activeTreeView);
+	rbuilder->get_widget(   "globalTreeView",   globalTreeView);
+	rbuilder->get_widget(      "rssTreeView",      rssTreeView);
+	rbuilder->get_widget("rssAutoAddNewItem",          rssAuto);
 	set_default_response(1);
 
 	rssItemsList    = Gtk::ListStore::create(    items);
@@ -45,6 +46,7 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	removeFilterBtn ->signal_clicked().connect([this](){removeFilter    ();});
 	addFunBtn       ->signal_clicked().connect([this](){addFunction     ();});
 	removeFunBtn    ->signal_clicked().connect([this](){removeFunction  ();});
+	rssAuto         ->signal_clicked().connect([this](){toggleAutoAdd   ();});
 
 	funTreeView   ->append_column("", functions.eval);
 	filterTreeView->append_column("", filters.name);
@@ -72,6 +74,7 @@ int GtkRSSDialog::run(std::string fName)
 	globalTreeView->set_model(globalFeedsList);
 	activeTreeView->set_model(activeFeedsList);
 
+	rssAuto->set_active(feedg->autoAddNewItem);
 	rssTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	funTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	filterTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
@@ -353,6 +356,11 @@ void GtkRSSDialog::addFunction()
 		row[functions.eval] = fun;
 	}
 	delete addFunctionDialog;
+}
+
+void GtkRSSDialog::toggleAutoAdd()
+{
+	feedg->autoAddNewItem = rssAuto->get_active();
 }
 
 void GtkRSSDialog::removeFunction()
