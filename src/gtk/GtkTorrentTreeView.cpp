@@ -457,28 +457,30 @@ void GtkTorrentTreeView::reloadColors()
 
 void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	char pausedTorrents = 0, startedTorrents = 0;
+	bool pausedTorrents = false, startedTorrents = false;
 
 	if(selectedTorrents().empty())
 	{
-		m_parent->pauseButton ->hide();
-		m_parent->resumeButton->hide();
+		m_parent->pauseButton  ->hide();
+		m_parent->resumeButton ->hide();
+		m_parent->removeButton ->hide();
+		m_parent->vSeparatorOne->hide();
 		return;
 	}
 
 	for (auto i : selectedTorrents())
 	{
-		pausedTorrents  +=  i->isPaused();
-		startedTorrents += !i->isPaused();
+		pausedTorrents  = pausedTorrents  ? pausedTorrents  : i->isPaused();
+		startedTorrents = startedTorrents ? startedTorrents : !i->isPaused();
+
 		if(pausedTorrents && startedTorrents) break;
 	}
 
-	m_parent->pauseButton ->set_visible(startedTorrents != 0);
-	m_parent->resumeButton->set_visible( pausedTorrents != 0);
+	m_parent->pauseButton ->set_visible(startedTorrents);
+	m_parent->resumeButton->set_visible( pausedTorrents);
 
 	m_parent->removeButton->set_visible(!selectedTorrents().empty());
-	m_parent->vSeparatorOne->set_visible(m_parent->removeButton->get_visible());
+	m_parent->vSeparatorOne->set_visible();
 }
 
 // columns are saved in a single settings, looking like this:
