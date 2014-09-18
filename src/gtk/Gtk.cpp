@@ -23,10 +23,10 @@ bool exists (const std::string& name)
 /**
  * Sets up the main window.
  */
-gt::GuiGtk::GuiGtk()
+gt::GuiGtk::GuiGtk(int argc, char **argv)
 {
 	// TODO add argc and argv
-	m_app = Gtk::Application::create();
+	m_app = Gtk::Application::create(argc, argv);
 
 	m_builder = Gtk::Builder::create();
 	try
@@ -55,7 +55,7 @@ gt::GuiGtk::GuiGtk()
 
 extern unsigned char style_css[];
 
-int gt::GuiGtk::run(int argc, char **argv)
+int gt::GuiGtk::run()
 {
 	GtkMainWindow *mainWindow = nullptr;
 	try
@@ -81,7 +81,7 @@ int gt::GuiGtk::run(int argc, char **argv)
 		std::cerr << "BuilderError: " << ex.what() << std::endl;
 	}
 		
-	m_app->run(*mainWindow, argc, argv);
+	m_app->run(*mainWindow);
 
 	return 1;
 }

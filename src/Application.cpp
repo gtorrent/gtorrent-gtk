@@ -27,6 +27,7 @@ int Application::run(int argc, char **argv)
 	gt::Log::Debug("Starting up GUI layer...");
 	m_gui = make_shared<gt::GuiGtk>(argc, argv);// Who thought it was a good idea to run a GUI from an uninitialized object ?
 	m_gui->run();
+
 	m_core->shutdown();
 	return 0;
 }

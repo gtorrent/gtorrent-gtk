@@ -12,7 +12,7 @@ namespace gt
 		Glib::RefPtr<Gtk::Application> m_app;
 		Glib::RefPtr<Gtk::Builder> m_builder;
 	public:
-		GuiGtk();
-		virtual int run(int argc, char **argv);
+		GuiGtk(int argc, char **argv);
+		virtual int run();
 	};
 }
