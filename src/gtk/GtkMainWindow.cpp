@@ -32,15 +32,20 @@
 /**
 * Sets up the main window.
 */
-GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Window(win), builder(rbuilder), m_core(Application::getSingleton()->getCore())
+GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rbuilder)
+: Gtk::Window(win),
+  builder(rbuilder),
+  m_core(Application::getSingleton()->getCore())
 {
 	notify_init ("gTorrent");
 
 	GtkTorrentSideBar *sidebar;
 	Gtk::Revealer *revealer;
-	
+
+	builder->get_widget(        "torrentbox",           m_torrentbox);
+	builder->get_widget(         "searchbar",            m_searchbar);
 	builder->get_widget(  "addTorrentButton",       addTorrentButton);
-	builder->get_widget(  "addTorrentButton",       addTorrentButton);
+	builder->get_widget(      "searchButton",         m_searchButton);
 	builder->get_widget(   "addMagnetButton",        addMagnetButton);
 	builder->get_widget(      "resumeButton",           resumeButton);
 	builder->get_widget(       "pauseButton",            pauseButton);
@@ -63,12 +68,13 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
-	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked();});
-	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked();});
-	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked();});
-	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked();});
-	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked();});
-	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
+	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked()       ;});
+	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked()       ;});
+	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked()       ;});
+	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked()       ;});
+	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked()       ;});
+	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked()       ;});
+	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
 	magEntry   = Gtk::manage(new Gtk::Entry());

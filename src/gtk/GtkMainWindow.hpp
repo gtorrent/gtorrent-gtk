@@ -11,6 +11,8 @@
 #include <gtkmm/window.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/paned.h>
+#include <gtkmm/searchbar.h>
+#include <gtkmm/box.h>
 #include <FeedGroup.hpp>
 
 
@@ -51,14 +53,17 @@ public:
 	Gtk::Button         *removeButton           = nullptr;
 	Gtk::Button         *propertiesButton       = nullptr;
 	Gtk::Button         *settingsButton         = nullptr;
+	Gtk::Button         *m_searchButton         = nullptr;
+	Gtk::Box            *m_torrentbox           = nullptr;
+	Gtk::SearchBar      *m_searchbar            = nullptr;
 	Gtk::Separator      *vSeparatorOne          = nullptr;
 	Gtk::Separator      *vSeparatorTwo          = nullptr; 
 	Gtk::Popover        *magPopover             = nullptr;
 	Gtk::Entry          *magEntry               = nullptr;
-	Gtk::ScrolledWindow *scrolledWindow         = nullptr; // Whichever chucklefuck made this member, get the right name.
+	Gtk::ScrolledWindow *scrolledWindow         = nullptr;
 	Gtk::ScrolledWindow *sidebar_scrolledwindow = nullptr;
 	Gtk::MenuButton     *addMagnetButton        = nullptr;
-	Gtk::Paned          *panel                  = nullptr; // Whichever chucklefuck made this member, get the right name.
+	Gtk::Paned          *panel                  = nullptr;
 
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);

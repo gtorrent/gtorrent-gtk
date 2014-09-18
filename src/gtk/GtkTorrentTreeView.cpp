@@ -26,8 +26,10 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	m_filter->set_visible_func(sigc::mem_fun(*this, &GtkTorrentTreeView::showMatches));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	rbuilder->get_widget("GtkMainWindow", m_parent);
+	rbuilder->get_widget("GtkMainWindow", m_parent); // Nyanpasu: Maybe m_parent isn't even needed since widgets store parents.
 	rbuilder->get_widget("infobar", m_infobar);
+	m_searchEntry = Gtk::manage(new Gtk::Entry());
+	m_searchPopover = Gtk::manage(new Gtk::Popover());
 
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
@@ -36,14 +38,14 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 
 	setupColumns();
 	set_enable_search();
-	m_searchEntry = Gtk::manage(new Gtk::Entry());
-	m_searchPopover = Gtk::manage(new Gtk::Popover());
+	set_search_entry(*m_searchEntry);
+	set_search_column(m_cols.m_col_name);
+
 	m_searchPopover->add(*m_searchEntry);
 	m_searchPopover->set_relative_to(*this);
 	m_searchPopover->set_modal();
 	m_searchEntry->show();
-	set_search_entry(*m_searchEntry);
-	set_search_column(m_cols.m_col_name);
+
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
@@ -58,8 +60,8 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 
 	drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
 	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onFileDropped));
-	get_selection()->unselect_all();
 
+	get_selection()->unselect_all();
 }
 
 /**
@@ -73,6 +75,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 
 	if(event->button == 3) // if right-click
 	{
+		// TODO Make menu from builder.
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
 		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
