@@ -1,5 +1,6 @@
 #pragma once
 
+// 
 #include <gtkmm.h>
 #include <glibmm.h>
 #include "../core/Base.hpp"
@@ -8,10 +9,10 @@ namespace gt
 {
 	class GuiGtk : public GuiBase
 	{
-		Gtk::Main *kit;
-		Glib::RefPtr<Gtk::Builder> refBuilder;
+		Glib::RefPtr<Gtk::Application> m_app;
+		Glib::RefPtr<Gtk::Builder> m_builder;
 	public:
-		GuiGtk(int argc, char **argv);
-		virtual int run();
+		GuiGtk();
+		virtual int run(int argc, char **argv);
 	};
 }

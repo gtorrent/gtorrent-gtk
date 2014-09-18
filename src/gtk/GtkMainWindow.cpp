@@ -38,7 +38,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 
 	GtkTorrentSideBar *sidebar;
 	Gtk::Revealer *revealer;
-
+	
 	builder->get_widget(  "addTorrentButton",       addTorrentButton);
 	builder->get_widget(  "addTorrentButton",       addTorrentButton);
 	builder->get_widget(   "addMagnetButton",        addMagnetButton);
@@ -56,7 +56,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget_derived(   "infobar",              m_infobar);
 	builder->get_widget_derived(  "treeview",             m_treeview);
 	builder->get_widget_derived(   "sidebar",                sidebar);
-
+	
 	panel->pack2(*m_infobar);
 
 	// Apparently can't use lambdas on these two unless doing something awful

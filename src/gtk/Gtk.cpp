@@ -23,16 +23,18 @@ bool exists (const std::string& name)
 /**
  * Sets up the main window.
  */
-gt::GuiGtk::GuiGtk(int argc, char **argv)
+gt::GuiGtk::GuiGtk()
 {
-	kit = new Gtk::Main(argc, argv);
-	refBuilder = Gtk::Builder::create();
+	// TODO add argc and argv
+	m_app = Gtk::Application::create();
+
+	m_builder = Gtk::Builder::create();
 	try
 	{
-		refBuilder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
-		refBuilder->add_from_resource("/org/gtk/gtorrent/rss.ui");
-		refBuilder->add_from_resource("/org/gtk/gtorrent/association.ui");
-		refBuilder->add_from_resource("/org/gtk/gtorrent/infobar.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/rss.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/association.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/infobar.ui");
 	}
 	catch(const Glib::FileError& ex)
 	{
@@ -53,20 +55,18 @@ gt::GuiGtk::GuiGtk(int argc, char **argv)
 
 extern unsigned char style_css[];
 
-int gt::GuiGtk::run()
+int gt::GuiGtk::run(int argc, char **argv)
 {
+	GtkMainWindow *mainWindow = nullptr;
 	try
 	{
-		GtkMainWindow *mainWindow = 0;
-		refBuilder->get_widget_derived("GtkMainWindow", mainWindow);
+		m_builder->get_widget_derived("GtkMainWindow", mainWindow);
 		mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
 
 		auto css = Gtk::CssProvider::create();
-		css->load_from_data(std::string((char*)style_css));
 		auto screen = Gdk::Screen::get_default();
-		Gtk::StyleContext::add_provider_for_screen(screen, css, 800); //Gtk::STYLE_PROVIDER_PRIORITY_APPLICATION); <= compiler can't find it's definition so i'm using the literal value
-		
-		kit->run(*mainWindow);
+		css->load_from_data(std::string((char*)style_css));
+		Gtk::StyleContext::add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	}
 	catch(const Glib::FileError& ex)
 	{
@@ -80,7 +80,8 @@ int gt::GuiGtk::run()
 	{
 		std::cerr << "BuilderError: " << ex.what() << std::endl;
 	}
-
+		
+	m_app->run(*mainWindow, argc, argv);
 
 	return 1;
 }
