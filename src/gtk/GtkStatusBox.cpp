@@ -31,7 +31,7 @@ void GtkStatusBox::update(std::shared_ptr<gt::Torrent> selected)
 	m_share_ratio   ->set_text(std::to_string(selected->getTotalRatio()));
 	m_time_elapsed  ->set_text(selected->getTextActiveTime());
 	m_total_size    ->set_text(selected->getTextSize());
-	m_tracker_url   ->set_text(selected->getCurrentTrackerURL());
+	m_tracker_url   ->set_text(selected->status().current_tracker);
 	m_upload_speed  ->set_text(selected->getTextUploadRate());
 	m_uploaded      ->set_text(selected->getTextTotalUploaded());
 	m_downloaded    ->set_text(selected->getTextTotalDownloaded());
