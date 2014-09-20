@@ -174,8 +174,8 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		childr[m_cols.m_col_icon]          = iconInfo.load_icon();
 		int file_size = ft.fs.file_size(ft.index); // FIXME #100 Find a better way to deal with 0 size files.
 		childr[m_cols.m_col_percent]       = (file_size ? progress_all[ft.index] * 100 / ft.fs.file_size(ft.index) : 100);
-		childr[m_cols.m_col_priority]      = prioStr[ft.t->getHandle().file_priority(ft.index)];
-		childr[m_cols.m_col_prioritylevel] = ft.t->getHandle().file_priority(ft.index);
+		childr[m_cols.m_col_priority]      = prioStr[ft.t->file_priority(ft.index)];
+		childr[m_cols.m_col_prioritylevel] = ft.t->file_priority(ft.index);
 		childr[m_cols.m_col_percent_text]  = std::to_string(childr[m_cols.m_col_percent]) + '%';
 		childr[m_cols.m_col_activated]     = ft.t->file_priority(ft.index) != 0;
 
@@ -381,10 +381,10 @@ void GtkFileTreeView::update(Gtk::TreeRow &row)
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 
-		row[m_cols.m_col_prioritylevel] = torrent->getHandle().file_priority(row[m_cols.m_col_index]);
+		row[m_cols.m_col_prioritylevel] = torrent->file_priority(row[m_cols.m_col_index]);
 		row[m_cols.m_col_priority] = prioStr[row[m_cols.m_col_prioritylevel]];
-		row[m_cols.m_col_activated] = torrent->getHandle().file_priority(row[m_cols.m_col_index]) != 0;
-		int file_size = torrent->getInfo()->files().file_size(row[m_cols.m_col_index]); // FIXME #100 Find a better way to deal with 0 size files.
+		row[m_cols.m_col_activated] = torrent->file_priority(row[m_cols.m_col_index]) != 0;
+		int file_size = torrent->torrent_file()->files().file_size(row[m_cols.m_col_index]); // FIXME #100 Find a better way to deal with 0 size files.
 		row[m_cols.m_col_percent] = int(file_size ? progress_all[row[m_cols.m_col_index]] * 100 / file_size : 100);
 		row[m_cols.m_col_percent_text] = std::to_string(row[m_cols.m_col_percent]) + '%';
 		row[m_cols.m_col_icon] = iconInfo.load_icon();
