@@ -18,37 +18,16 @@
 /**
 * Sets up the torrent info bar.
 */
-GtkTorrentInfoBar::GtkTorrentInfoBar()
-	: Gtk::Box(Gtk::ORIENTATION_VERTICAL)
+GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder)
+	: Gtk::Box(box), builder(rbuilder)
 {
-	//TODO: better layout
-	m_notebook                        = Gtk::manage(new Gtk::Notebook());
-	m_stat_box                        = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_piece_box                       = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	m_title                           = Gtk::manage(new Gtk::Label());
-	m_filebox                         = Gtk::manage(new Gtk::ScrolledWindow());
-	m_fileview                        = Gtk::manage(new GtkFileTreeView());
-	m_progress                        = Gtk::manage(new GtkBlockBar());
-	m_graph                           = Gtk::manage(new GtkGraph());
-	m_scroll_box                      = Gtk::manage(new Gtk::ScrolledWindow());
-	m_status_box                      = Gtk::manage(new GtkStatusBox());
-	m_peer_scroll_box                 = Gtk::manage(new Gtk::ScrolledWindow());
-	m_peers                           = Gtk::manage(new GtkPeerTreeView());
-
-	m_peer_scroll_box->add(*m_peers);
-	m_filebox->add(*m_fileview);
-	pack_start(*m_title, Gtk::PACK_SHRINK);
-	m_piece_box->pack_end(*m_progress, Gtk::PACK_EXPAND_WIDGET, 0);
-	m_progress->set_size_request(0, 20);
-	m_stat_box->add(*m_piece_box);
-	m_scroll_box->add(*m_status_box);
-	m_stat_box->pack_start(*(new Gtk::HSeparator()), Gtk::PACK_SHRINK);
-	m_stat_box->pack_start(*m_scroll_box, Gtk::PACK_EXPAND_WIDGET);
-	m_notebook->append_page(*m_graph, "Info Graph");
-	m_notebook->append_page(*m_peer_scroll_box, "Peers");
-	m_notebook->append_page(*m_stat_box, "Torrent Info");
-	m_notebook->append_page(*m_filebox, "Files");
-	this->pack_end(*m_notebook, Gtk::PACK_EXPAND_WIDGET, 5);
+	builder->get_widget        ("infoBarTitle"       , m_title     );
+	builder->get_widget_derived("infoBarGraph"       , m_graph     );
+	builder->get_widget_derived("infoBarBlockBar"    , m_progress  );
+	builder->get_widget_derived("infoBarPeerTreeView", m_peers     );
+	builder->get_widget_derived("infoBarFileTreeView", m_fileview  );
+	builder->get_widget_derived("infoBarStatusBox"   , m_status_box);
+	show_all();
 }
 
 // TODO: Should replace every place where a torrent index is required with a torrent pointer, smells like everything would break if
@@ -68,23 +47,23 @@ void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 		return;
 	}
 
-	if(selected->getHandle().status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+	if(selected->status().has_metadata) // torrentless torrents (magnet links) can't have pieces
 		m_progress->setBlocks(selected->getPieces());
 
-	m_title->set_text(selected->getName());
+	m_title->set_text(selected->status().name);
 	m_graph->select(selected);
 	m_peers->select(selected);
 	m_fileview->select(selected);
-
 	if(previous != selected)
 		m_status_box->update(selected);
 	previous = selected;
+	show_all();
 }
 
 void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 {
 	if(!selected) return updateInfo(selected);
-	if(selected->getHandle().status().has_metadata)
+	if(selected->status().has_metadata)
 		m_progress->setBlocks(selected->getPieces());
 
 	m_status_box->update(selected);

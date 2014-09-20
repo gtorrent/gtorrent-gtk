@@ -10,11 +10,9 @@
 /**
 * Sets up the block bar.
 */
-GtkBlockBar::GtkBlockBar() :
-	//The GType name will actually be gtkmm__CustomObject_BlockBar
-	Glib::ObjectBase("BlockBar"),
-	Gtk::Widget()
-{
+GtkBlockBar::GtkBlockBar(GtkWidget *widget, const Glib::RefPtr<Gtk::Builder> rbuilder) :
+	Gtk::Widget(widget)
+{ //builder is ignored here since blockbar wont have children and it's necessary in the constructor signature
 	set_has_window(true);
 }
 

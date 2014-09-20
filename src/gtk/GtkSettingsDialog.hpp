@@ -24,10 +24,10 @@ class GtkSettingsDialog
 	GtkMainWindow *parent = nullptr;
 	std::map<std::string, std::string> backup;
 
-	Gtk::SpinButton        *uplimit,        *downlimit,  *dhtlimit,      *cachesize,     *cacheexpiry, *cachechunk,     *defaultreci, *increci, *decreci, *activdspin, *activsspin;
-	Gtk::Entry             *useragentbox,   *hostbox,    *portbox,       *userbox,       *passbox,     *savepathbox;
-	Gtk::ColorButton       *forebutt,       *backbutt,   *gridbutt,      *downcolorbutt, *upcolorbutt, *dcurvefillbutt, *ucurvefillbutt;
-	Gtk::Switch            *showtoggle,     *anontoggle, *suggesttoggle, *filltoggle,    *notifytoggle,*gridtoggle;
+	Gtk::SpinButton        *uplimit,        *downlimit,  *dhtlimit,      *cachesize,     *cacheexpiry,  *cachechunk,     *defaultreci,    *increci, *decreci, *activdspin, *activsspin;
+	Gtk::Entry             *useragentbox,   *hostbox,    *portbox,       *userbox,       *passbox,      *savepathbox;
+	Gtk::ColorButton       *forebutt,       *backbutt,   *gridbutt,      *downcolorbutt, *upcolorbutt,  *dcurvefillbutt, *ucurvefillbutt;
+	Gtk::Switch            *showtoggle,     *anontoggle, *suggesttoggle, *filltoggle,    *notifytoggle, *gridtoggle    , *polylinetoggle, *rssnotifytoggle;
 	Gtk::ComboBoxText      *seedchokecombo, *chokecombo, *statuscombo,   *overridecombo;
 	Gtk::Button            *okbutt,         *notokbutt;
 	Gtk::CheckButton       *ddashcheck,     *udashcheck;

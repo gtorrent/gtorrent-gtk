@@ -7,6 +7,7 @@
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/popover.h>
 
 namespace Gtk
@@ -89,8 +90,6 @@ class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
 	GtkTorrentColumns m_cols;
-	GtkTorrentInfoBar *m_infobar;
-	GtkMainWindow *m_parent;
 	Gtk::Entry *m_searchEntry;
 
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
@@ -107,6 +106,8 @@ private:
 	bool      torrentColumns_onClick(GdkEventButton *event);
 	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
+	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+
 	/* Event handlers for the torrent view context menu */
 	void           stopView_onClick();
 	void           openView_onClick();
@@ -118,6 +119,10 @@ private:
 	void sequentialChange_onRealize();
 
 public:
+	GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	GtkTorrentInfoBar *m_infobar;
+	GtkMainWindow *m_parent;
+
 	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
 	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;

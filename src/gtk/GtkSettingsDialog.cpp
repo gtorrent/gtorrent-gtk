@@ -22,47 +22,50 @@ using namespace std;
 
 GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file(gt::Platform::getExecutablePath().substr(0, gt::Platform::getExecutablePath().find_last_of('/') + 1) +  "settings.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/settings.glade");
 	builder->get_widget("dialog1", dial);
-	dial->set_modal();
+	if(Parent) dial->set_transient_for(*Parent);
 	backup = gt::Settings::settings;
+	dial->set_default_response(1);
 
-	builder->get_widget(         "okbutt",         okbutt);
-	builder->get_widget(       "forebutt",       forebutt);
-	builder->get_widget(       "backbutt",       backbutt);
-	builder->get_widget(     "chokecombo",     chokecombo);
-	builder->get_widget(     "activdspin",     activdspin);
-	builder->get_widget(     "activsspin",     activsspin);
-	builder->get_widget(     "showtoggle",     showtoggle);
-	builder->get_widget(     "anontoggle",     anontoggle);
-	builder->get_widget(     "gridtoggle",     gridtoggle);
-	builder->get_widget(     "chokecombo",     chokecombo);
-	builder->get_widget(     "ddashcheck",     ddashcheck);
-	builder->get_widget(     "udashcheck",     udashcheck);
-	builder->get_widget(     "filltoggle",     filltoggle);
-	builder->get_widget(    "uplimitspin",        uplimit);
-	builder->get_widget(    "increcispin",        increci);
-	builder->get_widget(    "decrecispin",        decreci);
-	builder->get_widget(    "notokaybutt",      notokbutt);
-	builder->get_widget(    "savepathbox",    savepathbox);
-	builder->get_widget(    "upcolorbutt",    upcolorbutt);
-	builder->get_widget(    "statuscombo",    statuscombo);
-	builder->get_widget(   "dhtlimitspin",       dhtlimit);
-	builder->get_widget(   "useragentbox",   useragentbox);
-	builder->get_widget(   "notifyswitch",   notifytoggle);
-	builder->get_widget(  "gridcolorbutt",       gridbutt);
-	builder->get_widget(  "downlimitspin",      downlimit);
-	builder->get_widget(  "cachesizespin",      cachesize);
-	builder->get_widget(  "downcolorbutt",  downcolorbutt);
-	builder->get_widget(  "suggesttoggle",  suggesttoggle);
-	builder->get_widget(  "overridecombo",  overridecombo);
-	builder->get_widget( "seedchokecombo", seedchokecombo);
-	builder->get_widget( "dcurvefillbutt", dcurvefillbutt);
-	builder->get_widget("ucurvefillbutt",  ucurvefillbutt);
-	builder->get_widget("filechooserbutt",       filebutt);
-	builder->get_widget("cachechunksspin",     cachechunk);
-	builder->get_widget("cacheexpiryspin",    cacheexpiry);
-	builder->get_widget("defaultrecispin",    defaultreci);
+	builder->get_widget(         "okbutt",          okbutt);
+	builder->get_widget(       "forebutt",        forebutt);
+	builder->get_widget(       "backbutt",        backbutt);
+	builder->get_widget(     "chokecombo",      chokecombo);
+	builder->get_widget(     "activdspin",      activdspin);
+	builder->get_widget(     "activsspin",      activsspin);
+	builder->get_widget(     "showtoggle",      showtoggle);
+	builder->get_widget(     "anontoggle",      anontoggle);
+	builder->get_widget(     "gridtoggle",      gridtoggle);
+	builder->get_widget(     "chokecombo",      chokecombo);
+	builder->get_widget(     "ddashcheck",      ddashcheck);
+	builder->get_widget(     "udashcheck",      udashcheck);
+	builder->get_widget(     "filltoggle",      filltoggle);
+	builder->get_widget(    "uplimitspin",         uplimit);
+	builder->get_widget(    "increcispin",         increci);
+	builder->get_widget(    "decrecispin",         decreci);
+	builder->get_widget(    "notokaybutt",       notokbutt);
+	builder->get_widget(    "savepathbox",     savepathbox);
+	builder->get_widget(    "upcolorbutt",     upcolorbutt);
+	builder->get_widget(    "statuscombo",     statuscombo);
+	builder->get_widget(   "dhtlimitspin",        dhtlimit);
+	builder->get_widget(   "useragentbox",    useragentbox);
+	builder->get_widget(   "notifyswitch",    notifytoggle);
+	builder->get_widget(  "gridcolorbutt",        gridbutt);
+	builder->get_widget(  "downlimitspin",       downlimit);
+	builder->get_widget(  "cachesizespin",       cachesize);
+	builder->get_widget(  "downcolorbutt",   downcolorbutt);
+	builder->get_widget(  "suggesttoggle",   suggesttoggle);
+	builder->get_widget(  "overridecombo",   overridecombo);
+	builder->get_widget( "seedchokecombo",  seedchokecombo);
+	builder->get_widget( "polylinetoggle",  polylinetoggle);
+	builder->get_widget( "dcurvefillbutt",  dcurvefillbutt);
+	builder->get_widget("ucurvefillbutt",   ucurvefillbutt);
+	builder->get_widget("filechooserbutt",        filebutt);
+	builder->get_widget("cachechunksspin",      cachechunk);
+	builder->get_widget("cacheexpiryspin",     cacheexpiry);
+	builder->get_widget("defaultrecispin",     defaultreci);
+	builder->get_widget("rssnotifyswitch", rssnotifytoggle);
 
 	savepathbox->set_can_focus(false); //user has to use the filechooser to set the savepath
 
@@ -130,11 +133,13 @@ int GtkSettingsDialog::run()
 	savepathbox ->set_text(gt::Settings::settings["SavePath" ]);
 	useragentbox->set_text(gt::Settings::settings["UserAgent"]);
 
-	showtoggle   ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
-	anontoggle   ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
-	gridtoggle   ->set_active(gt::Settings::settings["ShowGrid"          ] == "Yes");
-	suggesttoggle->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
-	notifytoggle ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
+	showtoggle     ->set_active(gt::Settings::settings["ShowLegend"        ] == "Yes");
+	anontoggle     ->set_active(gt::Settings::settings["AnonymousMode"     ] == "Yes");
+	gridtoggle     ->set_active(gt::Settings::settings["ShowGrid"          ] == "Yes");
+	suggesttoggle  ->set_active(gt::Settings::settings["PieceSuggestion"   ] == "Yes");
+	notifytoggle   ->set_active(gt::Settings::settings["EnableNotification"] == "Yes");
+	polylinetoggle ->set_active(gt::Settings::settings["GraphCurveStyle"   ] == "Polyline");
+	rssnotifytoggle->set_active(gt::Settings::settings["RSSNotify"         ] == "Yes");
 
 	ddashcheck->set_active(gt::Settings::settings["GraphDownloadCurveStyle"] == "Dash");
 	udashcheck->set_active(gt::Settings::settings["GraphUploadCurveStyle"  ] == "Dash");
@@ -149,14 +154,16 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["SavePath"       ] = savepathbox->get_text();
 	gt::Settings::settings["UserAgent"      ] = useragentbox->get_text();
 
-	gt::Settings::settings["GraphStyle"             ] = (filltoggle   ->get_active()) ? "Fill" : "Curves";
-	gt::Settings::settings["ShowLegend"             ] = (showtoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["AnonymousMode"          ] = (anontoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["ShowGrid"               ] = (gridtoggle   ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["EnableNotification"     ] = (notifytoggle ->get_active()) ?  "Yes" :     "No";
-	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck   ->get_active()) ? "Dash" :   "Line";
-	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck   ->get_active()) ? "Dash" :   "Line";
+	gt::Settings::settings["RSSNotify"              ] = (rssnotifytoggle->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["GraphStyle"             ] = (filltoggle     ->get_active()) ?  "Fill"     : "Curves";
+	gt::Settings::settings["ShowLegend"             ] = (showtoggle     ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["AnonymousMode"          ] = (anontoggle     ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["ShowGrid"               ] = (gridtoggle     ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["PieceSuggestion"        ] = (suggesttoggle  ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["GraphCurveStyle"        ] = (polylinetoggle ->get_active()) ?  "Polyline" : "Curve";
+	gt::Settings::settings["EnableNotification"     ] = (notifytoggle   ->get_active()) ?  "Yes"      : "No";
+	gt::Settings::settings["GraphUploadCurveStyle"  ] = (udashcheck     ->get_active()) ?  "Dash"     : "Line";
+	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck     ->get_active()) ?  "Dash"     : "Line";
 
 	backup = gt::Settings::settings;
 	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings

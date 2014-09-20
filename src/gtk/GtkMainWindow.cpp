@@ -1,5 +1,5 @@
 #include "GtkMainWindow.hpp"
-
+#include <future>
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
 
@@ -13,6 +13,7 @@
 #include <gtkmm/main.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm.h>
 #include <gtkmm/stock.h>
 
 #include "../Application.hpp"
@@ -20,142 +21,101 @@
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkSettingsDialog.hpp"
+#include "GtkTorrentSideBar.hpp"
+
+// TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
+//       so remove the header, cutomize the cells, and enable the revealer with the property button
+//       Also find a way to darken the treeview when the sidebar is shown, the same way the window is
+//       darkened when a modal dialog is opened.
+
 
 /**
 * Sets up the main window.
 */
-GtkMainWindow::GtkMainWindow() :
-	m_core(Application::getSingleton()->getCore())
+GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rbuilder)
+: Gtk::Window(win),
+  builder(rbuilder),
+  m_core(Application::getSingleton()->getCore())
 {
-	//TODO:This needs to be refactored
-	notify_init ("Hello world!");
-	set_position(Gtk::WIN_POS_CENTER);
-	set_default_size(800, 500);
-	magtxt->set_visible();
-	magtxt->set_width_chars(75);
-	magPop->add(*magtxt);
-	btn_add_link->set_popover(*magPop);
+	notify_init ("gTorrent");
 
-	Gtk::Paned *panel = Gtk::manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
-	m_swin = Gtk::manage(new Gtk::ScrolledWindow());
+	GtkTorrentSideBar *sidebar;
+	Gtk::Revealer *revealer;
 
-	m_infobar =  Gtk::manage(new GtkTorrentInfoBar());
-	m_treeview = Gtk::manage(new GtkTorrentTreeView(this, m_infobar));
-	m_infobar->set_margin_left(5);
-	m_infobar->set_margin_right(5);
-
-	m_swin->add(*m_treeview);
-	panel->pack1(*m_swin);
+	builder->get_widget(        "torrentbox",           m_torrentbox);
+	builder->get_widget(         "searchbar",            m_searchbar);
+	builder->get_widget(  "addTorrentButton",       addTorrentButton);
+	builder->get_widget(      "searchButton",         m_searchButton);
+	builder->get_widget(   "addMagnetButton",        addMagnetButton);
+	builder->get_widget(      "resumeButton",           resumeButton);
+	builder->get_widget(       "pauseButton",            pauseButton);
+	builder->get_widget(      "deleteButton",           removeButton);
+	builder->get_widget( "preferencesButton",       propertiesButton);
+	builder->get_widget(    "settingsButton",         settingsButton);
+	builder->get_widget(             "panel",                  panel);
+	builder->get_widget(    "scrolledWindow",         scrolledWindow);
+	builder->get_widget(           "vSepOne",          vSeparatorOne);
+	builder->get_widget(           "vSepTwo",          vSeparatorTwo);
+	builder->get_widget(        "sidebarRev",               revealer);
+	builder->get_widget(     "sidebarscroll", sidebar_scrolledwindow);
+	builder->get_widget_derived(   "infobar",              m_infobar);
+	builder->get_widget_derived(  "treeview",             m_treeview);
+	builder->get_widget_derived(   "sidebar",                sidebar);
+	
 	panel->pack2(*m_infobar);
 
+	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
-	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onKeyPress), false);
 
-	header = Gtk::manage(new Gtk::HeaderBar());
-	header->set_show_close_button(true);
-	header->set_title("gTorrent");
+	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked()       ;});
+	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked()       ;});
+	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked()       ;});
+	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked()       ;});
+	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked()       ;});
+	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked()       ;});
+	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
+	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
-	Gtk::VSeparator *separator0  = Gtk::manage(new Gtk::VSeparator());
-	Gtk::VSeparator *separator2  = Gtk::manage(new Gtk::VSeparator());
+	magEntry   = Gtk::manage(new Gtk::Entry());
+	magEntry->set_visible();
+	magEntry->set_width_chars(75);
+	magPopover = Gtk::manage(new Gtk::Popover());
 
-	btn_add_link   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddMagnetBtnClicked));
-	btn_add_torrent->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onAddBtnClicked));
-	btn_pause      ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPauseBtnClicked));
-	btn_resume     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onResumeBtnClicked));
-	btn_remove     ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onRemoveBtnClicked));
-	btn_settings   ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onSettingsBtnClicked));
-	btn_properties ->signal_clicked().connect(sigc::mem_fun(*this, &GtkMainWindow::onPropertiesBtnClicked));
-
-	btn_add_link   ->set_image_from_icon_name("insert-link-symbolic");
-	btn_add_torrent->set_image_from_icon_name("list-add-symbolic");
-	btn_pause      ->set_image_from_icon_name("media-playback-pause-symbolic");
-	btn_properties ->set_image_from_icon_name("preferences-system-symbolic");
-	btn_remove     ->set_image_from_icon_name("edit-delete-symbolic");
-	btn_resume     ->set_image_from_icon_name("media-playback-start-symbolic");
-	btn_settings   ->set_image_from_icon_name("emblem-system-symbolic");
-
-	//TODO:align properties button to right of top bar
-	//btn_properties->set_alignment(1.0f,0.0f);
-	header->add(*btn_add_torrent);
-	header->add(*btn_add_link);
-	header->add(*separator0);
-	header->add(*btn_resume);
-	header->add(*btn_pause);
-	header->add(*btn_remove);
-	header->add(*separator1);
-	header->add(*btn_properties);
-	header->add(*separator2);
-	header->pack_end(*btn_settings);
-	// Let's add some DnD goodness
-	std::vector<Gtk::TargetEntry> listTargets;
-	listTargets.push_back(Gtk::TargetEntry("STRING"));
-	listTargets.push_back(Gtk::TargetEntry("text/plain"));
-	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
-	listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
-
-	m_treeview->drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
-	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
-
-	set_titlebar(*header);
-	add(*panel);
-	show_all();
-	btn_pause->hide();
-	m_infobar->set_visible(false);
-
-	// for some reason, the treeview start with its first element selected
-	m_treeview->get_selection()->unselect_all();
+	magPopover->add(*magEntry);
+	magPopover->set_relative_to(*addMagnetButton);
+	addMagnetButton->set_popover(*magPopover);
+	magPopover->set_position(Gtk::POS_LEFT);
+	
+	sidebar_scrolledwindow->set_min_content_width(150);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
-		tor->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		tor->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(tor);
 	}
-	gt::Log::Debug(gt::Settings::settings["FileAssociation"].c_str());
+
+	for(auto feedg : Application::getSingleton()->getCore()->m_feeds)
+	{
+		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f)   { feedStateChangedCallback(oldstate, f); };
+		feedg->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){ itemAvailableCallback(fi, fg); };
+	}
 
 	if (gt::Settings::settings["FileAssociation"] == "" ||
-	        gt::Settings::settings["FileAssociation"] == "-1")
+		gt::Settings::settings["FileAssociation"] == "-1")
 	{
-		GtkAssociationDialog *dialog = new GtkAssociationDialog(*this);
-		int code = dialog->run();// code = -1 (Remind me later), 0(Do not associate), 1(Associate with torrents), 2(Associate with magnets), 3(Assiciate with both)
+		GtkAssociationDialog *dialog = 0;
+		builder->get_widget_derived("fileAssociationDialog", dialog);
+		dialog->set_transient_for(*this);
+		dialog->set_default_response(1);
+		int code = dialog->run();
 		if(code != -1)
-			gt::Platform::associate(code & 2, code & 1);
+			gt::Platform::associate(dialog->aWithMagnets, dialog->aWithTorrents);
 		gt::Settings::settings["FileAssociation"] = std::to_string(code);
 		delete dialog;
 	}
 
 	d = new GtkSettingsDialog(this);
-}
-
-/**
-* Does something when a file is dropped onto the window.
-*/
-void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
-{
-	std::string sel_data = selection_data.get_data_as_string();
-	if(m_core->isLink(sel_data))
-	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(sel_data);
-		if (t)//Checks if t is not null
-			m_treeview->addCell(t);
-	}
-	else
-	{
-		std::string fn = Glib::filename_from_uri(sel_data);
-		boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
-		bool want_uncertain = true;
-		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
-		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
-		{
-			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(fn);
-			if (t)//Checks if t is not null
-			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
-				m_treeview->addCell(t);
-			}
-			//TODO Add error dialogue if torrent add is unsuccessful
-		}
-	}
 }
 
 /**
@@ -168,10 +128,10 @@ bool GtkMainWindow::onSecTick()
 	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 	{
-		t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+		t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(t);
 	}
-	m_swin->get_vscrollbar()->set_child_visible(false);
+	scrolledWindow->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
 
@@ -184,6 +144,7 @@ void GtkMainWindow::onAddBtnClicked()
 	fc.set_default_size(256, 256);
 	fc.set_select_multiple();
 	fc.set_transient_for(*this);
+	fc.set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 	fc.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
 	fc.add_button("Select", Gtk::RESPONSE_OK);
 
@@ -202,7 +163,7 @@ void GtkMainWindow::onAddBtnClicked()
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)//Checks if t is not null
 			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
+				t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 				m_treeview->addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful
@@ -213,19 +174,20 @@ void GtkMainWindow::onAddBtnClicked()
 
 void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t)
 {
-	NotifyNotification *Hello = nullptr;
+	NotifyNotification *tNotify = nullptr;
 
-	int newstate = t->getState();
+	int newstate = t->status().state;
+
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
-		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has finished downloading.").c_str(), "dialog-information");
+		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
 	else if(newstate == libtorrent::torrent_status::downloading  && 
 			oldstate == libtorrent::torrent_status::downloading_metadata)
-		Hello = notify_notification_new (t->getName().c_str(), std::string(t->getName() + " has started downloading.").c_str(), "dialog-information");
+		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
 	else 
 		return; //:^)
 
-	notify_notification_show (Hello, NULL);
-	g_object_unref(G_OBJECT(Hello));
+	notify_notification_show (tNotify, NULL);
+	g_object_unref(G_OBJECT(tNotify));
 }
 
 /**
@@ -233,22 +195,22 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 */
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
-	if(magPop->get_visible())
+	if(magPopover->get_visible())
 	{
 		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
 		std::string link = clip->wait_for_text();
 		if(gt::Core::isLink(link))
-			magtxt->set_text(link);
+			magEntry->set_text(link);
 	}
 	else
 	{
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magtxt->get_text());
+		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
 		if (t)
 		{
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview->addCell(t);
 		}
-		magtxt->set_text("");
+		magEntry->set_text("");
 	}
 }
 
@@ -295,7 +257,6 @@ bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_treeview->saveColumns();
 	notify_uninit();
-	m_core->shutdown();
 	return false;
 }
 
@@ -316,4 +277,32 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 		m_treeview->m_filter->refilter();
 	}
 	return false;
+}
+
+void GtkMainWindow::feedStateChangedCallback(int oldstate, std::shared_ptr<gt::Feed> fg)
+{
+// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
+// if the item passes all the filters of an owner that wants auto-adding, add it here.
+}
+
+void GtkMainWindow::itemAvailableCallback(const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg)
+{
+	bool notify = gt::Settings::settings["RSSNotify"] == "Yes";
+	for(auto group : fg->owners)
+		if(group->passFilters(fi))
+		{
+			if(notify)
+			{
+				NotifyNotification *rssNotify = notify_notification_new ("New torrent available", std::string(fi.title + " is available.").c_str(), "dialog-information");
+				notify_notification_show(rssNotify, nullptr);
+				g_object_unref(G_OBJECT(rssNotify));
+			}
+			if(group->autoAddNewItem)
+			{
+				auto tor = m_core->addTorrent(fi.url);
+				m_treeview->addCell(tor);
+			}
+		}
+// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
+// if the item passes all the filters of an owner that wants auto-adding, add it here.
 }

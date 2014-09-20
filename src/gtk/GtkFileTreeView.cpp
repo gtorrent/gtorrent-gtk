@@ -16,8 +16,6 @@
 #include "../Application.hpp"
 #include "GtkFileTreeView.hpp"
 
-
-int _index = 0; // TODO: Indexing is broken in FileTree, this is a temporary measure
 std::string prioStr[] = 
 {
 	"Off",
@@ -33,7 +31,7 @@ std::string prioStr[] =
 
 Glib::RefPtr<Gtk::IconTheme> iconTheme;
 
-GtkFileTreeView::GtkFileTreeView()
+GtkFileTreeView::GtkFileTreeView(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::TreeView(tree)
 {
 	m_liststore = Gtk::TreeStore::create(m_cols);
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
@@ -111,7 +109,7 @@ void GtkFileTreeView::getChildAttributes(FileTree &ft, long &size, int &state, d
 	if(ft.children.size() == 0)
 	{
 		size += ft.fs.at(ft.index).size;
-		priority = (priority == -1 ? ft.t->getHandle().file_priority(ft.index) : (priority != ft.t->getHandle().file_priority(ft.index) ? 8 : priority));
+		priority = (priority == -1 ? ft.t->file_priority(ft.index) : (priority != ft.t->file_priority(ft.index) ? 8 : priority));
 		state = priority == 8 ? 2 : priority != 0;
 		int file_size = ft.fs.file_size(ft.index); // FIXME #100 Find a better way to deal with 0 size files.
 		progress += double(file_size ? progress_all[ft.index] / ft.fs.file_size(ft.index) : 100);
@@ -137,9 +135,9 @@ void GtkFileTreeView::getChildAttributes(Gtk::TreeRow &row, long &size, int &sta
 	{
 		libtorrent::file_entry entry = row[m_cols.m_col_entry];
 		size += entry.size;
-		priority = (priority == -1 ? row[m_cols.m_col_prioritylevel] : (priority != row[m_cols.m_col_prioritylevel] ? 8 : priority)); //row[m_cols.m_col_prioritylevel];
+		priority = (priority == -1 ? row[m_cols.m_col_prioritylevel] : (unsigned(priority) != row[m_cols.m_col_prioritylevel] ? 8 : priority)); //row[m_cols.m_col_prioritylevel];
 		state = priority == 8 ? 2 : priority != 0;
-		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->getInfo()->files().file_size(row[m_cols.m_col_index]);
+		progress += double(progress_all[row[m_cols.m_col_index]]) / torrent->torrent_file()->files().file_size(row[m_cols.m_col_index]);
 		return;
 	}
 	for(auto child : row.children())
@@ -163,7 +161,7 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 
 		childr[m_cols.m_col_fullpath] = Glib::build_filename(ft.t->getSavePath() + ft.parent->fullname(), ft.filename);
 		
-		if(torrent->getInfo()->files().is_valid() && gt::Platform::checkDirExist(ft.t->getSavePath() + '/' + ft.fullname()))
+		if(torrent->torrent_file()->files().is_valid() && gt::Platform::checkDirExist(ft.t->getSavePath() + '/' + ft.fullname()))
 			iconInfo = iconTheme->lookup_icon(Gio::File::create_for_path(childr[m_cols.m_col_fullpath])->query_info()->get_icon(), 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
@@ -179,7 +177,7 @@ void GtkFileTreeView::populateTree(FileTree &ft, Gtk::TreeRow *row)
 		childr[m_cols.m_col_priority]      = prioStr[ft.t->getHandle().file_priority(ft.index)];
 		childr[m_cols.m_col_prioritylevel] = ft.t->getHandle().file_priority(ft.index);
 		childr[m_cols.m_col_percent_text]  = std::to_string(childr[m_cols.m_col_percent]) + '%';
-		childr[m_cols.m_col_activated]     = ft.t->getHandle().file_priority(ft.index) != 0;
+		childr[m_cols.m_col_activated]     = ft.t->file_priority(ft.index) != 0;
 
 		return;
 	}
@@ -221,9 +219,11 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 	{
 		m_liststore->clear();
 		torrent = selected;
-		torrent->getHandle().file_progress(progress_all, 1);
+		if(!torrent) return;
+		if(!torrent->torrent_file()) return;
+		torrent->file_progress(progress_all, 1);
 
-		libtorrent::file_storage filestorage = torrent->getInfo()->files();
+		libtorrent::file_storage filestorage = torrent->torrent_file()->files();
 		FileTree ft(filestorage, torrent);
 		for(int i = 0; i < filestorage.num_files(); ++i)
 		{
@@ -237,8 +237,6 @@ void GtkFileTreeView::select(std::shared_ptr<gt::Torrent> selected)
 		else // if 1 node-deep then there is no root folder
 			for(auto i : ft.children)
 				populateTree(*i.second, nullptr);
-		_index = 0;
-		set_model(m_liststore);
 	}
 }
 
@@ -365,18 +363,20 @@ void GtkFileTreeView::loadColumns()
 
 void GtkFileTreeView::update()
 {
-	if(!torrent->getInfo().get()) return;
-	torrent->getHandle().file_progress(progress_all, 1);
+	if(!torrent) return;
+	torrent->file_progress(progress_all, 1);
 	for(auto child : m_liststore->children())
 		update(child);
 }
 
 void GtkFileTreeView::update(Gtk::TreeRow &row)
 {
+	if(!torrent) return;
+	if(!torrent->torrent_file()) return;
 	if(row.children().size() == 0)
 	{
 		Gtk::IconInfo iconInfo;
-		if(torrent->getInfo()->files().is_valid() && gt::Platform::checkDirExist(row[m_cols.m_col_fullpath]))
+		if(torrent->torrent_file()->files().is_valid() && gt::Platform::checkDirExist(row[m_cols.m_col_fullpath]))
 			iconInfo = iconTheme->lookup_icon(Gio::File::create_for_path(row[m_cols.m_col_fullpath])->query_info()->get_icon(), 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
 		else
 			iconInfo = iconTheme->lookup_icon("gtk-file", 16, Gtk::ICON_LOOKUP_USE_BUILTIN);
@@ -414,7 +414,7 @@ void GtkFileTreeView::setPriority(Gtk::TreeRow &node, int level)
 {
 	if(node.children().size() == 0)
 	{
-		torrent->getHandle().file_priority(node[m_cols.m_col_index], level);
+		torrent->file_priority(node[m_cols.m_col_index], level);
 		node[m_cols.m_col_activated] = false;
 		node[m_cols.m_col_priority] = prioStr[level];
 		node[m_cols.m_col_prioritylevel] = level;
@@ -456,7 +456,7 @@ void GtkFileTreeView::openView_onClick()
 {
 	if(selectedRows().size() == 0) return;
 	auto row = selectedRows()[0];
-	if(torrent == nullptr || !torrent->hasMetadata())
+	if(torrent == nullptr || !torrent->status().has_metadata)
 		return;
 
 	if(row.children().size() != 0)

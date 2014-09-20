@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gtorrent/Core.hpp>
-
+#include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/headerbar.h>
@@ -10,6 +10,11 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/paned.h>
+#include <gtkmm/searchbar.h>
+#include <gtkmm/box.h>
+#include <FeedGroup.hpp>
+
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
@@ -17,14 +22,13 @@ class GtkSettingsDialog;
 
 class GtkMainWindow : public Gtk::Window
 {
+	const Glib::RefPtr<Gtk::Builder> builder;
 	std::shared_ptr<gt::Core> &m_core;
 	GtkSettingsDialog *d = nullptr;
 
-	Gtk::HeaderBar *header;
-	// Gtk::Statusbar *status;
-
 	// Signal Responders
 	bool onKeyPress(GdkEventKey *event);
+
 	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
@@ -33,29 +37,35 @@ class GtkMainWindow : public Gtk::Window
 	void onRemoveBtnClicked();
 	void onSettingsBtnClicked();
 	void onPropertiesBtnClicked();
-	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 public:
-	GtkTorrentTreeView *m_treeview;
-	GtkTorrentInfoBar  *m_infobar;
-	Gtk::ScrolledWindow *m_swin;
+	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
+	void feedStateChangedCallback(int oldstate, std::shared_ptr<gt::Feed> fg);
+	void itemAvailableCallback(const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg);
 
-	Gtk::MenuButton *btn_add_link = Gtk::manage(new Gtk::MenuButton());
-	Gtk::Entry      *magtxt       = Gtk::manage(new Gtk::Entry());
-	//We've Always Been Shameless About Stealing Great Ideas
-	Gtk::Popover    *magPop = Gtk::manage(new Gtk::Popover(*btn_add_link)); // We may need to provide a fallback CSS for those who use old themes
-	// thx prince
-	Gtk::Button *btn_add_torrent  = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_pause        = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_properties   = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_remove       = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_resume       = Gtk::manage(new Gtk::Button());
-	Gtk::Button *btn_settings     = Gtk::manage(new Gtk::Button());
-	Gtk::VSeparator *separator1  = Gtk::manage(new Gtk::VSeparator());
+	GtkTorrentTreeView *m_treeview = nullptr;
+	GtkTorrentInfoBar  *m_infobar  = nullptr;
 
+	Gtk::Button         *addTorrentButton       = nullptr;
+	Gtk::Button         *resumeButton           = nullptr;
+	Gtk::Button         *pauseButton            = nullptr;
+	Gtk::Button         *removeButton           = nullptr;
+	Gtk::Button         *propertiesButton       = nullptr;
+	Gtk::Button         *settingsButton         = nullptr;
+	Gtk::Button         *m_searchButton         = nullptr;
+	Gtk::Box            *m_torrentbox           = nullptr;
+	Gtk::SearchBar      *m_searchbar            = nullptr;
+	Gtk::Separator      *vSeparatorOne          = nullptr;
+	Gtk::Separator      *vSeparatorTwo          = nullptr; 
+	Gtk::Popover        *magPopover             = nullptr;
+	Gtk::Entry          *magEntry               = nullptr;
+	Gtk::ScrolledWindow *scrolledWindow         = nullptr;
+	Gtk::ScrolledWindow *sidebar_scrolledwindow = nullptr;
+	Gtk::MenuButton     *addMagnetButton        = nullptr;
+	Gtk::Paned          *panel                  = nullptr;
 
-	GtkMainWindow();
+	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/builder.h>
 
 namespace Gtk
 {
@@ -12,10 +13,9 @@ class GtkMainWindow;
 
 class GtkAssociationDialog : public Gtk::Dialog
 {
-private:
-	Gtk::CheckButton *m_magnetChk;
-	Gtk::CheckButton *m_torrentChk;
+	Gtk::CheckButton *m_magnetChk, *m_torrentChk;
 public:
-	GtkAssociationDialog(GtkMainWindow &Parent);
-	void PlsFindMeAName(Gtk::Button *butt);
+	GtkAssociationDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder>);
+	virtual void on_response(int response);
+	bool aWithMagnets, aWithTorrents;
 };

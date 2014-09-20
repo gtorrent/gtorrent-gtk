@@ -17,30 +17,51 @@
 /**
 * Sets up the tree view containing torrent information.
 */
-GtkTorrentTreeView::GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar) : m_infobar(InfoBar), m_parent(Parent)
+GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder) :
+	Gtk::TreeView(treeview)
 {
 	m_liststore = Gtk::ListStore::create(m_cols);
 	m_filter = Gtk::TreeModelFilter::create(m_liststore);
 	m_filtersort = Gtk::TreeModelSort::create(m_filter);
 	m_filter->set_visible_func(sigc::mem_fun(*this, &GtkTorrentTreeView::showMatches));
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+
+	rbuilder->get_widget("GtkMainWindow", m_parent); // Nyanpasu: Maybe m_parent isn't even needed since widgets store parents.
+	rbuilder->get_widget("infobar", m_infobar);
+	m_searchEntry = Gtk::manage(new Gtk::Entry());
+	m_searchPopover = Gtk::manage(new Gtk::Popover());
+
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
 	set_model(m_filtersort);
+
 	setupColumns();
 	set_enable_search();
-	m_searchEntry = Gtk::manage(new Gtk::Entry());
-	m_searchPopover = Gtk::manage(new Gtk::Popover());
+	set_search_entry(*m_searchEntry);
+	set_search_column(m_cols.m_col_name);
+
 	m_searchPopover->add(*m_searchEntry);
 	m_searchPopover->set_relative_to(*this);
 	m_searchPopover->set_modal();
 	m_searchEntry->show();
-	set_search_entry(*m_searchEntry);
-	set_search_column(m_cols.m_col_name);
+
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
+
+	std::vector<Gtk::TargetEntry> listTargets = 
+		{
+			Gtk::TargetEntry("STRING"),
+			Gtk::TargetEntry("text/plain"),
+			Gtk::TargetEntry("text/uri-list"),
+			Gtk::TargetEntry("application/x-bittorrent")
+		};
+
+	drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
+	signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onFileDropped));
+
+	get_selection()->unselect_all();
 }
 
 /**
@@ -54,6 +75,7 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 
 	if(event->button == 3) // if right-click
 	{
+		// TODO Make menu from builder.
 		m_rcMenu                       = Gtk::manage(new Gtk::Menu());
 		Gtk::MenuItem *rcmItem1        = Gtk::manage(new Gtk::MenuItem("Start"));// TODO: Rename to Start depending on the state of the first selected item
 		Gtk::MenuItem *rcmItem2        = Gtk::manage(new Gtk::MenuItem("Stop"));
@@ -220,16 +242,16 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_bage]       = t->getActiveTime();
+	row[m_cols.m_col_eta]        = t->status().is_finished || t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
+	row[m_cols.m_col_name]       = t->status().name;
+	row[m_cols.m_col_seeders]    = t->status().num_seeds;
+	row[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
+	row[m_cols.m_col_bage]       = t->status().active_time;
 	row[m_cols.m_col_beta]       = t->getEta();
-	row[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
-	row[m_cols.m_col_name]       = t->getName();
-	row[m_cols.m_col_seeders]    = t->getTotalSeeders();
-	row[m_cols.m_col_leechers]   = t->getTotalLeechers();
 	row[m_cols.m_col_size]       = t->getTextSize();
 	row[m_cols.m_col_remaining]  = t->getTextRemaining();
-	row[m_cols.m_col_bsize]      = t->getSize();
-	row[m_cols.m_col_bremaining] = t->getRemaining();
+	row[m_cols.m_col_bsize]      = t->status().total_wanted;
+	row[m_cols.m_col_bremaining] = t->status().total_wanted - t->status().total_download;
 	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
 	row[m_cols.m_col_background] = m_colors[fgbg].first;
 	row[m_cols.m_col_foreground] = m_colors[fgbg].second;
@@ -257,22 +279,23 @@ void GtkTorrentTreeView::updateCells()
 
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
+		c[m_cols.m_col_bremaining] = t->status().total_wanted - t->status().total_download;
 		c[m_cols.m_col_queue]      = i++;
 		c[m_cols.m_col_age]        = t->getTextActiveTime();
-		c[m_cols.m_col_bage]       = t->getActiveTime();
+		c[m_cols.m_col_bage]       = t->status().active_time;
 		c[m_cols.m_col_percent]    = t->getTotalProgress();
-		c[m_cols.m_col_seeders]    = t->getTotalSeeders();
-		c[m_cols.m_col_leechers]   = t->getTotalLeechers();
-		c[m_cols.m_col_name]       = t->getName();
+		c[m_cols.m_col_seeders]    = t->status().num_seeds;
+		c[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
+		c[m_cols.m_col_name]       = t->status().name;
 		c[m_cols.m_col_ul_speed]   = t->getTextUploadRate();
 		c[m_cols.m_col_dl_speed]   = t->getTextDownloadRate();
 		c[m_cols.m_col_bul_speed]  = t->getUploadRate();
 		c[m_cols.m_col_bdl_speed]  = t->getDownloadRate();
 		c[m_cols.m_col_size]       = t->getTextSize();
-		c[m_cols.m_col_bsize]      = t->getSize();
-		c[m_cols.m_col_beta]       = t->getEta();
+		c[m_cols.m_col_bsize]      = t->status().total_wanted;
+		c[m_cols.m_col_beta]       = (t->getDownloadRate() > 0) ? t->status().total_wanted / t->getDownloadRate() : 0;
 		c[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-		c[m_cols.m_col_eta]        = t->getHandle().status().is_finished|| t->getHandle().status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
+		c[m_cols.m_col_eta]        = t->status().is_finished|| t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
 		c[m_cols.m_col_background] = m_colors[fgbg].first;
 		c[m_cols.m_col_foreground] = m_colors[fgbg].second;
 	}
@@ -354,7 +377,7 @@ void GtkTorrentTreeView::openView_onClick()
 {
 	std::shared_ptr<gt::Torrent> t = getFirstSelected();
 
-	if(t == nullptr || !t->hasMetadata())
+	if(t == nullptr || !t->status().has_metadata)
 		return;
 
 	gt::Platform::openTorrent(t);
@@ -398,7 +421,7 @@ void GtkTorrentTreeView::propertyView_onClick()
 void GtkTorrentTreeView::sequentialChange_onClick()
 {
 	for (auto i : selectedTorrents())
-		i->setSequentialDownload(rcmItemSeq->get_active());
+		i->set_sequential_download(rcmItemSeq->get_active());
 }
 
 /**
@@ -437,28 +460,30 @@ void GtkTorrentTreeView::reloadColors()
 
 void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column*/)
 {
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
-	char pausedTorrents = 0, startedTorrents = 0;
+	bool pausedTorrents = false, startedTorrents = false;
 
 	if(selectedTorrents().empty())
 	{
-		m_parent->btn_pause ->hide();
-		m_parent->btn_resume->hide();
+		m_parent->pauseButton  ->hide();
+		m_parent->resumeButton ->hide();
+		m_parent->removeButton ->hide();
+		m_parent->vSeparatorOne->hide();
 		return;
 	}
 
 	for (auto i : selectedTorrents())
 	{
-		pausedTorrents  +=  i->isPaused();
-		startedTorrents += !i->isPaused();
+		pausedTorrents  = pausedTorrents  ? pausedTorrents  : i->isPaused();
+		startedTorrents = startedTorrents ? startedTorrents : !i->isPaused();
+
 		if(pausedTorrents && startedTorrents) break;
 	}
 
-	m_parent->btn_pause ->set_visible(startedTorrents != 0);
-	m_parent->btn_resume->set_visible( pausedTorrents != 0);
+	m_parent->pauseButton ->set_visible(startedTorrents);
+	m_parent->resumeButton->set_visible( pausedTorrents);
 
-	m_parent->btn_remove->set_visible(!selectedTorrents().empty());
-	m_parent->separator1->set_visible(m_parent->btn_remove->get_visible());
+	m_parent->removeButton->set_visible(!selectedTorrents().empty());
+	m_parent->vSeparatorOne->set_visible();
 }
 
 // columns are saved in a single settings, looking like this:
@@ -549,6 +574,41 @@ bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 	return false;
 }
 
+void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+	std::string sel_data = selection_data.get_data_as_string();
+	if(Application::getSingleton()->getCore()->isLink(sel_data))
+	{
+		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
+		if (t)//Checks if t is not null
+		{
+			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+			addCell(t);
+		}
+	}
+	else
+	{
+		std::string fn = Glib::filename_from_uri(sel_data);
+		//I'm not even sure why we needed to trim the filename
+		//boost::algorithm::trim(fn); //d-don't worry guys! w-we only need boo-boost for libtorrent! th-that's all!
+		fn.erase(0, fn.find_first_not_of(' '));
+		fn.erase(fn.find_last_not_of(' ') + 1);
+
+		bool want_uncertain = true;
+		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
+		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
+		{
+			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
+			if (t)//Checks if t is not null
+			{
+				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+				addCell(t);
+			}
+			//TODO Add error dialogue if torrent add is unsuccessful
+		}
+	}
+
+}
 bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
 {
 	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered

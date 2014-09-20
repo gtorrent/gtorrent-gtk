@@ -1,9 +1,11 @@
 #pragma once
 
+#include <gtkmm/builder.h>
+
 class GtkBlockBar : public Gtk::Widget
 {
 public:
-	GtkBlockBar();
+	GtkBlockBar(GtkWidget *widget, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	virtual ~GtkBlockBar();
 	void setBlocks(std::vector<bool> b);
 

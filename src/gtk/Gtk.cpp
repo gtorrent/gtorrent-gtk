@@ -1,7 +1,9 @@
-#include <sys/stat.h>
+#include <sys/stat.h> // Why is this still needed?
+#include <exception>
+#include <stdexcept>
 
-#include <gtkmm/settings.h>
-#include <gtkmm/main.h>
+#include <gtkmm.h>
+#include <glibmm.h>
 
 #include <gtorrent/Platform.hpp>
 
@@ -19,19 +21,67 @@ bool exists (const std::string& name)
 }
 
 /**
-* Sets up the main window.
-*/
-GuiGtk::GuiGtk(int argc, char **argv)
+ * Sets up the main window.
+ */
+gt::GuiGtk::GuiGtk(int argc, char **argv)
 {
-	Gtk::Main kit(argc, argv);
+	// TODO add argc and argv
+	m_app = Gtk::Application::create(argc, argv);
 
-	GtkMainWindow mainWindow;
+	m_builder = Gtk::Builder::create();
+	try
+	{
+		m_builder->add_from_resource("/org/gtk/gtorrent/mainwindow.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/rss.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/association.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/infobar.ui");
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+		return ;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " << ex.what() << std::endl;
+		return ;
+	}
+}
 
-	std::string binpath = argv[0];
-	binpath = binpath.substr(0, binpath.find_last_of(gt::Platform::getFileSeparator()));
-	std::string iconpath = binpath + gt::Platform::getFileSeparator() + "gtorrent.png";
-	if (exists (iconpath))
-		mainWindow.set_icon_from_file(iconpath);
+extern unsigned char style_css[];
 
-	kit.run(mainWindow);
+int gt::GuiGtk::run()
+{
+	GtkMainWindow *mainWindow = nullptr;
+	try
+	{
+		m_builder->get_widget_derived("GtkMainWindow", mainWindow);
+		mainWindow->set_icon(Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/gtorrent.png"));
+
+		auto css = Gtk::CssProvider::create();
+		auto screen = Gdk::Screen::get_default();
+		css->load_from_data(std::string((char*)style_css));
+		Gtk::StyleContext::add_provider_for_screen(screen, css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " << ex.what() << std::endl;
+	}
+		
+	m_app->run(*mainWindow);
+
+	return 1;
 }

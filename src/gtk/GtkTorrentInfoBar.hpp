@@ -2,6 +2,7 @@
 
 #include <gtkmm/box.h>
 #include <gtorrent/Torrent.hpp>
+#include <gtkmm/builder.h>
 
 #include "GtkGraph.hpp"
 
@@ -35,7 +36,8 @@ private:
 	GtkFileTreeView *m_fileview;
 
 public:
-	GtkTorrentInfoBar();
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	inline void removeInfo (std::shared_ptr<gt::Torrent> selected)
 	{
 		m_graph->removeHistory(selected);

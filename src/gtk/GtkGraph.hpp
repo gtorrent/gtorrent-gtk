@@ -3,11 +3,13 @@
 #include <gtkmm/button.h>
 #include <queue>
 #include <cmath>
+#include <gtkmm/builder.h>
 
 class GtkGraph : public Gtk::Button
 {
 public:
-	GtkGraph();
+	const Glib::RefPtr<Gtk::Builder> builder;
+	GtkGraph(GtkButton *da, const Glib::RefPtr<Gtk::Builder> rbuilder, unsigned size = 61);
 	virtual ~GtkGraph();
 	void addValue(std::shared_ptr<gt::Torrent> index, double upload, double download);
 	void select(std::shared_ptr<gt::Torrent> s);
