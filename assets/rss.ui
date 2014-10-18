@@ -16,10 +16,8 @@
 		<property name="can_default">True</property>
 		<property name="title">Group Name</property>
 		<property name="show-close-button">False</property>
-		<property name="visible">True</property>
 		<child>
 		  <object class="GtkButton" id="cancelButton">
-			<property name="visible">True</property>
 			<property name="label">Cancel</property>
 		  </object>
 		  <packing>
@@ -30,7 +28,6 @@
 		  <object class="GtkButton" id="okButton">
 			<property name="label">Ok</property>
 			<property name="can_default">True</property>
-			<property name="visible">True</property>
 		  </object>
 		  <packing>
 			<property name="pack_type">end</property>
@@ -40,19 +37,15 @@
 	</child>
 	<child internal-child="vbox">
 	  <object class="GtkBox" id="vbox">
-		<property name="visible">True</property>
 		<property name="orientation">vertical</property>
 		<property name="can_focus">False</property>
 		<child>
 		  <object class="GtkScrolledWindow" id="scrolledwindow1">
 			<property name="height_request">160</property>
-			<property name="visible">True</property>
 			<property name="can_focus">False</property>
 			<property name="shadow_type">in</property>
 			<child>
 			  <object class="GtkTreeView" id="rssTreeView">
-				<property name="headers_visible">False</property>
-				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 			  </object>
 			</child>
@@ -65,23 +58,19 @@
 		</child>
 		<child>
 		  <object class="GtkBox" id="box2">
-			<property name="visible">True</property>
 			<property name="can_focus">False</property>
 			<property name="homogeneous">True</property>
 			<child>
 			  <object class="GtkBox" id="box3">
-				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="halign">start</property>
 				<property name="spacing">5</property>
 				<child>
 				  <object class="GtkBox" id="box4">
-					<property name="visible">True</property>
 					<property name="can_focus">False</property>
 					<property name="orientation">vertical</property>
 					<child>
 					  <object class="GtkLabel" id="label1">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="label" translatable="yes">Global Feeds</property>
 					  </object>
@@ -94,9 +83,7 @@
 					<child>
 					  <object class="GtkTreeView" id="globalTreeView">
 						<property name="width_request">144</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="headers_visible">False</property>
 					  </object>
 					  <packing>
 						<property name="expand">True</property>
@@ -106,12 +93,10 @@
 					</child>
 					<child>
 					  <object class="GtkButtonBox" id="buttonbox1">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<child>
 						  <object class="GtkButton" id="addFeedButton">
 							<property name="label" translatable="yes">+</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -125,7 +110,6 @@
 						<child>
 						  <object class="GtkButton" id="removeFeedButton">
 							<property name="label" translatable="yes">-</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -152,7 +136,6 @@
 				</child>
 				<child>
 				  <object class="GtkButtonBox" id="buttonbox5">
-					<property name="visible">True</property>
 					<property name="can_focus">False</property>
 					<property name="valign">center</property>
 					<property name="orientation">vertical</property>
@@ -161,7 +144,6 @@
 					<child>
 					  <object class="GtkButton" id="gToaButton">
 						<property name="label" translatable="yes">→</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="receives_default">True</property>
 					  </object>
@@ -175,7 +157,6 @@
 					<child>
 					  <object class="GtkButton" id="aTogButton">
 						<property name="label" translatable="yes">←</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="receives_default">True</property>
 					  </object>
@@ -195,12 +176,10 @@
 				</child>
 				<child>
 				  <object class="GtkBox" id="box5">
-					<property name="visible">True</property>
 					<property name="can_focus">False</property>
 					<property name="orientation">vertical</property>
 					<child>
 					  <object class="GtkLabel" id="label2">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="label" translatable="yes">Active Feeds</property>
 					  </object>
@@ -213,9 +192,7 @@
 					<child>
 					  <object class="GtkTreeView" id="activeTreeView">
 						<property name="width_request">144</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="headers_visible">False</property>
 					  </object>
 					  <packing>
 						<property name="expand">True</property>
@@ -225,12 +202,10 @@
 					</child>
 					<child>
 					  <object class="GtkBox" id="box9">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="orientation">vertical</property>
 						<child>
 						  <object class="GtkBox" id="box10">
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="orientation">vertical</property>
 							<child>
@@ -266,18 +241,15 @@
 			</child>
 			<child>
 			  <object class="GtkBox" id="box6">
-				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="halign">end</property>
 				<property name="spacing">15</property>
 				<child>
 				  <object class="GtkBox" id="box8">
-					<property name="visible">True</property>
 					<property name="can_focus">False</property>
 					<property name="orientation">vertical</property>
 					<child>
 					  <object class="GtkLabel" id="label4">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="label" translatable="yes">Filters</property>
 					  </object>
@@ -291,9 +263,7 @@
 					  <object class="GtkTreeView" id="filterTreeView">
 						<property name="width_request">144</property>
 						<property name="height_request">131</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="headers_visible">False</property>
 					  </object>
 					  <packing>
 						<property name="expand">True</property>
@@ -303,12 +273,10 @@
 					</child>
 					<child>
 					  <object class="GtkButtonBox" id="buttonbox4">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<child>
 						  <object class="GtkButton" id="addFilterBtn">
 							<property name="label" translatable="yes">+</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -322,7 +290,6 @@
 						<child>
 						  <object class="GtkButton" id="removeFilterBtn">
 							<property name="label" translatable="yes">-</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -349,12 +316,10 @@
 				</child>
 				<child>
 				  <object class="GtkBox" id="box7">
-					<property name="visible">True</property>
 					<property name="can_focus">False</property>
 					<property name="orientation">vertical</property>
 					<child>
 					  <object class="GtkLabel" id="label3">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="label" translatable="yes">Functions</property>
 					  </object>
@@ -367,9 +332,7 @@
 					<child>
 					  <object class="GtkTreeView" id="functionTreeView">
 						<property name="width_request">144</property>
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="headers_visible">False</property>
 						<child internal-child="selection">
 						  <object class="GtkTreeSelection" id="treeview-selection"/>
 						</child>
@@ -382,12 +345,10 @@
 					</child>
 					<child>
 					  <object class="GtkButtonBox" id="buttonbox3">
-						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<child>
 						  <object class="GtkButton" id="addFunButton">
 							<property name="label" translatable="yes">+</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -401,7 +362,6 @@
 						<child>
 						  <object class="GtkButton" id="removeFunButton">
 							<property name="label" translatable="yes">-</property>
-							<property name="visible">True</property>
 							<property name="can_focus">False</property>
 							<property name="receives_default">True</property>
 						  </object>
@@ -443,7 +403,6 @@
 		</child>
 		<child>
 		  <object class="GtkCheckButton" id="rssAutoAddNewItem">
-			<property name="visible">True</property>
 			<property name="label">Automaticaly add new items in this feed</property>
 		  </object>
 		</child>

@@ -53,6 +53,8 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	activeTreeView->append_column("",  active.name);
 	globalTreeView->append_column("",  global.name);
 	rssTreeView   ->append_column("",   items.name);
+
+        this->show_all_children();
 }
 
 int GtkRSSDialog::run(std::string fName)

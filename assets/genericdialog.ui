@@ -9,10 +9,8 @@
 	  <object class="GtkHeaderBar" id="headerbar">
 		<property name="can_default">True</property>
 		<property name="show-close-button">False</property>
-		<property name="visible">True</property>
 		<child>
 		  <object class="GtkButton" id="cancelButton">
-			<property name="visible">True</property>
 			<property name="label">Cancel</property>
 		  </object>
 		  <packing>
@@ -23,7 +21,6 @@
 		  <object class="GtkButton" id="okButton">
 			<property name="label">Ok</property>
 			<property name="can_default">True</property>
-			<property name="visible">True</property>
 		  </object>
 		  <packing>
 			<property name="pack_type">end</property>
@@ -38,13 +35,11 @@
 		<property name="spacing">2</property>
 		<child>
 		  <object class="GtkGrid" id="grid1">
-			<property name="visible">True</property>
 			<property name="can_focus">False</property>
 			<property name="row_spacing">5</property>
 			<property name="column_spacing">5</property>
 			<child>
 			  <object class="GtkLabel" id="label1">
-				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="label" translatable="yes">RSS/Atom feed URL:</property>
 			  </object>
@@ -55,7 +50,6 @@
 			</child>
 			<child>
 			  <object class="GtkEntry" id="entry1">
-				<property name="visible">True</property>
 				<property name="can_focus">True</property>
 			  </object>
 			  <packing>
@@ -65,7 +59,6 @@
 			</child>
 			<child>
 			  <object class="GtkLabel" id="label2">
-				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="halign">end</property>
 				<property name="label" translatable="yes">Feed Name:</property>
@@ -77,7 +70,6 @@
 			</child>
 			<child>
 			  <object class="GtkEntry" id="entry2">
-				<property name="visible">True</property>
 				<property name="can_focus">True</property>
 			  </object>
 			  <packing>

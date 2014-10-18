@@ -116,6 +116,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	}
 
 	d = new GtkSettingsDialog(this);
+
+        this->show_all_children();
 }
 
 /**

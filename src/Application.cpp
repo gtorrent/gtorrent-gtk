@@ -3,7 +3,7 @@
 
 using namespace std;
 
-shared_ptr<Application> Application::m_app = nullptr; // This thould just a be a static var of getSingleton, holy shit.
+shared_ptr<Application> Application::m_app = nullptr; // This thould just a be a static var of getSingleton, holy shit. // Then make it so
 
 shared_ptr<Application> Application::getSingleton()
 {

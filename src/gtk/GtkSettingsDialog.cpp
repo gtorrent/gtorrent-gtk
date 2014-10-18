@@ -23,6 +23,7 @@ using namespace std;
 GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/settings.glade");
+
 	builder->get_widget("dialog1", dial);
 	if(Parent) dial->set_transient_for(*Parent);
 	backup = gt::Settings::settings;
@@ -118,6 +119,8 @@ GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 	cachechunk    ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheChunkChanged ));
 	cacheexpiry   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onCacheExpiryChanged));
 	defaultreci   ->signal_value_changed().connect(sigc::mem_fun(*this, &GtkSettingsDialog::onDefaultReciChanged));
+
+        dial->show_all_children();
 }
 
 int GtkSettingsDialog::run()

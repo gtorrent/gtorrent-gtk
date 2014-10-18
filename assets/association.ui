@@ -10,10 +10,8 @@
 		<property name="can_default">True</property>
 		<property name="title">File Association</property>
 		<property name="show-close-button">False</property>
-		<property name="visible">True</property>
 		<child>
 		  <object class="GtkButton" id="cancelButton">
-			<property name="visible">True</property>
 			<property name="label">Cancel</property>
 		  </object>
 		  <packing>
@@ -24,7 +22,6 @@
 		  <object class="GtkButton" id="okButton">
 			<property name="label">Ok</property>
 			<property name="can_default">True</property>
-			<property name="visible">True</property>
 		  </object>
 		  <packing>
 			<property name="pack_type">end</property>
@@ -36,13 +33,11 @@
 	  <object class="GtkVBox" id="vbox">
 		<child>
 		  <object class="GtkLabel" id="msg">
-			<property name="visible">True</property>
 			<property name="label">Welcome to gTorrent!</property>
 		  </object>
 		</child>
 		<child>
 		  <object class="GtkLabel" id="welcome">
-			<property name="visible">True</property>
 			<property name="label">Would you like to associate this with some files before continuing ?</property>
 		  </object>
 		</child>
@@ -51,7 +46,6 @@
 		</child>
 		<child>
 		  <object class="GtkCheckButton" id="mag">
-			<property name="visible">True</property>
 			<property name="active">True</property>
 			<property name="label">Associate with magnets</property>
 		  </object>
@@ -59,7 +53,6 @@
 		<child>
 		  <object class="GtkCheckButton" id="tor">
 			<property name="active">True</property>
-			<property name="visible">True</property>
 			<property name="label">Associate with torrents</property>
 		  </object>
 		</child>
