@@ -3,13 +3,11 @@
 
 using namespace std;
 
-shared_ptr<Application> Application::m_app = nullptr; // This thould just a be a static var of getSingleton, holy shit. // Then make it so
-
 shared_ptr<Application> Application::getSingleton()
 {
-	if (m_app == nullptr)
-		m_app = shared_ptr<Application>(new Application());
-	return m_app;
+        static std::shared_ptr<Application> m_app;
+
+        return m_app ? m_app : m_app = std::shared_ptr<Application>(new Application());
 }
 
 shared_ptr<gt::Core> &Application::getCore()

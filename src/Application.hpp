@@ -7,8 +7,6 @@
 class Application
 {
 private:
-	static std::shared_ptr<Application> m_app;
-
 	// Private Member Functions & Variables
 	std::shared_ptr<gt::Core> m_core;
 	std::shared_ptr<GuiBase> m_gui;
