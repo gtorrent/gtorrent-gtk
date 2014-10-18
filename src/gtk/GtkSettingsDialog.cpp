@@ -22,7 +22,7 @@ using namespace std;
 
 GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/settings.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/dialog_settings.ui");
 
 	builder->get_widget("dialog1", dial);
 	if(Parent) dial->set_transient_for(*Parent);

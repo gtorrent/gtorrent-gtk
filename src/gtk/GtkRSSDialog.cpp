@@ -137,7 +137,7 @@ void GtkRSSDialog::on_response(int response)
 void GtkRSSDialog::addNewFeed()
 {
 	auto refBuilder = Gtk::Builder::create();
-	refBuilder->add_from_resource("/org/gtk/gtorrent/genericdialog.ui");
+	refBuilder->add_from_resource("/org/gtk/gtorrent/dialog_generic.ui");
 	GtkGenericAddDialog *addFilterDialog = nullptr;
 	refBuilder->get_widget_derived("genericDialog", addFilterDialog);
 	addFilterDialog->set_transient_for(*this);
@@ -279,7 +279,7 @@ void GtkRSSDialog::addFilter()
 	// filters are run on every items from every active feed
 	// Filter have uniques names, but can have same regexes
 	auto refBuilder = Gtk::Builder::create();
-	refBuilder->add_from_resource("/org/gtk/gtorrent/genericdialog.ui");
+	refBuilder->add_from_resource("/org/gtk/gtorrent/dialog_generic.ui");
 	GtkGenericAddDialog *addFilterDialog = nullptr;
 	refBuilder->get_widget_derived("genericDialog", addFilterDialog);
 	addFilterDialog->set_transient_for(*this);
@@ -338,7 +338,7 @@ void GtkRSSDialog::addFunction()
 	}
 
 	auto refBuilder = Gtk::Builder::create();
-	refBuilder->add_from_resource("/org/gtk/gtorrent/functiondialog.ui");
+	refBuilder->add_from_resource("/org/gtk/gtorrent/dialog_function.ui");
 	GtkFunctionDialog *addFunctionDialog = nullptr;
 	refBuilder->get_widget_derived("functiondialog", addFunctionDialog);
 	addFunctionDialog->set_transient_for(*this);
