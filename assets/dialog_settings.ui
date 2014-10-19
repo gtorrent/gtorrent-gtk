@@ -9,7 +9,6 @@
 		<property name="type_hint">dialog</property>
 		<property name="skip_taskbar_hint">True</property>
 		<property name="urgency_hint">True</property>
-		<property name="has_resize_grip">False</property>
 		<property name="modal">True</property>
 		<property name="window_position">center-on-parent</property>
 		<child internal-child="headerbar">
@@ -64,8 +63,8 @@
 						<child>
 							<object class="GtkBox" id="fixed1">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -74,17 +73,6 @@
 										<property name="can_focus">False</property>
 										<property name="valign">baseline</property>
 										<property name="margin_bottom">10</property>
-										<property name="label_xalign">0</property>
-										<child>
-											<object class="GtkAlignment" id="alignment4">
-												<property name="can_focus">False</property>
-												<property name="halign">baseline</property>
-												<property name="valign">baseline</property>
-												<property name="margin_bottom">5</property>
-												<property name="yalign">1</property>
-												<property name="yscale">0.019999999552965164</property>
-												<property name="left_padding">10</property>
-												<property name="right_padding">10</property>
 												<child>
 													<object class="GtkBox" id="box2">
 														<property name="width_request">100</property>
@@ -141,8 +129,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label7">
 												<property name="can_focus">False</property>
@@ -161,13 +147,6 @@
 										<property name="width_request">334</property>
 										<property name="height_request">124</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
-										<child>
-											<object class="GtkAlignment" id="alignment5">
-												<property name="can_focus">False</property>
-												<property name="yalign">0.20000000298023224</property>
-												<property name="yscale">0</property>
-												<property name="left_padding">12</property>
 												<child>
 													<object class="GtkGrid" id="grid3">
 														<property name="can_focus">False</property>
@@ -337,7 +316,6 @@
 																<property name="label" translatable="yes">Dashed</property>
 																<property name="can_focus">True</property>
 																<property name="receives_default">False</property>
-																<property name="xalign">0</property>
 																<property name="draw_indicator">True</property>
 															</object>
 															<packing>
@@ -350,7 +328,6 @@
 																<property name="label" translatable="yes">Dashed</property>
 																<property name="can_focus">True</property>
 																<property name="receives_default">False</property>
-																<property name="xalign">0</property>
 																<property name="draw_indicator">True</property>
 															</object>
 															<packing>
@@ -423,8 +400,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label8">
 												<property name="can_focus">False</property>
@@ -454,8 +429,8 @@
 						<child>
 							<object class="GtkBox" id="fixed2">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -463,15 +438,7 @@
 									<object class="GtkFrame" id="frame1">
 										<property name="width_request">334</property>
 										<property name="can_focus">False</property>
-										<property name="resize_mode">immediate</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">out</property>
-										<child>
-											<object class="GtkAlignment" id="alignment9">
-												<property name="can_focus">False</property>
-												<property name="margin_bottom">5</property>
-												<property name="top_padding">5</property>
-												<property name="left_padding">10</property>
 												<child>
 													<object class="GtkGrid" id="grid5">
 														<property name="can_focus">False</property>
@@ -589,8 +556,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label1">
 												<property name="can_focus">False</property>
@@ -618,8 +583,8 @@
 						<child>
 							<object class="GtkBox" id="fixed3">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -628,13 +593,7 @@
 										<property name="width_request">334</property>
 										<property name="height_request">80</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment7">
-												<property name="can_focus">False</property>
-												<property name="top_padding">5</property>
-												<property name="left_padding">10</property>
 												<child>
 													<object class="GtkGrid" id="grid6">
 														<property name="width_request">300</property>
@@ -745,8 +704,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label16">
 												<property name="can_focus">False</property>
@@ -774,8 +731,8 @@
 						<child>
 							<object class="GtkBox" id="fixed4">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -783,16 +740,8 @@
 									<object class="GtkFrame" id="frame3">
 										<property name="width_request">334</property>
 										<property name="can_focus">False</property>
-										<property name="margin_right">5</property>
-										<property name="label_xalign">0</property>
+										<property name="margin_end">5</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment10">
-												<property name="can_focus">False</property>
-												<property name="top_padding">5</property>
-												<property name="bottom_padding">5</property>
-												<property name="left_padding">10</property>
-												<property name="right_padding">5</property>
 												<child>
 													<object class="GtkGrid" id="grid1">
 														<property name="width_request">267</property>
@@ -915,8 +864,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label23">
 												<property name="can_focus">False</property>
@@ -944,8 +891,8 @@
 						<child>
 							<object class="GtkBox" id="fixed5">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -953,14 +900,7 @@
 									<object class="GtkFrame" id="frame4">
 										<property name="width_request">334</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment12">
-												<property name="can_focus">False</property>
-												<property name="bottom_padding">5</property>
-												<property name="left_padding">10</property>
-												<property name="right_padding">5</property>
 												<child>
 													<object class="GtkGrid" id="grid2">
 														<property name="can_focus">False</property>
@@ -1022,8 +962,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label30">
 												<property name="can_focus">False</property>
@@ -1037,14 +975,7 @@
 										<property name="width_request">334</property>
 										<property name="height_request">98</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment8">
-												<property name="can_focus">False</property>
-												<property name="margin_top">4</property>
-												<property name="margin_bottom">4</property>
-												<property name="left_padding">12</property>
 												<child>
 													<object class="GtkGrid" id="grid4">
 														<property name="can_focus">False</property>
@@ -1116,8 +1047,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label36">
 												<property name="can_focus">False</property>
@@ -1125,20 +1054,12 @@
 											</object>
 										</child>
 									</object>
-									<packing>
-										<property name="y">170</property>
-									</packing>
 								</child>
 								<child>
 									<object class="GtkFrame" id="frame6">
 										<property name="width_request">334</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment13">
-												<property name="can_focus">False</property>
-												<property name="left_padding">12</property>
 												<child>
 													<object class="GtkGrid" id="grid7">
 														<property name="can_focus">False</property>
@@ -1190,8 +1111,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label37">
 												<property name="can_focus">False</property>
@@ -1199,9 +1118,6 @@
 											</object>
 										</child>
 									</object>
-									<packing>
-										<property name="y">89</property>
-									</packing>
 								</child>
 							</object>
 							<packing>
@@ -1222,8 +1138,8 @@
 						<child>
 							<object class="GtkBox" id="fixed6">
 								<property name="can_focus">False</property>
-								<property name="margin_left">10</property>
-								<property name="margin_right">10</property>
+								<property name="margin_start">10</property>
+								<property name="margin_end">10</property>
 								<property name="margin_top">10</property>
 								<property name="margin_bottom">10</property>
 								<property name="orientation">vertical</property>
@@ -1231,14 +1147,7 @@
 									<object class="GtkFrame" id="frame7">
 										<property name="width_request">334</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment15">
-												<property name="can_focus">False</property>
-												<property name="bottom_padding">5</property>
-												<property name="left_padding">10</property>
-												<property name="right_padding">5</property>
 												<child>
 													<object class="GtkGrid" id="grid8">
 														<property name="can_focus">False</property>
@@ -1273,8 +1182,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label43">
 												<property name="can_focus">False</property>
@@ -1288,14 +1195,7 @@
 										<property name="width_request">288</property>
 										<property name="height_request">80</property>
 										<property name="can_focus">False</property>
-										<property name="label_xalign">0</property>
 										<property name="shadow_type">in</property>
-										<child>
-											<object class="GtkAlignment" id="alignment16">
-												<property name="can_focus">False</property>
-												<property name="bottom_padding">5</property>
-												<property name="left_padding">10</property>
-												<property name="right_padding">5</property>
 												<child>
 													<object class="GtkGrid" id="grid9">
 														<property name="can_focus">False</property>
@@ -1343,8 +1243,6 @@
 														</child>
 													</object>
 												</child>
-											</object>
-										</child>
 										<child type="label">
 											<object class="GtkLabel" id="label47">
 												<property name="can_focus">False</property>
@@ -1352,9 +1250,6 @@
 											</object>
 										</child>
 									</object>
-									<packing>
-										<property name="y">53</property>
-									</packing>
 								</child>
 							</object>
 							<packing>

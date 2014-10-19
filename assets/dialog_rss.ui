@@ -8,7 +8,6 @@
 	<property name="type_hint">dialog</property>
 	<property name="skip_taskbar_hint">True</property>
 	<property name="urgency_hint">True</property>
-	<property name="has_resize_grip">False</property>
 	<property name="modal">True</property>
 	<property name="window_position">center-on-parent</property>
 	<child internal-child="headerbar">
