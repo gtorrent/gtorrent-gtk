@@ -1,94 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkDialog" id="genericDialog">
-	<property name="use-header-bar">1</property>
-	<property name="modal">True</property>
-	<property name="can_default">True</property>
-	<property name="window_position">center-on-parent</property>
-	<child internal-child="headerbar">
-	  <object class="GtkHeaderBar" id="headerbar">
+	<object class="GtkDialog" id="genericDialog">
+		<property name="use-header-bar">1</property>
+		<property name="modal">True</property>
 		<property name="can_default">True</property>
-		<property name="show-close-button">False</property>
-		<child>
-		  <object class="GtkButton" id="cancelButton">
-			<property name="label">Cancel</property>
-		  </object>
-		  <packing>
-			<property name="pack_type">start</property>
-		  </packing>
+		<property name="window_position">center-on-parent</property>
+		<child internal-child="headerbar">
+			<object class="GtkHeaderBar" id="headerbar">
+				<property name="can_default">True</property>
+				<property name="show-close-button">False</property>
+				<child>
+					<object class="GtkButton" id="cancelButton">
+						<property name="label">Cancel</property>
+					</object>
+					<packing>
+						<property name="pack_type">start</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkButton" id="okButton">
+						<property name="label">Ok</property>
+						<property name="can_default">True</property>
+					</object>
+					<packing>
+						<property name="pack_type">end</property>
+					</packing>
+				</child>
+			</object>
 		</child>
-		<child>
-		  <object class="GtkButton" id="okButton">
-			<property name="label">Ok</property>
-			<property name="can_default">True</property>
-		  </object>
-		  <packing>
-			<property name="pack_type">end</property>
-		  </packing>
-		</child>
-	  </object>
-	</child>
-	<child internal-child="vbox">
-	  <object class="GtkBox" id="vbox">
-		<property name="can_focus">False</property>
-		<property name="orientation">vertical</property>
-		<property name="spacing">2</property>
-		<child>
-		  <object class="GtkGrid" id="grid1">
-			<property name="can_focus">False</property>
-			<property name="row_spacing">5</property>
-			<property name="column_spacing">5</property>
-			<child>
-			  <object class="GtkLabel" id="label1">
+		<child internal-child="vbox">
+			<object class="GtkBox" id="vbox">
 				<property name="can_focus">False</property>
-				<property name="label" translatable="yes">RSS/Atom feed URL:</property>
-			  </object>
-			  <packing>
-				<property name="left_attach">0</property>
-				<property name="top_attach">1</property>
-			  </packing>
-			</child>
-			<child>
-			  <object class="GtkEntry" id="entry1">
-				<property name="can_focus">True</property>
-			  </object>
-			  <packing>
-				<property name="left_attach">1</property>
-				<property name="top_attach">1</property>
-			  </packing>
-			</child>
-			<child>
-			  <object class="GtkLabel" id="label2">
-				<property name="can_focus">False</property>
-				<property name="halign">end</property>
-				<property name="label" translatable="yes">Feed Name:</property>
-			  </object>
-			  <packing>
-				<property name="left_attach">0</property>
-				<property name="top_attach">0</property>
-			  </packing>
-			</child>
-			<child>
-			  <object class="GtkEntry" id="entry2">
-				<property name="can_focus">True</property>
-			  </object>
-			  <packing>
-				<property name="left_attach">1</property>
-				<property name="top_attach">0</property>
-			  </packing>
-			</child>
-		  </object>
-		  <packing>
-			<property name="expand">True</property>
-			<property name="fill">True</property>
-			<property name="position">1</property>
-		  </packing>
+				<property name="orientation">vertical</property>
+				<property name="spacing">2</property>
+				<child>
+					<object class="GtkGrid" id="grid1">
+						<property name="can_focus">False</property>
+						<property name="row_spacing">5</property>
+						<property name="column_spacing">5</property>
+						<child>
+							<object class="GtkLabel" id="label1">
+								<property name="can_focus">False</property>
+								<property name="label" translatable="yes">RSS/Atom feed URL:</property>
+							</object>
+							<packing>
+								<property name="left_attach">0</property>
+								<property name="top_attach">1</property>
+							</packing>
+						</child>
+						<child>
+							<object class="GtkEntry" id="entry1">
+								<property name="can_focus">True</property>
+							</object>
+							<packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">1</property>
+							</packing>
+						</child>
+						<child>
+							<object class="GtkLabel" id="label2">
+								<property name="can_focus">False</property>
+								<property name="halign">end</property>
+								<property name="label" translatable="yes">Feed Name:</property>
+							</object>
+							<packing>
+								<property name="left_attach">0</property>
+								<property name="top_attach">0</property>
+							</packing>
+						</child>
+						<child>
+							<object class="GtkEntry" id="entry2">
+								<property name="can_focus">True</property>
+							</object>
+							<packing>
+								<property name="left_attach">1</property>
+								<property name="top_attach">0</property>
+							</packing>
+						</child>
+					</object>
+					<packing>
+						<property name="expand">True</property>
+						<property name="fill">True</property>
+						<property name="position">1</property>
+					</packing>
+				</child>
+			</object>
 		</child>
-	  </object>
-	</child>
-	<action-widgets>
-	  <action-widget response="-1">cancelButton</action-widget>
-	  <action-widget response="1">okButton</action-widget>
-	</action-widgets>
-  </object>
+		<action-widgets>
+			<action-widget response="-1">cancelButton</action-widget>
+			<action-widget response="1">okButton</action-widget>
+		</action-widgets>
+	</object>
 </interface>
