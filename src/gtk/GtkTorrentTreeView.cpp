@@ -63,6 +63,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
         // Last time I tried I got a cray cray backtrace and stack overflow.
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
+	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 	col->set_sort_column(m_cols.m_col_percent);
 
 	setupColumns(); // TODO Deprecate
