@@ -53,35 +53,33 @@ public:
 		add(m_col_torrent);
 	}
 
-	Gtk::TreeModelColumn<unsigned int>            m_col_queue;
-	Gtk::TreeModelColumn<unsigned int>            m_col_seeders;
-	Gtk::TreeModelColumn<unsigned int>            m_col_leechers;
-	Gtk::TreeModelColumn<unsigned int>            m_col_percent;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_percent_text;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_age;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_eta;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_name;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_ul_speed;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_speed;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_ul_total;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_total;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_size;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_remaining;
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_dl_ratio;
+	Gtk::TreeModelColumn<unsigned int>  m_col_queue;
+	Gtk::TreeModelColumn<unsigned int>  m_col_seeders;
+	Gtk::TreeModelColumn<unsigned int>  m_col_leechers;
+	Gtk::TreeModelColumn<unsigned int>  m_col_percent;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_percent_text;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_age;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_eta;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_speed;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_speed;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_ul_total;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_total;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_size;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_remaining;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_dl_ratio;
 
 	// Data
-	Gtk::TreeModelColumn<unsigned int>           m_col_bage;
-	Gtk::TreeModelColumn<unsigned int>           m_col_beta;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bul_speed;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bdl_speed;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bul_total;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bdl_total;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bsize;
-	Gtk::TreeModelColumn<unsigned int>           m_col_bremaining;
-
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_background;
-
-	Gtk::TreeModelColumn<Glib::ustring>           m_col_foreground;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bage;
+	Gtk::TreeModelColumn<unsigned int>  m_col_beta;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bul_speed;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bdl_speed;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bul_total;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bdl_total;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bsize;
+	Gtk::TreeModelColumn<unsigned int>  m_col_bremaining;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_background;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_foreground;
 	Gtk::TreeModelColumn<std::shared_ptr<gt::Torrent>> m_col_torrent;
 };
 
@@ -100,8 +98,8 @@ private:
 	void setupColumns();
 
 	/* Event handlers for clicks on the controls */
-	bool				 showMatches(const Gtk::TreeModel::const_iterator& iter);
-	bool				  onKeyPress(GdkEventKey *event);
+	bool                 showMatches(const Gtk::TreeModel::const_iterator& iter);
+	bool                  onKeyPress(GdkEventKey *event);
 	bool         torrentView_onClick(GdkEventButton *event);
 	bool      torrentColumns_onClick(GdkEventButton *event);
 	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);

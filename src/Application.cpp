@@ -5,9 +5,9 @@ using namespace std;
 
 shared_ptr<Application> Application::getSingleton()
 {
-        static std::shared_ptr<Application> m_app;
+        static std::shared_ptr<Application> m_app = std::shared_ptr<Application>(new Application());
 
-        return m_app ? m_app : m_app = std::shared_ptr<Application>(new Application());
+        return m_app;
 }
 
 shared_ptr<gt::Core> &Application::getCore()
@@ -23,7 +23,7 @@ int Application::run(int argc, char **argv)
 	m_core = make_shared<gt::Core>(argc, argv);
 
 	gt::Log::Debug("Starting up GUI layer...");
-	m_gui = make_shared<gt::GuiGtk>(argc, argv);// Who thought it was a good idea to run a GUI from an uninitialized object ?
+	m_gui = make_shared<gt::GuiGtk>(argc, argv);
 	m_gui->run();
 
 	m_core->shutdown();

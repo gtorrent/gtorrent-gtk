@@ -205,6 +205,66 @@
 									<object class="GtkScrolledWindow" id="scrolledWindow">
 										<child>
 											<object class="GtkTreeView" id="treeview">
+												<child>
+													<object class="GtkTreeViewColumn" id="col_queue">
+														<property name="title" translatable="yes">#</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_name">
+														<property name="title" translatable="yes">Name</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_eta">
+														<property name="title" translatable="yes">ETA</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_age">
+														<property name="title" translatable="yes">Age</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_seeders">
+														<property name="title" translatable="yes">Seeders</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_leechers">
+														<property name="title" translatable="yes">Leechers</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_upload">
+														<property name="title" translatable="yes">Up speed</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_download">
+														<property name="title" translatable="yes">Download speed</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_size">
+														<property name="title" translatable="yes">Size</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_remaining">
+														<property name="title" translatable="yes">Remaining</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_ratio">
+														<property name="title" translatable="yes">Ratio</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkTreeViewColumn" id="col_progress">
+														<property name="title" translatable="yes">Progress</property>
+													</object>
+												</child>
 											</object>
 										</child>
 									</object>

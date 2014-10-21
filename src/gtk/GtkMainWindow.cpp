@@ -39,6 +39,9 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 {
 	notify_init ("gTorrent");
 
+	// Show all children at start so that widgets that need to hide can do so.
+        show_all_children();
+
 	GtkTorrentSideBar *sidebar;
 	Gtk::Revealer *revealer;
 
@@ -116,8 +119,6 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	}
 
 	d = new GtkSettingsDialog(this);
-
-        this->show_all_children();
 }
 
 /**
