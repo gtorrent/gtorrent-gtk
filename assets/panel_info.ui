@@ -94,10 +94,11 @@
 														<property name="can_focus">False</property>
 														<child>
 															<object class="GtkLabel">
+																<property name="can_focus">False</property>
+																<property name="halign">end</property>
 																<property name="width-request">200</property>
 																<property name="xalign">1</property> <!-- Align to right -->
-																<property name="halign">end</property>
-																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Save path</property>
 															</object>
 															<packing>
@@ -119,6 +120,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Share ratio</property>
 															</object>
 															<packing>
@@ -140,6 +142,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Time elapsed</property>
 															</object>
 															<packing>
@@ -161,6 +164,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Downloaded</property>
 															</object>
 															<packing>
@@ -182,6 +186,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Uploaded</property>
 															</object>
 															<packing>
@@ -203,6 +208,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Total size</property>
 															</object>
 															<packing>
@@ -252,6 +258,7 @@
 																<property name="xalign">1</property> <!-- Align to right -->
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Tracker URL</property>
 															</object>
 															<packing>
@@ -273,6 +280,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Tracker status</property>
 															</object>
 															<packing>
@@ -294,6 +302,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Hash</property>
 															</object>
 															<packing>
@@ -315,6 +324,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Pieces</property>
 															</object>
 															<packing>
@@ -364,6 +374,7 @@
 																<property name="xalign">1</property> <!-- Align to right -->
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Download speed</property>
 															</object>
 															<packing>
@@ -385,6 +396,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Upload Speed</property>
 															</object>
 															<packing>
@@ -406,6 +418,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Download limit</property>
 															</object>
 															<packing>
@@ -427,6 +440,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Upload limit</property>
 															</object>
 															<packing>
@@ -448,6 +462,7 @@
 															<object class="GtkLabel">
 																<property name="halign">end</property>
 																<property name="can_focus">False</property>
+                                <attributes> <attribute name="weight" value="bold"/></attributes>
 																<property name="label" translatable="yes">Time remaining</property>
 															</object>
 															<packing>
