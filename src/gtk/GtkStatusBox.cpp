@@ -2,7 +2,7 @@
 #include <gtorrent/Torrent.hpp>
 #include "GtkStatusBox.hpp"
 
-GtkStatusBox::GtkStatusBox(GtkGrid *grid, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Grid(grid), builder(rbuilder)
+GtkStatusBox::GtkStatusBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder) : Gtk::Box(box), builder(rbuilder)
 {
 	rbuilder->get_widget("DownSpeed"    , m_download_speed);
 	rbuilder->get_widget("Hash"         , m_hash          );

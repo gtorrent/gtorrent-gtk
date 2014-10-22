@@ -1,0 +1,545 @@
+<!-- NOTE I used a "hack" to get all the columns of the internal grids
+		 of each frame consistent: by setting the first row of a column to a
+		 specific width-request-request, making all the other rows follow fit. It doesn't
+		 *have* to be the first column. This is simply so it makes it easy to find
+		 and tweak.  This value is set to 200 at time of writing. Sorry, it's a
+		 magic number and XML FUCKING SUCKS
+-->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<!-- interface-requires gtk+ 3.10 -->
+	<object class="GtkBox" id="infobar">
+		<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+
+		<child>
+			<object class="GtkLabel" id="infoBarTitle">
+			</object>
+			<packing>
+				<property name="pack_type">start</property>
+			</packing>
+		</child>
+
+		<child>
+			<object class="GtkNotebook" id="infoBarNotebook">
+				<property name="expand">True</property>
+
+				<!-- Start of Graph -->
+				<child>
+					<object class="GtkButton" id="infoBarGraph">
+					</object>
+				</child>
+
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarGraphLabel">
+						<property name="label">Info Graph</property>
+					</object>
+				</child>
+				<!-- End of Graph -->
+
+				<!-- Start of Peers -->
+				<child>
+					<object class="GtkScrolledWindow" id="infoBarPeersScrolledWindow">
+						<child>
+							<object class="GtkTreeView" id="infoBarPeerTreeView">
+							</object>
+						</child>
+					</object>
+				</child>
+
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarPeersLabel">
+						<property name="label">Peers</property>
+					</object>
+				</child>
+				<!-- End of Peers -->
+
+				<!-- Start of Info -->
+				<child>
+					<object class="GtkBox" id="infoBarTorrentInfoBox">
+						<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+
+						<child>
+							<object class="GtkBox" id="infoBarPieceBox">
+								<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+								<child>
+									<object class="GtkWidget" id="infoBarBlockBar">
+										<property name="width_request">0</property>
+										<property name="height_request">20</property>
+									</object>
+									<packing>
+										<property name="pack_type">end</property>
+									</packing>
+								</child>
+							</object>
+							<packing>
+								<property name="pack_type">start</property>
+							</packing>
+						</child>
+
+						<child>
+							<object class="GtkSeparator" id="infoBarStatusSeparator">
+								<property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+							</object>
+							<packing>
+								<property name="pack_type">start</property>
+							</packing>
+						</child>
+
+						<child>
+							<object class="GtkScrolledWindow">
+								<property name="expand">True</property>
+								<child>
+									<object class="GtkBox" id="infoBarStatusBox">
+										<property name="margin">10</property>
+										<property name="spacing">5</property>
+										<property name="can_focus">False</property>
+										<property name="orientation">vertical</property>
+										<!-- Start of General frame -->
+										<child>
+											<object class="GtkFrame">
+												<child>
+													<object class="GtkGrid">
+														<property name="margin">5</property>
+														<property name="row-spacing">4</property>
+														<property name="column-spacing">15</property>
+														<property name="can_focus">False</property>
+														<child>
+															<object class="GtkLabel">
+																<property name="width-request">200</property>
+																<property name="xalign">1</property> <!-- Align to right -->
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Save path</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="SavePath">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Share ratio</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="ShareRatio">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Time elapsed</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="TimeElapsed">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Downloaded</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="Downloaded">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Uploaded</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">4</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="Uploaded">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">4</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Total size</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">5</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="TotalSize">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">5</property>
+															</packing>
+														</child>
+													</object>
+												</child>
+												<child type="label">
+													<object class="GtkLabel" id="frame_general_title">
+														<property name="can_focus">False</property>
+														<property name="label" translatable="yes">General</property>
+														<attributes>
+															<attribute name="weight" value="bold"/>
+															<attribute name="variant" value="small-caps"/>
+															<attribute name="stretch" value="expanded"/>
+															<attribute name="scale" value="1.5"/>
+														</attributes>
+													</object>
+												</child>
+											</object>
+											<packing>
+												<property name="expand">False</property>
+												<property name="fill">True</property>
+											</packing>
+										</child>
+										<!-- End of General frame -->
+										<!-- Start of Tracker frame -->
+										<child>
+											<object class="GtkFrame">
+												<child>
+													<object class="GtkGrid">
+														<property name="margin">5</property>
+														<property name="row-spacing">4</property>
+														<property name="column-spacing">15</property>
+														<property name="can_focus">False</property>
+														<child>
+															<object class="GtkLabel">
+																<property name="width-request">200</property>
+																<property name="xalign">1</property> <!-- Align to right -->
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Tracker URL</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="TrackerURL">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Tracker status</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="TrackerStatus">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Hash</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="Hash">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Pieces</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="Pieces">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+													</object>
+												</child>
+												<child type="label">
+													<object class="GtkLabel" id="frame_tracker_title">
+														<property name="can_focus">False</property>
+														<property name="label" translatable="yes">Tracker</property>
+														<attributes>
+															<attribute name="weight" value="bold"/>
+															<attribute name="variant" value="small-caps"/>
+															<attribute name="stretch" value="expanded"/>
+															<attribute name="scale" value="1.5"/>
+														</attributes>
+													</object>
+												</child>
+											</object>
+											<packing>
+												<property name="expand">False</property>
+												<property name="fill">True</property>
+											</packing>
+										</child>
+										<!-- End of Tracker frame -->
+										<!-- Start of Transfer frame -->
+										<child>
+											<object class="GtkFrame">
+												<child>
+													<object class="GtkGrid">
+														<property name="margin">5</property>
+														<property name="row-spacing">4</property>
+														<property name="column-spacing">15</property>
+														<property name="can_focus">False</property>
+														<child>
+															<object class="GtkLabel">
+																<property name="width-request">200</property>
+																<property name="xalign">1</property> <!-- Align to right -->
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Download speed</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="DownSpeed">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">0</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Upload Speed</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="UploadSpeed">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">1</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Download limit</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="DownLimit">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">2</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Upload limit</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="UpLimit">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">3</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel">
+																<property name="halign">end</property>
+																<property name="can_focus">False</property>
+																<property name="label" translatable="yes">Time remaining</property>
+															</object>
+															<packing>
+																<property name="left_attach">0</property>
+																<property name="top_attach">4</property>
+															</packing>
+														</child>
+														<child>
+															<object class="GtkLabel" id="Remaining">
+																<property name="halign">start</property>
+																<property name="can_focus">False</property>
+															</object>
+															<packing>
+																<property name="left_attach">1</property>
+																<property name="top_attach">4</property>
+															</packing>
+														</child>
+													</object>
+												</child>
+												<child type="label">
+													<object class="GtkLabel" id="frame_transfer_title">
+														<property name="can_focus">False</property>
+														<property name="label" translatable="yes">Transfer</property>
+														<attributes>
+															<attribute name="weight" value="bold"/>
+															<attribute name="variant" value="small-caps"/>
+															<attribute name="stretch" value="expanded"/>
+															<attribute name="scale" value="1.5"/>
+														</attributes>
+													</object>
+												</child>
+											</object>
+											<packing>
+												<property name="expand">False</property>
+												<property name="fill">True</property>
+											</packing>
+										</child>
+										<!-- End of transfer frame -->
+									</object>
+								</child>
+							</object>
+						</child>
+					</object>
+				</child>
+
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarTorrentInfoLabel">
+						<property name="label">Info</property>
+					</object>
+				</child>
+				<!-- End of Torrent Info -->
+				<!-- Start of File -->
+				<child>
+					<object class="GtkScrolledWindow" id="infoBarFilesScrolledWindow">
+						<child>
+							<object class="GtkTreeView" id="infoBarFileTreeView">
+							</object>
+						</child>
+					</object>
+				</child>
+
+				<child type="tab">
+					<object class="GtkLabel" id="infoBarFilesLabel">
+						<property name="label">Files</property>
+					</object>
+				</child>
+				<!-- End of File -->
+			</object>
+			<packing>
+				<property name="pack_type">end</property>
+			</packing>
+		</child>
+
+	</object>
+</interface>

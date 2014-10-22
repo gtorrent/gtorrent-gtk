@@ -34,7 +34,7 @@ gt::GuiGtk::GuiGtk(int argc, char **argv)
 		m_builder->add_from_resource("/org/gtk/gtorrent/window_main.ui");
 		m_builder->add_from_resource("/org/gtk/gtorrent/dialog_rss.ui");
 		m_builder->add_from_resource("/org/gtk/gtorrent/dialog_association.ui");
-		m_builder->add_from_resource("/org/gtk/gtorrent/infobar.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/panel_info.ui");
 	}
 	catch(const Glib::FileError& ex)
 	{

@@ -5,11 +5,11 @@
 #include <gtkmm/builder.h>
 #include "../Application.hpp"
 
-class GtkStatusBox : public Gtk::Grid
+class GtkStatusBox : public Gtk::Box
 {
 public:
 	const Glib::RefPtr<Gtk::Builder> builder;
-	GtkStatusBox(GtkGrid *grid, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	GtkStatusBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	void update(std::shared_ptr<gt::Torrent> selected);
 private:
 
