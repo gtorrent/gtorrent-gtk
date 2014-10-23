@@ -132,3 +132,8 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		// TODO: implement RSS dialog and pop it up here
 	}
 }
+
+// TODO implement; too sleepy at the moment to write it
+void GtkTorrentSideBar::updateRows()
+{
+}

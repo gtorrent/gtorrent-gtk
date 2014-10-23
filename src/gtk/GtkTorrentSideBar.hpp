@@ -18,6 +18,7 @@ public:
 			add(clickCallback);
 			add(icon);
 			add(filter);
+                        add(group);
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> name;
@@ -26,6 +27,7 @@ public:
 	Gtk::TreeModelColumn<bool> editable; // Uneditable items are only titles and already existing labels/groups // TODO Nyanpasu: I'm probably going to remove this in favour of a context menu or some sort of group management dialog
 	Gtk::TreeModelColumn<std::function<void(void)>> clickCallback;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> icon;
+        Gtk::TreeModelColumn<gt::TorrentGroup> group;
 };
 
 class GtkTorrentSideBar : public Gtk::TreeView
@@ -34,15 +36,16 @@ class GtkTorrentSideBar : public Gtk::TreeView
 	GtkMainWindow *m_parent = nullptr;
 	Glib::RefPtr<Gtk::Builder> builder;
 public:
-	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
-	void setupColumns();
-	void onRowClicked(Gtk::TreeRow);
-	void addedItem(std::string path, std::string name);
-	bool sideBar_onClick(GdkEventButton *event);
-
 	GtkSideBarColumns m_cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;
 
 	Gtk::TreeModel::Row m_torrent_row;
 	Gtk::TreeModel::Row m_rssfeed_row;
+
+	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
+        bool sideBar_onClick(GdkEventButton *event);
+        void addedItem(std::string path, std::string name);
+        void onRowClicked(Gtk::TreeRow);
+        void setupColumns();
+        void updateRows();
 };
