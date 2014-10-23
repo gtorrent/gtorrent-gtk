@@ -21,8 +21,9 @@ public:
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> name;
+
 	Gtk::TreeModelColumn<Glib::ustring> filter; // used to filter the main treeview
-	Gtk::TreeModelColumn<bool> editable; // Unediatble items are only titles and already existing labels/groups
+	Gtk::TreeModelColumn<bool> editable; // Uneditable items are only titles and already existing labels/groups // TODO Nyanpasu: I'm probably going to remove this in favour of a context menu or some sort of group management dialog
 	Gtk::TreeModelColumn<std::function<void(void)>> clickCallback;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> icon;
 };
@@ -42,6 +43,6 @@ public:
 	GtkSideBarColumns m_cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;
 
-	Gtk::TreeModel::Row Torrents;
-	Gtk::TreeModel::Row RSSFeeds;
+	Gtk::TreeModel::Row m_torrent_row;
+	Gtk::TreeModel::Row m_rssfeed_row;
 };

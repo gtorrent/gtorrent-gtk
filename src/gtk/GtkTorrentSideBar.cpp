@@ -13,8 +13,9 @@ GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::
 
 	m_liststore = Gtk::TreeStore::create(m_cols);
 
-	set_headers_visible(false);
 	set_model(m_liststore);
+
+	set_headers_visible(false);
 	set_show_expanders(true);
 	set_activate_on_single_click();
 	expand_all();
@@ -30,6 +31,7 @@ void GtkTorrentSideBar::onRowClicked(Gtk::TreeRow clickedRow)
 	callback();
 }
 
+// Cringe.
 void GtkTorrentSideBar::setupColumns()
 {
 	int cid = 0;
@@ -48,34 +50,35 @@ void GtkTorrentSideBar::setupColumns()
 	col->add_attribute(cell->property_editable(), m_cols.editable);
 	col->add_attribute(cellp->property_pixbuf(), m_cols.icon);
 
-	Torrents = *(m_liststore->append());
-	Torrents[m_cols.name] = "Torrents";
-	Torrents[m_cols.editable] = false;
-	Torrents[m_cols.clickCallback] = [](){}; // clicks on titles don't do shit
+        // This really isn't "setupColumns" anymore from this point.
+	m_torrent_row = *(m_liststore->append());
+	m_torrent_row[m_cols.name] = "m_torrent_row";
+	m_torrent_row[m_cols.editable] = false;
+	m_torrent_row[m_cols.clickCallback] = [](){}; // clicks on titles don't do shit
 
 	auto torrent_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-torrent.png");
 	auto torrent_icon_scaled =  torrent_icon->scale_simple(16, 16, Gdk::INTERP_BILINEAR);
-	Torrents[m_cols.icon] = torrent_icon_scaled;
+	m_torrent_row[m_cols.icon] = torrent_icon_scaled;
 
-	Gtk::TreeModel::Row row = *(m_liststore->append(Torrents.children()));
+	Gtk::TreeModel::Row row = *(m_liststore->append(m_torrent_row.children()));
 	row[m_cols.name] = "Add a label";
 	row[m_cols.editable] = true;
 	// TODO change icon to some sort of generic torrent icon
 	row[m_cols.icon] = Gtk::IconTheme::get_default()->lookup_icon("list-add-symbolic", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
 	row[m_cols.clickCallback] = [row](){};
 
-	RSSFeeds = *(m_liststore->append());
-	RSSFeeds[m_cols.name] = "RSS Feeds";
-	RSSFeeds[m_cols.editable] = false;
-	RSSFeeds[m_cols.clickCallback] = [](){};
+	m_rssfeed_row = *(m_liststore->append());
+	m_rssfeed_row[m_cols.name] = "RSS Feeds";
+	m_rssfeed_row[m_cols.editable] = false;
+	m_rssfeed_row[m_cols.clickCallback] = [](){};
 
 	auto rss_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-rss.png");
 	auto rss_icon_scaled =  rss_icon->scale_simple(16, 16, Gdk::INTERP_BILINEAR);
-	RSSFeeds[m_cols.icon] = rss_icon_scaled;
+	m_rssfeed_row[m_cols.icon] = rss_icon_scaled;
 
 	for(auto fg : Application::getSingleton()->getCore()->m_feeds)
 	{
-		row = *(m_liststore->append(RSSFeeds.children()));
+		row = *(m_liststore->append(m_rssfeed_row.children()));
 		row[m_cols.name] = fg->name;
 		row[m_cols.editable] = false;
 		// TODO change icon to some sort of generic RSS icon
@@ -83,7 +86,7 @@ void GtkTorrentSideBar::setupColumns()
 
 	}
 	
-	row = *(m_liststore->append(RSSFeeds.children()));
+	row = *(m_liststore->append(m_rssfeed_row.children()));
 	row[m_cols.name] = "Add an RSS group";
 	row[m_cols.editable] = true;
 	// TODO change icon to some sort of generic RSS icon
@@ -102,7 +105,7 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 	// Depending on the parent, we create a label or an rss group
 	// TreeRows are iterators, so comparison is valid.
 	Gtk::TreeModel::Row row = *m_liststore->get_iter(path);
-	if(row->parent() && *row->parent() == Torrents)
+	if(row->parent() && *row->parent() == m_torrent_row)
 	{
 		Gtk::TreeModel::Row newrow = *(m_liststore->insert(row));
 		newrow[m_cols.name] = name + " (" + '0' + ")";
@@ -114,7 +117,7 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		// see enable_model_drag_source
 		// and enable_model_drag_dest
 	}
-	else if(row->parent() && *row->parent() == RSSFeeds)
+	else if(row->parent() && *row->parent() == m_rssfeed_row)
 	{
 		Gtk::TreeModel::Row newrow = *(m_liststore->insert(row));
 		newrow[m_cols.name] = name + " (" + '0' + ")";

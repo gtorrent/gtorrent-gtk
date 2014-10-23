@@ -1,8 +1,4 @@
-#include "GtkMainWindow.hpp"
 #include <future>
-#include <gtorrent/Platform.hpp>
-#include <gtorrent/Settings.hpp>
-
 #include <boost/algorithm/string.hpp>
 #include <giomm.h>
 #include <glibmm.h>
@@ -16,12 +12,17 @@
 #include <gtkmm.h>
 #include <gtkmm/stock.h>
 
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Settings.hpp>
+#include <gtorrent/Core.hpp>
+
 #include "../Application.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkSettingsDialog.hpp"
 #include "GtkTorrentSideBar.hpp"
+#include "GtkMainWindow.hpp"
 
 // TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
 //       so remove the header, cutomize the cells, and enable the revealer with the property button
@@ -71,12 +72,12 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
-	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked()       ;});
-	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked()       ;});
-	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked()       ;});
-	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked()       ;});
-	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked()       ;});
-	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked()       ;});
+	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked();});
+	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked();});
+	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked();});
+	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked();});
+	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked();});
+	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
 	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
