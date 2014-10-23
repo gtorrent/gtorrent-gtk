@@ -43,7 +43,6 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Show all children at start so that widgets that need to hide can do so.
         show_all_children();
 
-	GtkTorrentSideBar *sidebar;
 	Gtk::Revealer *revealer;
 
 	builder->get_widget(        "torrentbox",           m_torrentbox);
@@ -64,7 +63,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(     "sidebarscroll", sidebar_scrolledwindow);
 	builder->get_widget_derived(   "infobar",              m_infobar);
 	builder->get_widget_derived(  "treeview",             m_treeview);
-	builder->get_widget_derived(   "sidebar",                sidebar);
+	builder->get_widget_derived(   "sidebar",              m_sidebar);
 	
 	panel->pack2(*m_infobar);
 
@@ -127,15 +126,20 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 */
 bool GtkMainWindow::onSecTick()
 {
+        // Update the gooey
 	m_treeview->updateCells();
 	m_infobar->updateState(m_treeview->getFirstSelected());
+        m_sidebar->updateRows();
+
+        // Handle new torrents... wait, why the fuck do we handle only one at a time?
+        // TODO FIXME XXX
 	std::shared_ptr<gt::Torrent> t = m_core->update();
 	if (t)
 	{
 		t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(t);
 	}
-	scrolledWindow->get_vscrollbar()->set_child_visible(false);
+	scrolledWindow->get_vscrollbar()->set_child_visible(false); // WTF is this doing here?
 	return true;
 }
 

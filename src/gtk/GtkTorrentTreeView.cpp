@@ -38,9 +38,6 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
-	set_model(m_filtersort);
-	//set_model(m_liststore);
-
         // Set up columns
         // TODO set up the sort columns as well.
         Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_queue"))     ->pack_start(m_cols.m_col_queue);
@@ -77,10 +74,14 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	m_searchPopover->set_modal();
 	m_searchEntry->show();
 
+	//set_model(m_filtersort);
+	set_model(m_liststore);
+
 	set_hexpand();
 	set_vexpand();
 	reloadColors();
 
+        // Set drag targets
 	std::vector<Gtk::TargetEntry> listTargets = 
 		{
 			Gtk::TargetEntry("STRING"),
@@ -212,34 +213,15 @@ void GtkTorrentTreeView::setupColumns()
 }
 
 /**
-* Sets up the cells in the torrent tree view.
+* Add a row to the torrent tree view.
 */
 void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 {
-	if (t == NULL)
+	if (!t)
 		return;
 
 	Gtk::TreeModel::Row row      = *(m_liststore->append());
-	// if there's a % in the state std::string, then the torrent is downloading
-	std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
-
-        // TODO Remove this shit... (It's set in updateCells anyway)
-	row[m_cols.m_col_age]        = t->getTextActiveTime();
-	row[m_cols.m_col_eta]        = t->status().is_finished || t->status().is_seeding ? "" : t->getTextEta(); // TODO: replace with when dht is merged in core t->status().is_finished ? "" : t->getTextEta();
-	row[m_cols.m_col_name]       = t->status().name;
-	row[m_cols.m_col_seeders]    = t->status().num_seeds;
-	row[m_cols.m_col_leechers]   = t->status().num_peers - t->status().num_seeds;
-	row[m_cols.m_col_bage]       = t->status().active_time;
-	row[m_cols.m_col_beta]       = t->getEta();
-	row[m_cols.m_col_size]       = t->getTextSize();
-	row[m_cols.m_col_remaining]  = t->getTextRemaining();
-	row[m_cols.m_col_bsize]      = t->status().total_wanted;
-	row[m_cols.m_col_bremaining] = t->status().total_wanted - t->status().total_download;
-	row[m_cols.m_col_dl_ratio]   = t->getTextTotalRatio();
-	row[m_cols.m_col_background] = m_colors[fgbg].first;
-	row[m_cols.m_col_foreground] = m_colors[fgbg].second;
-        // ... except for this
-	row[m_cols.m_col_torrent]    = t;
+	row[m_cols.m_col_torrent] = t;
 }
 
 /**
@@ -261,6 +243,7 @@ void GtkTorrentTreeView::updateCells()
 	{
 		std::shared_ptr<gt::Torrent> t = c[m_cols.m_col_torrent];
 
+                // if there's a % in the state std::string, then the torrent is downloading // 10/10 logic
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_bremaining ] = t->status().total_wanted - t->status().total_download;
@@ -488,6 +471,8 @@ void GtkTorrentTreeView::saveColumns()
 
 // This is where it gets tricky/ugly.
 // TODO Modify so that it hides columns instead of not loading them at all.
+// TODO I realized we don't even need all this boilerplate because we already
+// have all the column names stored in ... wait for it... the fucking columns.
 void GtkTorrentTreeView::loadColumns()
 {
         return;

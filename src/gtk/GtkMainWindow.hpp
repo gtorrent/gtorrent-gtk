@@ -46,6 +46,7 @@ public:
 
 	GtkTorrentTreeView *m_treeview = nullptr;
 	GtkTorrentInfoBar  *m_infobar  = nullptr;
+	GtkTorrentSideBar *m_sidebar = nullptr;
 
 	Gtk::Button         *addTorrentButton       = nullptr;
 	Gtk::Button         *resumeButton           = nullptr;
