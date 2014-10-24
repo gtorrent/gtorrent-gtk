@@ -129,7 +129,7 @@ bool GtkMainWindow::onSecTick()
         // Update the gooey
 	m_treeview->updateCells();
 	m_infobar->updateState(m_treeview->getFirstSelected());
-        m_sidebar->updateRows();
+        m_sidebar->updateTorrents();
 
         // Handle new torrents... wait, why the fuck do we handle only one at a time?
         // TODO FIXME XXX
@@ -139,6 +139,7 @@ bool GtkMainWindow::onSecTick()
 		t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(t);
 	}
+
 	scrolledWindow->get_vscrollbar()->set_child_visible(false); // WTF is this doing here?
 	return true;
 }

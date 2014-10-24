@@ -18,6 +18,7 @@
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
+class GtkTorrentSideBar;
 class GtkSettingsDialog;
 
 class GtkMainWindow : public Gtk::Window
@@ -69,4 +70,4 @@ public:
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
-r;
+};
