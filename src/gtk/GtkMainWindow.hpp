@@ -1,6 +1,8 @@
 #pragma once
 
 #include <gtorrent/Core.hpp>
+#include <gtorrent/FeedGroup.hpp>
+
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
@@ -13,8 +15,9 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/searchbar.h>
 #include <gtkmm/box.h>
-#include <FeedGroup.hpp>
+#include <gtkmm/revealer.h>
 
+#include "rss/GtkRSSDialog.hpp"
 
 class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
@@ -47,7 +50,8 @@ public:
 
 	GtkTorrentTreeView *m_treeview;
 	GtkTorrentInfoBar  *m_infobar;
-	GtkTorrentSideBar *m_sidebar;
+	GtkTorrentSideBar  *m_sidebar;
+	GtkRSSDialog       *m_rss2;
 
 	Gtk::Button         *addTorrentButton;
 	Gtk::Button         *resumeButton;
@@ -66,6 +70,7 @@ public:
 	Gtk::ScrolledWindow *sidebar_scrolledwindow;
 	Gtk::MenuButton     *addMagnetButton;
 	Gtk::Paned          *panel;
+	Gtk::Button         *buttonRss;
 
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);

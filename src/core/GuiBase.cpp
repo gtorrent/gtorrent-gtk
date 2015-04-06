@@ -1,4 +1,4 @@
-#include "Base.hpp"
+#include "GuiBase.hpp"
 #include "../Application.hpp"
 #include <gtorrent/Settings.hpp>
 

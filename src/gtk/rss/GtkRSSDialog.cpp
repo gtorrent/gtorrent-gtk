@@ -1,7 +1,7 @@
 #include "GtkRSSDialog.hpp"
-#include "GtkGenericAddDialog.hpp"
-#include "GtkFunctionDialog.hpp"
-#include "../Application.hpp"
+#include "../GtkGenericAddDialog.hpp"
+#include "../GtkFunctionDialog.hpp"
+#include "../../Application.hpp"
 
 // TODO: Rename "Functions" to "Criterions" or equivalent ?
 
@@ -10,48 +10,15 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	m_core = Application::getSingleton()->getCore();
 	rbuilder->get_widget(     "cancelButton",     cancelButton);
 	rbuilder->get_widget(         "okButton",         okButton);
-	rbuilder->get_widget(    "addFeedButton",    addFeedButton);
-	rbuilder->get_widget( "removeFeedButton", removeFeedButton);
-	rbuilder->get_widget(       "aTogButton",       aTogButton);
-	rbuilder->get_widget(       "gToaButton",       gToaButton);
-	rbuilder->get_widget(     "addFilterBtn",     addFilterBtn);
-	rbuilder->get_widget(  "removeFilterBtn",  removeFilterBtn);
-	rbuilder->get_widget(     "addFunButton",        addFunBtn);
-	rbuilder->get_widget(  "removeFunButton",     removeFunBtn);
-	rbuilder->get_widget( "functionTreeView",      funTreeView);
-	rbuilder->get_widget(   "filterTreeView",   filterTreeView);
-	rbuilder->get_widget(   "activeTreeView",   activeTreeView);
-	rbuilder->get_widget(   "globalTreeView",   globalTreeView);
+	rbuilder->get_widget(        "addButton",    addFeedButton);
 	rbuilder->get_widget(      "rssTreeView",      rssTreeView);
-	rbuilder->get_widget("rssAutoAddNewItem",          rssAuto);
 	set_default_response(1);
 
 	rssItemsList    = Gtk::ListStore::create(    items);
-	globalFeedsList = Gtk::ListStore::create(   global);
-	activeFeedsList = Gtk::ListStore::create(   active);
-	filtersList     = Gtk::ListStore::create(  filters);
-	functionsList   = Gtk::ListStore::create(functions);
-
 	rssTreeView   ->set_model(   rssItemsList);
-	funTreeView   ->set_model(  functionsList);
-	filterTreeView->set_model(    filtersList);
-	globalTreeView->set_model(globalFeedsList);
-	activeTreeView->set_model(activeFeedsList);
 
 	addFeedButton   ->signal_clicked().connect([this](){addNewFeed      ();});
-	removeFeedButton->signal_clicked().connect([this](){removeFeed      ();});
-	aTogButton      ->signal_clicked().connect([this](){removeFromActive();});
-	gToaButton      ->signal_clicked().connect([this](){moveToActive    ();});
-	addFilterBtn    ->signal_clicked().connect([this](){addFilter       ();});
-	removeFilterBtn ->signal_clicked().connect([this](){removeFilter    ();});
-	addFunBtn       ->signal_clicked().connect([this](){addFunction     ();});
-	removeFunBtn    ->signal_clicked().connect([this](){removeFunction  ();});
-	rssAuto         ->signal_clicked().connect([this](){toggleAutoAdd   ();});
 
-	funTreeView   ->append_column("", functions.eval);
-	filterTreeView->append_column("", filters.name);
-	activeTreeView->append_column("",  active.name);
-	globalTreeView->append_column("",  global.name);
 	rssTreeView   ->append_column("",   items.name);
 
         this->show_all_children();

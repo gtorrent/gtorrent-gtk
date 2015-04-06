@@ -453,7 +453,6 @@ void GtkSettingsDialog::onActivSChanged()
 	gt::Settings::settings["ActiveSeeds"] = activsspin->get_text();
 }
 
-
 void GtkSettingsDialog::onDownFillColorSet()
 {
 	char colorstring[16] = {0};

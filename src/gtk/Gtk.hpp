@@ -1,9 +1,9 @@
 #pragma once
 
-// 
 #include <gtkmm.h>
 #include <glibmm.h>
-#include "../core/Base.hpp"
+
+#include "../core/GuiBase.hpp"
 
 namespace gt
 {

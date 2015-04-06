@@ -1,16 +1,14 @@
 #include <future>
 #include <boost/algorithm/string.hpp>
-#include <giomm.h>
-#include <glibmm.h>
+
 #include <libnotify/notify.h>
 
+#include <giomm.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/main.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
-#include <gtkmm.h>
-#include <gtkmm/stock.h>
 
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Settings.hpp>
@@ -29,7 +27,6 @@
 //       Also find a way to darken the treeview when the sidebar is shown, the same way the window is
 //       darkened when a modal dialog is opened.
 
-
 /**
 * Sets up the main window.
 */
@@ -41,10 +38,9 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	notify_init ("gTorrent");
 
 	// Show all children at start so that widgets that need to hide can do so.
-        show_all_children();
+	show_all_children();
 
-	Gtk::Revealer *revealer;
-
+	Gtk::Revealer       *revealer;
 	builder->get_widget(        "torrentbox",           m_torrentbox);
 	builder->get_widget(         "searchbar",            m_searchbar);
 	builder->get_widget(  "addTorrentButton",       addTorrentButton);
@@ -54,6 +50,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget(       "pauseButton",            pauseButton);
 	builder->get_widget(      "deleteButton",           removeButton);
 	builder->get_widget( "preferencesButton",       propertiesButton);
+	builder->get_widget(         "buttonRss",              buttonRss);
 	builder->get_widget(    "settingsButton",         settingsButton);
 	builder->get_widget(             "panel",                  panel);
 	builder->get_widget(    "scrolledWindow",         scrolledWindow);
@@ -64,7 +61,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget_derived(   "infobar",              m_infobar);
 	builder->get_widget_derived(  "treeview",             m_treeview);
 	builder->get_widget_derived(   "sidebar",              m_sidebar);
-	
+	builder->get_widget_derived( "rssDialog",                 m_rss2);
+
 	panel->pack2(*m_infobar);
 
 	// Apparently can't use lambdas on these two unless doing something awful
@@ -79,6 +77,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
 	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
+	buttonRss->signal_clicked().connect([this](){ m_rss2->run("test"); });
 
 	magEntry   = Gtk::manage(new Gtk::Entry());
 	magEntry->set_visible();
@@ -89,8 +88,10 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
 	magPopover->set_position(Gtk::POS_LEFT);
-	
+
 	sidebar_scrolledwindow->set_min_content_width(150);
+
+	m_rss2->set_transient_for(*this);
 
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
@@ -122,7 +123,9 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 }
 
 /**
-* Does something each second.
+* Update interface
+* Updates torrent cells
+* Hide vertical scrollbar
 */
 bool GtkMainWindow::onSecTick()
 {
@@ -145,7 +148,7 @@ bool GtkMainWindow::onSecTick()
 }
 
 /**
-* Does something when the add button is clicked.
+* Open a FileChooserDialog that filters for bittorent files
 */
 void GtkMainWindow::onAddBtnClicked()
 {
@@ -189,10 +192,10 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 
 	if(newstate == libtorrent::torrent_status::seeding && oldstate == libtorrent::torrent_status::downloading)
 		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has finished downloading.").c_str(), "dialog-information");
-	else if(newstate == libtorrent::torrent_status::downloading  && 
+	else if(newstate == libtorrent::torrent_status::downloading  &&
 			oldstate == libtorrent::torrent_status::downloading_metadata)
 		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
-	else 
+	else
 		return; //:^)
 
 	notify_notification_show (tNotify, NULL);
@@ -200,7 +203,7 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 }
 
 /**
-* Does something when the add magnet button is clicked.
+* Display magPopover
 */
 void GtkMainWindow::onAddMagnetBtnClicked()
 {
@@ -223,27 +226,18 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 	}
 }
 
-/**
-* Does something when the pause button is clicked.
-*/
 void GtkMainWindow::onPauseBtnClicked()
 {
 	m_treeview->setSelectedPaused(true);
 	m_treeview->onSelectionChanged();
 }
 
-/**
-* Does something when the resume button is clicked.
-*/
 void GtkMainWindow::onResumeBtnClicked()
 {
 	m_treeview->setSelectedPaused(false);
 	m_treeview->onSelectionChanged();
 }
 
-/**
-* Does something when the remove button is clicked.
-*/
 void GtkMainWindow::onRemoveBtnClicked()
 {
 	for(auto t : m_treeview->selectedTorrents())
@@ -251,17 +245,11 @@ void GtkMainWindow::onRemoveBtnClicked()
 	m_treeview->removeSelected();
 }
 
-/**
-* Does something when the properties button is clicked.
-*/
 void GtkMainWindow::onPropertiesBtnClicked()
 {
 
 }
 
-/**
-* Does something when the window is destroyed. // That's some 10/10 doc right there.
-*/
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
 	m_treeview->saveColumns();
@@ -278,7 +266,7 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 {
 	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
 	short enter[] = { 36, 104 };
-	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) 
+	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8)
 	{
 		m_treeview->m_searchPopover->set_visible();
 		if(std::find(enter, enter + 2, event->hardware_keycode) != enter + 2)

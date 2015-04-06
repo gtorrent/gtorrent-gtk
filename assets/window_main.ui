@@ -141,6 +141,23 @@
 					</packing>
 				</child>
 				<child>
+					<object class="GtkButton" id="buttonRss">
+						<style>
+							<class name="button"/>
+							<class name="image-button"/>
+						</style>
+						<child>
+							<object class="GtkImage">
+								<property name="icon_size">1</property>
+								<property name="icon_name">preferences-system-symbolic</property>
+							</object>
+						</child>
+					</object>
+					<packing>
+						<property name="pack_type">start</property>
+					</packing>
+				</child>
+				<child>
 					<object class="GtkButton" id="settingsButton">
 						<style>
 							<class name="button"/>

@@ -26,7 +26,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	${PROJECT_BINARY_DIR}/resources.c
 	${PROJECT_BINARY_DIR}/style.c
 	Application.cpp
-	core/Base.cpp
+	core/GuiBase.cpp
 	gtk/Gtk.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
@@ -39,7 +39,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkFileTreeView.cpp
 	gtk/GtkStatusBox.cpp
 	gtk/GtkTorrentSideBar.cpp
-	gtk/GtkRSSDialog.cpp
+	gtk/rss/GtkRSSDialog.cpp
 	gtk/GtkGenericAddDialog.cpp
 	gtk/GtkFunctionDialog.cpp
 	gtk/utils/FileTree.cpp

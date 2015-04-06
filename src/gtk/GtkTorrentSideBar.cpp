@@ -130,11 +130,7 @@ void GtkTorrentSideBar::setupColumns()
 	row[m_cols.icon] = Gtk::IconTheme::get_default()->lookup_icon("list-add-symbolic", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
 	row[m_cols.clickCallback] = [row](){};
 
-	//Maybe migrate settings there
-/*	row = *(m_liststore->append());
-	row[m_cols.name] = "Settings";
-	row[m_cols.title] = true;
-	row[m_cols.clickCallback] = [](){}; // clicks on titles don't do shit*/
+	// Maybe migrate settings there
 }
 
 void GtkTorrentSideBar::addedItem(std::string path, std::string name)

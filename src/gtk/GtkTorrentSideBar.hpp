@@ -5,7 +5,7 @@
 #include <gtkmm/builder.h>
 
 #include "GtkMainWindow.hpp"
-#include "GtkRSSDialog.hpp"
+#include "rss/GtkRSSDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 
 class GtkSideBarColumns : public Gtk::TreeModel::ColumnRecord
