@@ -316,7 +316,7 @@ void GtkSettingsDialog::onForegroundSet()
 	}
 
 	if(parent != nullptr)
-		parent->m_treeview->reloadColors();
+		parent->m_treeview_torrent->reloadColors();
 }
 
 void GtkSettingsDialog::onBackgroundSet()
@@ -360,7 +360,7 @@ void GtkSettingsDialog::onBackgroundSet()
 	}
 
 	if(parent != nullptr)
-		parent->m_treeview->reloadColors();
+		parent->m_treeview_torrent->reloadColors();
 }
 
 void GtkSettingsDialog::onGridColorSet()

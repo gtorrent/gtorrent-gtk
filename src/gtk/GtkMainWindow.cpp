@@ -41,27 +41,29 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	show_all_children();
 
 	Gtk::Revealer       *revealer;
-	builder->get_widget(        "torrentbox",           m_torrentbox);
-	builder->get_widget(         "searchbar",            m_searchbar);
-	builder->get_widget(  "addTorrentButton",       addTorrentButton);
-	builder->get_widget(      "searchButton",         m_searchButton);
-	builder->get_widget(   "addMagnetButton",        addMagnetButton);
-	builder->get_widget(      "resumeButton",           resumeButton);
-	builder->get_widget(       "pauseButton",            pauseButton);
-	builder->get_widget(      "deleteButton",           removeButton);
-	builder->get_widget( "preferencesButton",       propertiesButton);
-	builder->get_widget(         "buttonRss",              buttonRss);
-	builder->get_widget(    "settingsButton",         settingsButton);
-	builder->get_widget(             "panel",                  panel);
-	builder->get_widget(    "scrolledWindow",         scrolledWindow);
-	builder->get_widget(           "vSepOne",          vSeparatorOne);
-	builder->get_widget(           "vSepTwo",          vSeparatorTwo);
-	builder->get_widget(        "sidebarRev",               revealer);
-	builder->get_widget(     "sidebarscroll", sidebar_scrolledwindow);
-	builder->get_widget_derived(   "infobar",              m_infobar);
-	builder->get_widget_derived(  "treeview",             m_treeview);
-	builder->get_widget_derived(   "sidebar",              m_sidebar);
-	builder->get_widget_derived( "rssDialog",                 m_rss2);
+	builder->get_widget("torrentbox", m_torrentbox);
+	builder->get_widget("searchbar", m_searchbar);
+	builder->get_widget("addTorrentButton", addTorrentButton);
+	builder->get_widget("searchButton", m_searchButton);
+	builder->get_widget("addMagnetButton", addMagnetButton);
+	builder->get_widget("resumeButton", resumeButton);
+	builder->get_widget("pauseButton", pauseButton);
+	builder->get_widget("deleteButton", removeButton);
+	builder->get_widget("preferencesButton", propertiesButton);
+	builder->get_widget("buttonRss", buttonRss);
+	builder->get_widget("settingsButton", settingsButton);
+	builder->get_widget("panel", panel);
+	builder->get_widget("scrolledWindow", scrolledWindow);
+	builder->get_widget("vSepOne", vSeparatorOne);
+	builder->get_widget("vSepTwo", vSeparatorTwo);
+	builder->get_widget("sidebarRev", revealer);
+	builder->get_widget("sidebarscroll", sidebar_scrolledwindow);
+	builder->get_widget("main_stack", main_stack);
+	builder->get_widget_derived("infobar", m_infobar);
+	builder->get_widget_derived("treeview_torrent", m_treeview_torrent);
+	builder->get_widget_derived("treeview_rss", m_treeview_rss);
+	builder->get_widget_derived("sidebar", m_sidebar);
+	builder->get_widget_derived("rssDialog", m_rss2);
 
 	panel->pack2(*m_infobar);
 
@@ -77,7 +79,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
 	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
-	buttonRss->signal_clicked().connect([this](){m_rss2->run("gTorrent RSS");});
+//	buttonRss->signal_clicked().connect([this](){m_rss2->run("gTorrent RSS");});
+	buttonRss->signal_clicked().connect([this](){main_stack->set_visible_child(*m_treeview_rss);});
 
 	magPopover = Gtk::manage(new Gtk::Popover());
 	magPopover->set_relative_to(*addMagnetButton);
@@ -95,7 +98,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
 	{
 		tor->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
-		m_treeview->addCell(tor);
+		m_treeview_torrent->addCell(tor);
 	}
 
 	for(auto feedg : Application::getSingleton()->getCore()->m_feeds)
@@ -129,8 +132,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 bool GtkMainWindow::onSecTick()
 {
         // Update the gooey
-	m_treeview->updateCells();
-	m_infobar->updateState(m_treeview->getFirstSelected());
+	m_treeview_torrent->updateCells();
+	m_infobar->updateState(m_treeview_torrent->getFirstSelected());
         m_sidebar->updateTorrents();
 
         // Handle new torrents... wait, why the fuck do we handle only one at a time?
@@ -139,7 +142,7 @@ bool GtkMainWindow::onSecTick()
 	if (t)
 	{
 		t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
-		m_treeview->addCell(t);
+		m_treeview_torrent->addCell(t);
 	}
 
 	scrolledWindow->get_vscrollbar()->set_child_visible(false); // WTF is this doing here?
@@ -175,7 +178,7 @@ void GtkMainWindow::onAddBtnClicked()
 			if (t)//Checks if t is not null
 			{
 				t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
-				m_treeview->addCell(t);
+				m_treeview_torrent->addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful
 		}
@@ -219,7 +222,7 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 		if (t)
 		{
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
-			m_treeview->addCell(t);
+			m_treeview_torrent->addCell(t);
 		}
 		magEntry->set_text("");
 	}
@@ -227,21 +230,21 @@ void GtkMainWindow::onAddMagnetBtnClicked()
 
 void GtkMainWindow::onPauseBtnClicked()
 {
-	m_treeview->setSelectedPaused(true);
-	m_treeview->onSelectionChanged();
+	m_treeview_torrent->setSelectedPaused(true);
+	m_treeview_torrent->onSelectionChanged();
 }
 
 void GtkMainWindow::onResumeBtnClicked()
 {
-	m_treeview->setSelectedPaused(false);
-	m_treeview->onSelectionChanged();
+	m_treeview_torrent->setSelectedPaused(false);
+	m_treeview_torrent->onSelectionChanged();
 }
 
 void GtkMainWindow::onRemoveBtnClicked()
 {
-	for(auto t : m_treeview->selectedTorrents())
+	for(auto t : m_treeview_torrent->selectedTorrents())
 		m_infobar->removeInfo(t);
-	m_treeview->removeSelected();
+	m_treeview_torrent->removeSelected();
 }
 
 void GtkMainWindow::onPropertiesBtnClicked()
@@ -251,7 +254,7 @@ void GtkMainWindow::onPropertiesBtnClicked()
 
 bool GtkMainWindow::onDestroy(GdkEventAny *event)
 {
-	m_treeview->saveColumns();
+	m_treeview_torrent->saveColumns();
 	notify_uninit();
 	return false;
 }
@@ -267,10 +270,10 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 	short enter[] = { 36, 104 };
 	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8)
 	{
-		m_treeview->m_searchPopover->set_visible();
+		m_treeview_torrent->m_searchPopover->set_visible();
 		if(std::find(enter, enter + 2, event->hardware_keycode) != enter + 2)
-			m_treeview->m_searchPopover->set_visible(false);
-		m_treeview->m_filter->refilter();
+			m_treeview_torrent->m_searchPopover->set_visible(false);
+		m_treeview_torrent->m_filter->refilter();
 	}
 	return false;
 }
@@ -296,7 +299,7 @@ void GtkMainWindow::itemAvailableCallback(const libtorrent::feed_item& fi, std::
 			if(group->autoAddNewItem)
 			{
 				auto tor = m_core->addTorrent(fi.url);
-				m_treeview->addCell(tor);
+				m_treeview_torrent->addCell(tor);
 			}
 		}
 // TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
