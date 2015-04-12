@@ -14,13 +14,6 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	rbuilder->get_widget(      "rssTreeView",      rssTreeView);
 	set_default_response(1);
 
-	rssItemsList    = Gtk::ListStore::create(    items);
-	rssTreeView   ->set_model(   rssItemsList);
-
-	addFeedButton   ->signal_clicked().connect([this](){addNewFeed      ();});
-
-	rssTreeView   ->append_column("",   items.name);
-
         this->show_all_children();
 }
 
@@ -31,36 +24,42 @@ int GtkRSSDialog::run(std::string fName)
 
 	set_title(fName);
 
-	filtersList    ->clear();
-	rssItemsList   ->clear();
-	functionsList  ->clear();
-	globalFeedsList->clear();
-	activeFeedsList->clear();
+	rssItemsList    = Gtk::ListStore::create(    items);
+
+	//filtersList    ->clear();
+	//rssItemsList   ->clear();
+	//functionsList  ->clear();
+	//globalFeedsList->clear();
+	//activeFeedsList->clear();
 
 	rssTreeView   ->set_model(   rssItemsList);
-	funTreeView   ->set_model(  functionsList);
-	filterTreeView->set_model(    filtersList);
-	globalTreeView->set_model(globalFeedsList);
-	activeTreeView->set_model(activeFeedsList);
+	//funTreeView   ->set_model(  functionsList);
+	//filterTreeView->set_model(    filtersList);
+	//globalTreeView->set_model(globalFeedsList);
+	//activeTreeView->set_model(activeFeedsList);
 
-	rssAuto->set_active(feedg->autoAddNewItem);
+	//rssAuto->set_active(feedg->autoAddNewItem);
 	rssTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	funTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	filterTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	globalTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	activeTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	//funTreeView   ->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	//filterTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	//globalTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	//activeTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	for(auto f : m_core->m_feedhandles)
-	{
-		if(std::find(feedg->m_feeds.begin(), feedg->m_feeds.end(), f) != feedg->m_feeds.end()) continue; //if the feed is used in the group, then it'll be added to the active view
+	addFeedButton   ->signal_clicked().connect([this](){ feedAdd();});
 
-		Gtk::TreeRow row = *globalFeedsList->append();
-		if(f->get_feed_status().title != "")
-			row[global.name] = f->get_feed_status().title;
-		else
-			row[global.name] = f->get_feed_status().url;
-		row[global.feed] = f;
-	}
+	//rssTreeView   ->append_column("",   items.name);
+
+	//for(auto f : m_core->m_feedhandles)
+	//{
+	//	if(std::find(feedg->m_feeds.begin(), feedg->m_feeds.end(), f) != feedg->m_feeds.end()) continue; //if the feed is used in the group, then it'll be added to the active view
+
+	//	Gtk::TreeRow row = *globalFeedsList->append();
+	//	if(f->get_feed_status().title != "")
+	//		row[global.name] = f->get_feed_status().title;
+	//	else
+	//		row[global.name] = f->get_feed_status().url;
+	//	row[global.feed] = f;
+	//}
 
 	for(auto f : feedg->m_feeds)
 	{
@@ -101,7 +100,7 @@ void GtkRSSDialog::on_response(int response)
 	// (either auto add or run a notification when a new item is available, for example) or if "cancel", trash the group.
 }
 
-void GtkRSSDialog::addNewFeed()
+void GtkRSSDialog::feedAdd()
 {
 	auto refBuilder = Gtk::Builder::create();
 	refBuilder->add_from_resource("/org/gtk/gtorrent/dialog_generic.ui");
@@ -128,7 +127,7 @@ void GtkRSSDialog::addNewFeed()
 }
 
 // there's no constraint in removing a feed from the active list nor the global list since filters don't depend on them
-void GtkRSSDialog::removeFeed()
+void GtkRSSDialog::feedRemove()
 {
 	// a feed can be removed only from the global list, and will be removed from the active list of every other rss group
 	// unless the feed isn't used in any other group, the user will be warned that removing this feeds will impact other rss groups
@@ -241,7 +240,7 @@ void GtkRSSDialog::removeFromActive()
 	}
 }
 
-void GtkRSSDialog::addFilter()
+void GtkRSSDialog::filterAdd()
 {
 	// filters are run on every items from every active feed
 	// Filter have uniques names, but can have same regexes
@@ -267,7 +266,7 @@ void GtkRSSDialog::addFilter()
 	delete addFilterDialog;
 }
 
-void GtkRSSDialog::removeFilter()
+void GtkRSSDialog::filterRemove()
 {
 	// You can remove a filter only if it's  not used by any function
 	// if the user tries to remove an used filter, he should be prompted 
@@ -292,7 +291,7 @@ void GtkRSSDialog::removeFilter()
 	}
 }
 
-void GtkRSSDialog::addFunction()
+void GtkRSSDialog::functionAdd()
 {
 	// you can add a function only if the the filter specified in the lhs exists
 	// if the specified filter doesn't exist, the user should warned, and if he
@@ -332,7 +331,7 @@ void GtkRSSDialog::toggleAutoAdd()
 	feedg->autoAddNewItem = rssAuto->get_active();
 }
 
-void GtkRSSDialog::removeFunction()
+void GtkRSSDialog::functionRemove()
 {
 	std::vector<std::shared_ptr<gt::Feed>> removing;
 	auto sel   = funTreeView->get_selection();

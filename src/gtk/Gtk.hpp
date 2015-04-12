@@ -7,6 +7,7 @@
 
 namespace gt
 {
+    // TODO Rename this to gt::Gui and replace the GuiBase class
 	class GuiGtk : public GuiBase
 	{
 		Glib::RefPtr<Gtk::Application> m_app;

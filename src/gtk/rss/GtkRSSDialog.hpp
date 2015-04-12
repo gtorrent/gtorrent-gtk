@@ -70,8 +70,12 @@ class GtkRSSDialog : public Gtk::Dialog
 	GtkFunctionColumns functions;
 
 	std::shared_ptr<gt::Core> m_core;
-	Gtk::Button   *cancelButton = nullptr, *okButton       = nullptr, *addFeedButton  = nullptr, *removeFeedButton = nullptr, *aTogButton  = nullptr, *gToaButton = nullptr, *addFilterBtn = nullptr, *removeFilterBtn = nullptr, *addFunBtn = nullptr, *removeFunBtn = nullptr;
-	Gtk::TreeView *rssTreeView  = nullptr, *globalTreeView = nullptr, *activeTreeView = nullptr, *filterTreeView   = nullptr, *funTreeView = nullptr;
+	Gtk::Button   *cancelButton = nullptr, *okButton       = nullptr, *addFeedButton  = nullptr,
+		*removeFeedButton = nullptr, *aTogButton  = nullptr, *gToaButton = nullptr,
+		*addFilterBtn = nullptr, *removeFilterBtn = nullptr, *addFunBtn = nullptr,
+		*removeFunBtn = nullptr;
+	Gtk::TreeView *rssTreeView  = nullptr, *globalTreeView = nullptr, *activeTreeView = nullptr,
+	*filterTreeView   = nullptr, *funTreeView = nullptr;
 	Gtk::CheckButton *rssAuto   = nullptr;
 	Glib::RefPtr<Gtk::ListStore> rssItemsList, globalFeedsList, activeFeedsList, filtersList, functionsList;
 
@@ -80,14 +84,14 @@ public:
 	GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	int run(std::string = std::string());
 	void setupTreeviews();
-	void addNewFeed();
-	void removeFeed();
+	void feedAdd();
+	void feedRemove();
 	void moveToActive();
 	void removeFromActive();
-	void addFilter();
-	void removeFilter();
-	void addFunction();
+	void filterAdd();
+	void filterRemove();
+	void functionAdd();
+	void functionRemove();
 	void toggleAutoAdd();
-	void removeFunction();
 	virtual void on_response(int response); // TODO: implement this
 };
