@@ -77,17 +77,16 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
 	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
-	buttonRss->signal_clicked().connect([this](){ m_rss2->run("test"); });
+	buttonRss->signal_clicked().connect([this](){m_rss2->run("gTorrent RSS");});
 
-	magEntry   = Gtk::manage(new Gtk::Entry());
+	magPopover = Gtk::manage(new Gtk::Popover());
+	magPopover->set_relative_to(*addMagnetButton);
+	magPopover->set_position(Gtk::POS_LEFT);
+	magEntry = Gtk::manage(new Gtk::Entry());
 	magEntry->set_visible();
 	magEntry->set_width_chars(75);
-	magPopover = Gtk::manage(new Gtk::Popover());
-
 	magPopover->add(*magEntry);
-	magPopover->set_relative_to(*addMagnetButton);
 	addMagnetButton->set_popover(*magPopover);
-	magPopover->set_position(Gtk::POS_LEFT);
 
 	sidebar_scrolledwindow->set_min_content_width(150);
 

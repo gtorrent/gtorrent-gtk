@@ -16,10 +16,12 @@ public:
 	GtkFeedColumns()
 		{
 			add(name);
+			add(feed_url);
 			add(feed);
 		}
 
 	Gtk::TreeModelColumn<std::string> name;
+	Gtk::TreeModelColumn<std::string> feed_url;
 	Gtk::TreeModelColumn<std::shared_ptr<gt::Feed>> feed;
 };
 
@@ -64,7 +66,7 @@ public:
 
 class GtkRSSDialog : public Gtk::Dialog
 {
-	GtkFeedColumns     global, active;
+	GtkFeedColumns col_globals, active;
 	GtkRssItemColumns  items;
 	GtkFilterColumns   filters;
 	GtkFunctionColumns functions;

@@ -14,6 +14,10 @@ GtkRSSDialog::GtkRSSDialog(GtkDialog *dial, const Glib::RefPtr<Gtk::Builder> rbu
 	rbuilder->get_widget("rssTreeView", rssTreeView);
 	set_default_response(1);
 
+	addFeedButton->signal_clicked().connect([this](){ feedAdd();});
+	cancelButton->signal_clicked().connect([this](){close();});
+	okButton->signal_clicked().connect([this](){close();});
+
 	this->show_all_children();
 }
 
@@ -25,12 +29,13 @@ int GtkRSSDialog::run(std::string fName)
 
 	set_title(fName);
 
-	storeRssItems = Gtk::ListStore::create(items);
-	rssTreeView->set_model(storeRssItems);
+	storeGlobalFeeds = Gtk::ListStore::create(col_globals);
+	rssTreeView->set_model(storeGlobalFeeds);
 	rssTreeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
-	rssTreeView->append_column("test",   items.name);
 
-	addFeedButton   ->signal_clicked().connect([this](){ feedAdd();});
+	// Set up columns
+	rssTreeView->append_column("Name", col_globals.name);
+	rssTreeView->append_column("Feed URL", col_globals.feed_url);
 
 	for(auto f : m_feedgroups->m_feeds)
 	{
@@ -46,19 +51,6 @@ int GtkRSSDialog::run(std::string fName)
 			row[items.name] = item.title;
 			row[items.item] = item;
 		}
-	}
-
-	for(auto f : m_feedgroups->filters)
-	{
-		Gtk::TreeRow row = *storeFilters->append();
-		row[filters.name]  = f.first;
-		row[filters.regex] = f.second;
-	}
-
-	for(auto f : m_feedgroups->functions)
-	{
-		Gtk::TreeRow row = *storeFunctions->append();
-		row[functions.eval]  = f;
 	}
 
 	return Gtk::Dialog::run();
@@ -88,9 +80,10 @@ void GtkRSSDialog::feedAdd()
 		if(addFilterDialog->entry1->get_text() != "" && addFilterDialog->entry2->get_text() != "")
 		{
 			Gtk::TreeRow row = *storeGlobalFeeds->append();
-			row[global.name] = addFilterDialog->entry1->get_text();
-			auto f = m_core->addFeed(addFilterDialog->entry2->get_text());
-			row[global.feed] = f;
+			std::shared_ptr<gt::Feed> f = m_core->addFeed(addFilterDialog->entry2->get_text());
+			row[col_globals.name] = addFilterDialog->entry1->get_text();
+			row[col_globals.feed] = f;
+			row[col_globals.feed_url] = f->settings().url;
 			f->owners.insert(m_feedgroups);
 		}
 	}
@@ -114,7 +107,7 @@ void GtkRSSDialog::feedRemove()
 		rows.push_back(Gtk::TreeModel::RowReference(globalTreeView->get_model(), path));
 	for (auto i : rows)
 	{
-		std::shared_ptr<gt::Feed> f = (*storeGlobalFeeds->get_iter(i.get_path()))[global.feed];
+		std::shared_ptr<gt::Feed> f = (*storeGlobalFeeds->get_iter(i.get_path()))[col_globals.feed];
 		if(!doAnyway && !f->owners.empty())
 		{
 			auto errorDial = std::make_shared<Gtk::MessageDialog>("This feed is used in other groups!\nRemoving it will also remove it from every other groups.\nProceed ?",
@@ -148,7 +141,7 @@ void GtkRSSDialog::moveToActive()
 		rows.push_back(Gtk::TreeModel::RowReference(globalTreeView->get_model(), path));
 	for (auto i : rows)
 	{
-		moving.push_back((*storeGlobalFeeds->get_iter(i.get_path()))[global.feed]);
+		moving.push_back((*storeGlobalFeeds->get_iter(i.get_path()))[col_globals.feed]);
 		storeGlobalFeeds->erase(globalTreeView->get_model()->get_iter(i.get_path()));
 	}
 	for(auto f : moving)
