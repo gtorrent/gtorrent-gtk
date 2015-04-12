@@ -161,7 +161,7 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		int code = m_rss->run(name);
 		m_rss->hide();
 		if(code == 1)
-			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->feedg);
+			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->m_feedgroups);
 		// TODO: implement RSS dialog and pop it up here
 	}
 }

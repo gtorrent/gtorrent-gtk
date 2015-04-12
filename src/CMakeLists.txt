@@ -26,7 +26,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	${PROJECT_BINARY_DIR}/resources.c
 	${PROJECT_BINARY_DIR}/style.c
 	Application.cpp
-	core/GuiBase.cpp
+	base/GuiBase.cpp
 	gtk/Gtk.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
