@@ -15,7 +15,7 @@ public:
 	{
 			add(name);
 			add(editable);
-			add(clickCallback);
+			add(onClick);
 			add(icon);
 			add(filter);
                         add(title);
@@ -24,19 +24,20 @@ public:
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> name;
-
-	Gtk::TreeModelColumn<Glib::ustring> filter; // used to filter the main treeview
-	Gtk::TreeModelColumn<bool> editable; // Uneditable items are only titles and already existing labels/groups // TODO Nyanpasu: I'm probably going to remove this in favour of a context menu or some sort of group management dialog
-	Gtk::TreeModelColumn<std::function<void(void)>> clickCallback;
+	Gtk::TreeModelColumn<Glib::ustring> filter;
+	// Uneditable items are only titles and already existing labels/groups
+	// TODO Nyanpasu: I'm probably going to remove this in favour of a context menu or some sort of group management dialog
+	Gtk::TreeModelColumn<bool> editable;
+	Gtk::TreeModelColumn<std::function<void(void)>> onClick;
 	Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> icon;
 
-        // And here is where liststore starts to fucking suck.
-        // Only a particular row of each member needs this.
-        // Furthermore, these are unset for irrelevant rows. Not sure what they
-        // are supposed to default to.
-        Gtk::TreeModelColumn<gt::TorrentGroup*> group;
+	// And here is where liststore starts to fucking suck.
+	// Only a particular row of each member needs this.
+	// Furthermore, these are unset for irrelevant rows. Not sure what they
+	// are supposed to default to.
+	Gtk::TreeModelColumn<gt::TorrentGroup*> group;
 	Gtk::TreeModelColumn<Glib::ustring> title;
-        Gtk::TreeModelColumn<std::vector<std::shared_ptr<gt::Torrent>>*> group_vector; // Nice templates.
+	Gtk::TreeModelColumn<std::vector<std::shared_ptr<gt::Torrent>>*> group_vector;
 };
 
 class GtkTorrentSideBar : public Gtk::TreeView
@@ -48,13 +49,14 @@ public:
 	GtkSideBarColumns m_cols;
 	Glib::RefPtr<Gtk::TreeStore> m_liststore;
 
-	Gtk::TreeModel::Row m_torrent_row;
-	Gtk::TreeModel::Row m_rssfeed_row;
+	Gtk::TreeModel::Row m_row_torrent;
+	Gtk::TreeModel::Row m_row_rss;
 
 	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
-        bool sideBar_onClick(GdkEventButton *event);
-        void addedItem(std::string path, std::string name);
-        void onRowClicked(Gtk::TreeRow);
-        void setupColumns();
-        void updateTorrents();
+	void addedItem(std::string path, std::string name);
+	void onRowClicked(Gtk::TreeRow);
+	void setupColumns();
+	void updateTorrents();
+
+	void setupRows();
 };

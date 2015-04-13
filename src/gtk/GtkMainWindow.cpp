@@ -125,10 +125,13 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 }
 
 /**
-* Update interface
-* Updates torrent cells
-* Hide vertical scrollbar
-*/
+ * Update interface
+ * Updates torrent cells
+ * Hide vertical scrollbar
+ * nyanpasu: I really want to deprecate this. Rather than update per second, I want the values to be more flexible.
+ * Don't update by a timer, rather, update the view onChange, with a timeout. Similar but some things may override it, for example.
+ * I'll have to experiment with how intensive refreshing real time is.
+ */
 bool GtkMainWindow::onSecTick()
 {
         // Update the gooey
@@ -145,7 +148,7 @@ bool GtkMainWindow::onSecTick()
 		m_treeview_torrent->addCell(t);
 	}
 
-	scrolledWindow->get_vscrollbar()->set_child_visible(false); // WTF is this doing here?
+	scrolledWindow->get_vscrollbar()->set_child_visible(false);
 	return true;
 }
 
