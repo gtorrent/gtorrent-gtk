@@ -43,7 +43,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkGenericAddDialog.cpp
 	gtk/GtkFunctionDialog.cpp
 	gtk/utils/FileTree.cpp
-	main.cpp
+	GTorrentApp.cpp
 	)
 
 TARGET_LINK_LIBRARIES ( gtorrent-gtk
