@@ -13,7 +13,7 @@
 #include <gtorrent/Platform.hpp>
 #include <gtorrent/Torrent.hpp>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkFileTreeView.hpp"
 
 std::string prioStr[] = 

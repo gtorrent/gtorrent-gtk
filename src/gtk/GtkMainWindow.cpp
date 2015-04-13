@@ -16,7 +16,7 @@
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Core.hpp>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkAssociationDialog.hpp"
 #include "GtkTorrentTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
@@ -36,7 +36,7 @@
 GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rbuilder)
 : Gtk::Window(win),
   builder(rbuilder),
-  m_core(Application::getSingleton()->getCore())
+  m_core(GTorrentApp::getCore())
 {
 	notify_init ("gTorrent");
 
@@ -92,13 +92,13 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	
 	sidebar_scrolledwindow->set_min_content_width(150);
 
-	for(auto tor : Application::getSingleton()->getCore()->getTorrents())
+	for(auto tor : GTorrentApp::getCore()->getTorrents())
 	{
 		tor->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
 		m_treeview->addCell(tor);
 	}
 
-	for(auto feedg : Application::getSingleton()->getCore()->m_feeds)
+	for(auto feedg : GTorrentApp::getCore()->m_feeds)
 	{
 		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f)   { feedStateChangedCallback(oldstate, f); };
 		feedg->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){ itemAvailableCallback(fi, fg); };

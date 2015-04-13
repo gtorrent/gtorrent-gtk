@@ -3,7 +3,7 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/label.h>
 #include <gtkmm/builder.h>
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 
 class GtkStatusBox : public Gtk::Box
 {

@@ -8,7 +8,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/scrolledwindow.h>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkBlockBar.hpp"
 #include "GtkGraph.hpp"
 #include "GtkStatusBox.hpp"
@@ -69,7 +69,7 @@ void GtkTorrentInfoBar::updateState(std::shared_ptr<gt::Torrent> selected)
 	m_status_box->update(selected);
 	m_peers->update();
 	m_fileview->update();
-	std::vector<std::shared_ptr<gt::Torrent>> t = Application::getSingleton()->getCore()->getTorrents();
+	std::vector<std::shared_ptr<gt::Torrent>> t = GTorrentApp::getCore()->getTorrents();
 	for(auto ptr : t)
 		m_graph->addValue(ptr, (double)ptr->getUploadRate(), (double)ptr->getDownloadRate());
 

@@ -25,9 +25,6 @@ SET_SOURCE_FILES_PROPERTIES(${PROJECT_BINARY_DIR}/style.c PROPERTIES GENERATED 1
 ADD_EXECUTABLE ( ${PROJECT_NAME}
 	${PROJECT_BINARY_DIR}/resources.c
 	${PROJECT_BINARY_DIR}/style.c
-	Application.cpp
-	core/Base.cpp
-	gtk/Gtk.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
 	gtk/GtkTorrentTreeView.cpp
@@ -44,6 +41,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkFunctionDialog.cpp
 	gtk/utils/FileTree.cpp
 	GTorrentApp.cpp
+	DefaultSettings.cpp
 	)
 
 TARGET_LINK_LIBRARIES ( gtorrent-gtk

@@ -14,7 +14,7 @@
 #include <gtkmm/switch.h>
 #include <gtkmm/builder.h>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkMainWindow.hpp"
 #include "GtkTorrentTreeView.hpp"
 
@@ -169,7 +169,7 @@ void GtkSettingsDialog::onOkClicked()
 	gt::Settings::settings["GraphDownloadCurveStyle"] = (ddashcheck     ->get_active()) ?  "Dash"     : "Line";
 
 	backup = gt::Settings::settings;
-	Application::getSingleton()->getCore()->setSessionParameters(); //reload settings
+	GTorrentApp::getCore()->setSessionParameters(); //reload settings
 	dial->hide();
 }
 

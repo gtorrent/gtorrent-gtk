@@ -12,7 +12,7 @@
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkMainWindow.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkTorrentTreeView.hpp"
@@ -322,7 +322,7 @@ void GtkTorrentTreeView::removeSelected()
 	for (auto i : rows)
 	{
 		Gtk::TreeModel::iterator treeiter = m_liststore->get_iter(m_filter->convert_path_to_child_path(i.get_path()));
-		Application::getSingleton()->getCore()->removeTorrent((*treeiter)[m_cols.m_col_torrent]);
+		GTorrentApp::getCore()->removeTorrent((*treeiter)[m_cols.m_col_torrent]);
 		m_liststore->erase(treeiter);
 	}
 	m_parent->onSecTick();
@@ -548,9 +548,9 @@ bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
 	std::string sel_data = selection_data.get_data_as_string();
-	if(Application::getSingleton()->getCore()->isLink(sel_data))
+	if(GTorrentApp::getCore()->isLink(sel_data))
 	{
-		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
+		std::shared_ptr<gt::Torrent> t = GTorrentApp::getCore()->addTorrent(sel_data);
 		if (t)//Checks if t is not null
 		{
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
@@ -569,7 +569,7 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
 		{
-			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
+			std::shared_ptr<gt::Torrent> t = GTorrentApp::getCore()->addTorrent(fn);
 			if (t)//Checks if t is not null
 			{
 				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);

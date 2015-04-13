@@ -3,7 +3,7 @@
 #include <gtkmm/cssprovider.h>
 
 #include "GtkTorrentSideBar.hpp"
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 
 GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder)
   : Gtk::TreeView(tree), m_builder(rbuilder)
@@ -64,7 +64,7 @@ void GtkTorrentSideBar::setupColumns()
 
         // XXX TMP WILL REMOVE AND REPLACE WITH PROPER FUNCTION
         // Yes this is horrible. Bear with it for now.
-        auto g = Application::getSingleton()->getCore()->getAllTorrents();
+        auto g = GTorrentApp::getCore()->getAllTorrents();
 	Gtk::TreeModel::Row row = *(m_liststore->append(m_torrent_row.children()));
 	row[m_cols.name] = "All";
 	row[m_cols.title] = "All";
@@ -113,7 +113,7 @@ void GtkTorrentSideBar::setupColumns()
 	auto rss_icon_scaled =  rss_icon->scale_simple(16, 16, Gdk::INTERP_BILINEAR);
 	m_rssfeed_row[m_cols.icon] = rss_icon_scaled;
 
-	for(auto fg : Application::getSingleton()->getCore()->m_feeds)
+	for(auto fg : GTorrentApp::getCore()->m_feeds)
 	{
 		row = *(m_liststore->append(m_rssfeed_row.children()));
 		row[m_cols.name] = fg->name;
@@ -165,7 +165,7 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		int code = m_rss->run(name);
 		m_rss->hide();
 		if(code == 1)
-			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->feedg);
+			GTorrentApp::getCore()->m_feeds.push_back(m_rss->feedg);
 		// TODO: implement RSS dialog and pop it up here
 	}
 }

@@ -4,7 +4,7 @@
 
 #include <gtorrent/Settings.hpp>
 
-#include "../Application.hpp"
+#include "../GTorrentApp.hpp"
 #include "GtkGraph.hpp"
 
 /**

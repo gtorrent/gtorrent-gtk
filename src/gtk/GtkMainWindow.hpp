@@ -24,7 +24,7 @@ class GtkSettingsDialog;
 class GtkMainWindow : public Gtk::Window
 {
 	const Glib::RefPtr<Gtk::Builder> builder;
-	std::shared_ptr<gt::Core> &m_core;
+	std::shared_ptr<gt::Core> m_core;
 	GtkSettingsDialog *d = nullptr;
 
 	// Signal Responders

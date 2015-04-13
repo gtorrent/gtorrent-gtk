@@ -1,16 +1,7 @@
-#include "Base.hpp"
-#include "../Application.hpp"
+#include "DefaultSettings.hpp"
 #include <gtorrent/Settings.hpp>
 
-/**
-* Sets a base for the rest of the application.
-*/
-GuiBase::GuiBase() :
-	m_core(Application::getSingleton()->getCore())
-{
-}
-
-void GuiBase::loadDefaultSettings()
+void loadDefaultSettings()
 {
 	gt::Settings::settings["PausedForeGroundColor"]        = "#F08080";
 	gt::Settings::settings["PausedBackGroundColor"]        = "#800000";
@@ -39,7 +30,7 @@ void GuiBase::loadDefaultSettings()
 	gt::Settings::settings["GraphUploadCurveStyle"  ] = "Line"; // Can also be Dash
 	gt::Settings::settings["GraphDownloadCurveStyle"] = "Line";
 
-	gt::Settings::settings["GraphStyle"] = "Curves"; // Can also be filled -> "Fill"	
+	gt::Settings::settings["GraphStyle"] = "Curves"; // Can also be filled -> "Fill"
 	gt::Settings::settings["GraphCurveStyle"] = "Curve"; // Can also be "Polyline"
 	gt::Settings::settings["GraphIntervals"] = "10 60 1800 3600"; // unsigned number of seconds in interval separated by spaces
 	gt::Settings::settings["GraphPreferredInterval"] = "60"; // default interval
@@ -55,5 +46,4 @@ void GuiBase::loadDefaultSettings()
 	gt::Settings::settings["ShowLegend"             ] = "Yes";
 	gt::Settings::settings["ShowGrid"               ] = "Yes";
 	gt::Settings::settings["EnableNotification"     ] = "Yes";
-
 }
