@@ -87,13 +87,15 @@ public:
 class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
-	GtkTorrentColumns m_cols;
-	Gtk::Entry *m_searchEntry;
-
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
+	GtkTorrentColumns m_cols;
+
+	Gtk::Entry *m_searchEntry;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
 	Gtk::CheckMenuItem *rcmItemSeq;
-	std::map<std::string, std::pair<std::string, std::string>> m_colors; // Associates a state with a background and foreground color.
+	Glib::RefPtr<Gtk::Builder> m_builder;
+	// Associates a state with a background and foreground color.
+	std::map<std::string, std::pair<std::string, std::string>> m_colors;
 
 	void setupColumns();
 

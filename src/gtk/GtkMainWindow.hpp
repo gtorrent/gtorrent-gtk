@@ -85,4 +85,6 @@ public:
 	void onClickRss();
 
 	void fillEntryWithLink(Gtk::Entry * entry);
+
+	void createPopover(Gtk::MenuButton * pButton, Gtk::Popover * pPopover, Gtk::Entry * pEntry);
 };

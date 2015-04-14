@@ -23,7 +23,7 @@
 #include "GtkMainWindow.hpp"
 
 // TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
-//       so remove the header, cutomize the cells, and enable the revealer with the property button
+//       so remove the header, customise the cells, and enable the revealer with the property button
 //       Also find a way to darken the treeview when the sidebar is shown, the same way the window is
 //       darkened when a modal dialog is opened.
 
@@ -82,22 +82,9 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
 
 	magPopover = Gtk::manage(new Gtk::Popover());
-	magPopover->set_relative_to(*addMagnetButton);
-	magPopover->set_position(Gtk::POS_LEFT);
-	magEntry = Gtk::manage(new Gtk::Entry());
-	magEntry->set_visible();
-	magEntry->set_width_chars(75);
-	magPopover->add(*magEntry);
-	addMagnetButton->set_popover(*magPopover);
-
 	rssPopover = Gtk::manage(new Gtk::Popover());
-	rssPopover->set_relative_to(*addMagnetButton);
-	rssPopover->set_position(Gtk::POS_LEFT);
-	rssEntry = Gtk::manage(new Gtk::Entry());
-	rssEntry->set_visible();
-	rssEntry->set_width_chars(75);
-	rssPopover->add(*rssEntry);
-	buttonRss->set_popover(*rssPopover);
+	createPopover(addMagnetButton, magPopover, magEntry);
+	createPopover(buttonRss, rssPopover, rssEntry);
 
 	sidebar_scrolledwindow->set_min_content_width(150);
 
@@ -337,4 +324,20 @@ void GtkMainWindow::fillEntryWithLink(Gtk::Entry *entry)
 	std::string link = clip->wait_for_text();
 	if(gt::Core::isLink(link))
 		entry->set_text(link);
+}
+
+/**
+ * Sets popover to MenuButton
+ * Probably not worth being set into its own function
+ * Should be renamed or inlined again.
+ */
+void GtkMainWindow::createPopover(Gtk::MenuButton *pButton, Gtk::Popover *pPopover, Gtk::Entry *pEntry)
+{
+	pPopover->set_relative_to(*addMagnetButton);
+	pPopover->set_position(Gtk::POS_LEFT);
+	magEntry = Gtk::manage(new Gtk::Entry());
+	magEntry->set_visible();
+	magEntry->set_width_chars(75);
+	magPopover->add(*magEntry);
+	addMagnetButton->set_popover(*magPopover);
 }

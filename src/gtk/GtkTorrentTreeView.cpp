@@ -21,7 +21,8 @@
 * Sets up the tree view containing torrent information.
 */
 GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder) :
-	Gtk::TreeView(treeview)
+	Gtk::TreeView(treeview),
+	m_builder(rbuilder)
 {
   	m_liststore = Gtk::ListStore::create(m_cols);
 	m_filter = Gtk::TreeModelFilter::create(m_liststore);
@@ -38,19 +39,8 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
-        // Set up columns
-        // TODO set up the sort columns as well.
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_queue"))     ->pack_start(m_cols.m_col_queue);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_name"))      ->pack_start(m_cols.m_col_name);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_eta"))       ->pack_start(m_cols.m_col_eta);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_age"))       ->pack_start(m_cols.m_col_age);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_seeders"))   ->pack_start(m_cols.m_col_seeders);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_leechers"))  ->pack_start(m_cols.m_col_leechers);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_download"))  ->pack_start(m_cols.m_col_dl_speed);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_size"))      ->pack_start(m_cols.m_col_size);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_remaining")) ->pack_start(m_cols.m_col_remaining);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
+
+	setupColumns();
 
         // Set up renderer for progress bar
         Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_progress"));
@@ -62,8 +52,6 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
 	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 	col->set_sort_column(m_cols.m_col_percent);
-
-	setupColumns(); // TODO Deprecate
 
 	set_enable_search();
 	set_search_entry(*m_searchEntry);
@@ -476,41 +464,23 @@ void GtkTorrentTreeView::saveColumns()
 void GtkTorrentTreeView::loadColumns()
 {
         return;
-	std::vector<std::string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
-	std::vector<Gtk::TreeModelColumnBase*> cols
-	{
-		&m_cols.m_col_queue,
-		&m_cols.m_col_age,
-		&m_cols.m_col_eta,
-		&m_cols.m_col_name,
-		&m_cols.m_col_seeders,
-		&m_cols.m_col_leechers,
-		&m_cols.m_col_ul_speed,
-		&m_cols.m_col_dl_speed,
-		&m_cols.m_col_size,
-		&m_cols.m_col_remaining,
-		&m_cols.m_col_dl_ratio
-	};
-
-	std::vector<Gtk::TreeModelColumnBase*> scols
-	{
-		&m_cols.m_col_queue,
-		&m_cols.m_col_bage,
-		&m_cols.m_col_beta,
-		&m_cols.m_col_name,
-		&m_cols.m_col_seeders,
-		&m_cols.m_col_leechers,
-		&m_cols.m_col_bul_speed,
-		&m_cols.m_col_bdl_speed,
-		&m_cols.m_col_bsize,
-		&m_cols.m_col_bremaining,
-		&m_cols.m_col_dl_ratio
-	};
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_queue"))     ->pack_start(m_cols.m_col_queue);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_name"))      ->pack_start(m_cols.m_col_name);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_eta"))       ->pack_start(m_cols.m_col_eta);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_age"))       ->pack_start(m_cols.m_col_age);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_seeders"))   ->pack_start(m_cols.m_col_seeders);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_leechers"))  ->pack_start(m_cols.m_col_leechers);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_download"))  ->pack_start(m_cols.m_col_dl_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_size"))      ->pack_start(m_cols.m_col_size);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_remaining")) ->pack_start(m_cols.m_col_remaining);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
 
 	std::string tmp = gt::Settings::settings["ColumnsProperties"];
 	if (tmp == "")
 		tmp = "#|20|h,Age|50|h,ETA|90|v,Name|250|v,Seed|45|v,Leech|45|v,Up Speed|95|v,Down Speed|95|v,Size|75|v,Remains|75|h,Ratio|55|h,Progress|160|v,";
 
+	/*
 	do
 	{
 		std::string title = tmp.substr(0, tmp.find('|'));
@@ -532,13 +502,14 @@ void GtkTorrentTreeView::loadColumns()
 		}
 	}
 	while (tmp != "");
+	*/
 }
 
 bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 {
 	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
 	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) return false;
-	m_infobar->updateInfo(getFirstSelected());	
+	m_infobar->updateInfo(getFirstSelected());
 	if(event->send_event) return true;
 	event->send_event = true;
 	Gdk::Event((GdkEvent*)event).put();
