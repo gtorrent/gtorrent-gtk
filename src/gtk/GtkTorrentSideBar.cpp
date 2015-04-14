@@ -140,13 +140,6 @@ void GtkTorrentSideBar::setupRows()
 
 	}
 
-	row = *(m_liststore->append(m_row_rss.children()));
-	row[m_cols.name] = "Add an RSS group";
-	row[m_cols.editable] = true;
-
-	row[m_cols.icon] = Gtk::IconTheme::get_default()->lookup_icon("list-add-symbolic", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
-	row[m_cols.onClick] = [row](){};
-
 	// Maybe migrate settings there
 }
 

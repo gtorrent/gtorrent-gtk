@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-	<!-- interface-requires gtk+ 3.10 -->
 	<menu id="appmenu">
 		<section>
 			<item>
@@ -49,6 +48,23 @@
 							<object class="GtkImage" id="addMagnetImage">
 								<property name="icon_size">1</property>
 								<property name="icon_name">insert-link-symbolic</property>
+							</object>
+						</child>
+					</object>
+					<packing>
+						<property name="pack_type">start</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkMenuButton" id="addButtonRss">
+						<style>
+							<class name="button"/>
+							<class name="image-button"/>
+						</style>
+						<child>
+							<object class="GtkImage">
+								<property name="icon_size">1</property>
+								<property name="icon_name">preferences-system-symbolic</property>
 							</object>
 						</child>
 					</object>
@@ -131,23 +147,6 @@
 						</style>
 						<child>
 							<object class="GtkImage" id="preferencesImage">
-								<property name="icon_size">1</property>
-								<property name="icon_name">preferences-system-symbolic</property>
-							</object>
-						</child>
-					</object>
-					<packing>
-						<property name="pack_type">start</property>
-					</packing>
-				</child>
-				<child>
-					<object class="GtkButton" id="buttonRss">
-						<style>
-							<class name="button"/>
-							<class name="image-button"/>
-						</style>
-						<child>
-							<object class="GtkImage">
 								<property name="icon_size">1</property>
 								<property name="icon_name">preferences-system-symbolic</property>
 							</object>

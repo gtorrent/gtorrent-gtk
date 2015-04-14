@@ -40,7 +40,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Show all children at start so that widgets that need to hide can do so.
 	show_all_children();
 
-	Gtk::Revealer       *revealer;
+	Gtk::Revealer *revealer;
 	builder->get_widget("torrentbox", m_torrentbox);
 	builder->get_widget("searchbar", m_searchbar);
 	builder->get_widget("addTorrentButton", addTorrentButton);
@@ -50,7 +50,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget("pauseButton", pauseButton);
 	builder->get_widget("deleteButton", removeButton);
 	builder->get_widget("preferencesButton", propertiesButton);
-	builder->get_widget("buttonRss", buttonRss);
+	builder->get_widget("addButtonRss", buttonRss);
 	builder->get_widget("settingsButton", settingsButton);
 	builder->get_widget("panel", panel);
 	builder->get_widget("scrolledWindow", scrolledWindow);
@@ -71,16 +71,15 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 	signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
-	addTorrentButton->signal_clicked().connect([this](){        onAddBtnClicked();});
-	pauseButton     ->signal_clicked().connect([this](){      onPauseBtnClicked();});
-	resumeButton    ->signal_clicked().connect([this](){     onResumeBtnClicked();});
-	removeButton    ->signal_clicked().connect([this](){     onRemoveBtnClicked();});
-	settingsButton  ->signal_clicked().connect([this](){   onSettingsBtnClicked();});
-	addMagnetButton ->signal_clicked().connect([this](){  onAddMagnetBtnClicked();});
+	addTorrentButton->signal_clicked().connect([this](){onClickAdd();});
+	pauseButton     ->signal_clicked().connect([this](){onClickPause();});
+	resumeButton    ->signal_clicked().connect([this](){onClickResume();});
+	removeButton    ->signal_clicked().connect([this](){onClickRemove();});
+	settingsButton  ->signal_clicked().connect([this](){onClickSettings();});
+	addMagnetButton ->signal_clicked().connect([this](){onClickMagnet();});
+	buttonRss       ->signal_clicked().connect([this](){onClickRss();});
 	m_searchButton  ->signal_clicked().connect([this](){m_searchbar->set_search_mode(!m_searchbar->get_search_mode());});
 	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
-//	buttonRss->signal_clicked().connect([this](){m_rss2->run("gTorrent RSS");});
-	buttonRss->signal_clicked().connect([this](){main_stack->set_visible_child(*m_treeview_rss);});
 
 	magPopover = Gtk::manage(new Gtk::Popover());
 	magPopover->set_relative_to(*addMagnetButton);
@@ -90,6 +89,15 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	magEntry->set_width_chars(75);
 	magPopover->add(*magEntry);
 	addMagnetButton->set_popover(*magPopover);
+
+	rssPopover = Gtk::manage(new Gtk::Popover());
+	rssPopover->set_relative_to(*addMagnetButton);
+	rssPopover->set_position(Gtk::POS_LEFT);
+	rssEntry = Gtk::manage(new Gtk::Entry());
+	rssEntry->set_visible();
+	rssEntry->set_width_chars(75);
+	rssPopover->add(*rssEntry);
+	buttonRss->set_popover(*rssPopover);
 
 	sidebar_scrolledwindow->set_min_content_width(150);
 
@@ -155,7 +163,7 @@ bool GtkMainWindow::onSecTick()
 /**
 * Open a FileChooserDialog that filters for bittorent files
 */
-void GtkMainWindow::onAddBtnClicked()
+void GtkMainWindow::onClickAdd()
 {
 	Gtk::FileChooserDialog fc("Browse for torrent file", Gtk::FILE_CHOOSER_ACTION_OPEN);
 	fc.set_default_size(256, 256);
@@ -208,42 +216,52 @@ void GtkMainWindow::torrentStateChangedCallback(int oldstate, std::shared_ptr<gt
 }
 
 /**
-* Display magPopover
+* Handle magPopover being toggled
 */
-void GtkMainWindow::onAddMagnetBtnClicked()
+void GtkMainWindow::onClickMagnet()
 {
-	if(magPopover->get_visible())
-	{
-		Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
-		std::string link = clip->wait_for_text();
-		if(gt::Core::isLink(link))
-			magEntry->set_text(link);
-	}
-	else
-	{
+	if(magPopover->get_visible()) {
+		// Popover has been toggled
+		fillEntryWithLink(magEntry);
+	} else {
+		// Popover has been detoggled
 		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
-		if (t)
-		{
+		if (t) {
 			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, this, std::placeholders::_1, std::placeholders::_2);
 			m_treeview_torrent->addCell(t);
+		} else {
+			// TODO Unobstrusively display "could not add torrent"
+			// Like in Android's toasts?
 		}
 		magEntry->set_text("");
 	}
 }
 
-void GtkMainWindow::onPauseBtnClicked()
+void GtkMainWindow::onClickRss()
+{
+	if(rssPopover->get_visible()) {
+		// Popover has been toggled
+		fillEntryWithLink(rssEntry);
+	} else {
+		// Popover has been detoggled
+		std::shared_ptr<gt::Feed> f = m_core->addFeed(rssEntry->get_text());
+		magEntry->set_text("");
+	}
+}
+
+void GtkMainWindow::onClickPause()
 {
 	m_treeview_torrent->setSelectedPaused(true);
 	m_treeview_torrent->onSelectionChanged();
 }
 
-void GtkMainWindow::onResumeBtnClicked()
+void GtkMainWindow::onClickResume()
 {
 	m_treeview_torrent->setSelectedPaused(false);
 	m_treeview_torrent->onSelectionChanged();
 }
 
-void GtkMainWindow::onRemoveBtnClicked()
+void GtkMainWindow::onClickRemove()
 {
 	for(auto t : m_treeview_torrent->selectedTorrents())
 		m_infobar->removeInfo(t);
@@ -262,7 +280,7 @@ bool GtkMainWindow::onDestroy(GdkEventAny *event)
 	return false;
 }
 
-void GtkMainWindow::onSettingsBtnClicked()
+void GtkMainWindow::onClickSettings()
 {
 	d->run();
 }
@@ -307,4 +325,16 @@ void GtkMainWindow::itemAvailableCallback(const libtorrent::feed_item& fi, std::
 		}
 // TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
 // if the item passes all the filters of an owner that wants auto-adding, add it here.
+}
+
+/**
+ * Populates entry with text from the X clipboardif the X clipboard contains a link
+ * This function can be made standalone as a utility function
+ */
+void GtkMainWindow::fillEntryWithLink(Gtk::Entry *entry)
+{
+	Glib::RefPtr<Gtk::Clipboard> clip = Gtk::Clipboard::get();
+	std::string link = clip->wait_for_text();
+	if(gt::Core::isLink(link))
+		entry->set_text(link);
 }

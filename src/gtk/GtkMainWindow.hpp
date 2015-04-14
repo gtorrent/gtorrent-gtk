@@ -35,12 +35,12 @@ class GtkMainWindow : public Gtk::Window
 	bool onKeyPress(GdkEventKey *event);
 
 	void onAboutBtnClicked();
-	void onAddBtnClicked();
-	void onAddMagnetBtnClicked();
-	void onPauseBtnClicked();
-	void onResumeBtnClicked();
-	void onRemoveBtnClicked();
-	void onSettingsBtnClicked();
+	void onClickAdd();
+	void onClickMagnet();
+	void onClickPause();
+	void onClickResume();
+	void onClickRemove();
+	void onClickSettings();
 	void onPropertiesBtnClicked();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
@@ -55,27 +55,34 @@ public:
 	GtkTorrentSideBar  *m_sidebar;
 	GtkRSSDialog       *m_rss2;
 
+	Gtk::ScrolledWindow *scrolledWindow;
+	Gtk::ScrolledWindow *sidebar_scrolledwindow;
+	Gtk::Paned          *panel;
+	Gtk::Box            *m_torrentbox;
+	Gtk::SearchBar      *m_searchbar;
+	Gtk::Stack          *main_stack;
+
 	Gtk::Button         *addTorrentButton;
+	Gtk::MenuButton     *addMagnetButton;
 	Gtk::Button         *resumeButton;
 	Gtk::Button         *pauseButton;
 	Gtk::Button         *removeButton;
+	Gtk::MenuButton     *buttonRss;
 	Gtk::Button         *propertiesButton;
 	Gtk::Button         *settingsButton;
 	Gtk::Button         *m_searchButton;
-	Gtk::Box            *m_torrentbox;
-	Gtk::SearchBar      *m_searchbar;
 	Gtk::Separator      *vSeparatorOne;
 	Gtk::Separator      *vSeparatorTwo;
 	Gtk::Popover        *magPopover;
 	Gtk::Entry          *magEntry;
-	Gtk::ScrolledWindow *scrolledWindow;
-	Gtk::ScrolledWindow *sidebar_scrolledwindow;
-	Gtk::MenuButton     *addMagnetButton;
-	Gtk::Paned          *panel;
-	Gtk::Button         *buttonRss;
-	Gtk::Stack          *main_stack;
+	Gtk::Popover        *rssPopover;
+	Gtk::Entry          *rssEntry;
 
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
+
+	void onClickRss();
+
+	void fillEntryWithLink(Gtk::Entry * entry);
 };
