@@ -1,8 +1,12 @@
 #pragma once
 
+#include "rss/GtkRSSDialog.hpp"
+#include "torrent/GtkTorrentInfoBar.hpp"
+
 #include <gtorrent/Core.hpp>
 #include <gtorrent/FeedGroup.hpp>
 
+// TODO Just predeclare these instead of including. Only one you need is Window
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
@@ -18,9 +22,6 @@
 #include <gtkmm/stack.h>
 #include <gtkmm/window.h>
 
-#include "rss/GtkRSSDialog.hpp"
-
-class GtkTorrentInfoBar;
 class GtkTorrentTreeView;
 class GtkTorrentSideBar;
 class GtkSettingsDialog;
@@ -57,10 +58,11 @@ public:
 
 	Gtk::ScrolledWindow *scrolledWindow;
 	Gtk::ScrolledWindow *sidebar_scrolledwindow;
-	Gtk::Paned          *panel;
+	Gtk::Paned          *m_panel;
 	Gtk::Box            *m_torrentbox;
 	Gtk::SearchBar      *m_searchbar;
-	Gtk::Stack          *main_stack;
+	Gtk::Stack          *m_stack_info;
+	Gtk::Stack          *m_stack_main;
 
 	Gtk::Button         *addTorrentButton;
 	Gtk::MenuButton     *addMagnetButton;

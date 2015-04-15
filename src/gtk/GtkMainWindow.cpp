@@ -1,3 +1,15 @@
+#include "../Application.hpp"
+#include "GtkAssociationDialog.hpp"
+#include "GtkMainWindow.hpp"
+#include "GtkSettingsDialog.hpp"
+#include "torrent/GtkTorrentInfoBar.hpp"
+#include "torrent/GtkTorrentSideBar.hpp"
+#include "torrent/GtkTorrentTreeView.hpp"
+
+#include <gtorrent/Core.hpp>
+#include <gtorrent/Platform.hpp>
+#include <gtorrent/Settings.hpp>
+
 #include <future>
 #include <boost/algorithm/string.hpp>
 
@@ -9,18 +21,6 @@
 #include <gtkmm/main.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/scrollbar.h>
-
-#include <gtorrent/Platform.hpp>
-#include <gtorrent/Settings.hpp>
-#include <gtorrent/Core.hpp>
-
-#include "../Application.hpp"
-#include "GtkAssociationDialog.hpp"
-#include "GtkTorrentTreeView.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include "GtkSettingsDialog.hpp"
-#include "GtkTorrentSideBar.hpp"
-#include "GtkMainWindow.hpp"
 
 // TODO: GtkRevealer should contain a listbox, list view of even a tree view like nautilus's
 //       so remove the header, customise the cells, and enable the revealer with the property button
@@ -35,7 +35,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
   builder(rbuilder),
   m_core(Application::getSingleton()->getCore())
 {
-	notify_init ("gTorrent");
+	notify_init("gTorrent");
 
 	// Show all children at start so that widgets that need to hide can do so.
 	show_all_children();
@@ -52,20 +52,22 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget("preferencesButton", propertiesButton);
 	builder->get_widget("addButtonRss", buttonRss);
 	builder->get_widget("settingsButton", settingsButton);
-	builder->get_widget("panel", panel);
+	builder->get_widget("panel", m_panel);
 	builder->get_widget("scrolledWindow", scrolledWindow);
 	builder->get_widget("vSepOne", vSeparatorOne);
 	builder->get_widget("vSepTwo", vSeparatorTwo);
 	builder->get_widget("sidebarRev", revealer);
 	builder->get_widget("sidebarscroll", sidebar_scrolledwindow);
-	builder->get_widget("main_stack", main_stack);
+	builder->get_widget("stack_main", m_stack_main);
+	builder->get_widget("stack_info", m_stack_info);
 	builder->get_widget_derived("infobar", m_infobar);
 	builder->get_widget_derived("treeview_torrent", m_treeview_torrent);
 	builder->get_widget_derived("treeview_rss", m_treeview_rss);
 	builder->get_widget_derived("sidebar", m_sidebar);
 	builder->get_widget_derived("rssDialog", m_rss2);
 
-	panel->pack2(*m_infobar);
+	m_stack_info->add(*m_infobar);
+	// TODO Add infobar for rss to stack
 
 	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);

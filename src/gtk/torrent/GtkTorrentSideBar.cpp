@@ -69,7 +69,7 @@ void GtkTorrentSideBar::setupRows()
 	m_row_torrent[m_cols.name] = "Torrents";
 	m_row_torrent[m_cols.editable] = false;
 	m_row_torrent[m_cols.onClick] = [this](){
-	    m_parent->main_stack->set_visible_child(*m_parent->m_treeview_torrent);
+	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_torrent);
 	};
 
 	auto torrent_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-torrent.png");
@@ -81,7 +81,7 @@ void GtkTorrentSideBar::setupRows()
 	m_row_rss[m_cols.name] = "RSS Feeds";
 	m_row_rss[m_cols.editable] = false;
 	m_row_rss [m_cols.onClick] = [this](){
-	    m_parent->main_stack->set_visible_child(*m_parent->m_treeview_rss);
+	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_rss);
 	};
 
 	auto rss_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-rss.png");

@@ -30,15 +30,15 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/Gtk.cpp
 	gtk/GtkAssociationDialog.cpp
 	gtk/GtkMainWindow.cpp
-	gtk/GtkTorrentTreeView.cpp
-	gtk/GtkTorrentInfoBar.cpp
-	gtk/GtkBlockBar.cpp
+	gtk/torrent/GtkTorrentTreeView.cpp
+	gtk/torrent/GtkTorrentInfoBar.cpp
+	gtk/torrent/GtkBlockBar.cpp
 	gtk/GtkGraph.cpp
 	gtk/GtkSettingsDialog.cpp
-	gtk/GtkPeerTreeView.cpp
+	gtk/torrent/GtkPeerTreeView.cpp
 	gtk/GtkFileTreeView.cpp
 	gtk/GtkStatusBox.cpp
-	gtk/GtkTorrentSideBar.cpp
+	gtk/torrent/GtkTorrentSideBar.cpp
 	gtk/rss/GtkRSSDialog.cpp
 	gtk/GtkGenericAddDialog.cpp
 	gtk/GtkFunctionDialog.cpp

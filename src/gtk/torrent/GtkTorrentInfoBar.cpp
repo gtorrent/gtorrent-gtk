@@ -1,3 +1,9 @@
+#include "../../Application.hpp"
+#include "../GtkFileTreeView.hpp"
+#include "../GtkGraph.hpp"
+#include "../GtkStatusBox.hpp"
+#include "GtkBlockBar.hpp"
+#include "GtkPeerTreeView.hpp"
 #include "GtkTorrentInfoBar.hpp"
 
 #include <gtkmm/box.h>
@@ -7,13 +13,6 @@
 #include <gtkmm/listbox.h>
 #include <gtkmm/table.h>
 #include <gtkmm/scrolledwindow.h>
-
-#include "../Application.hpp"
-#include "GtkBlockBar.hpp"
-#include "GtkGraph.hpp"
-#include "GtkStatusBox.hpp"
-#include "GtkPeerTreeView.hpp"
-#include "GtkFileTreeView.hpp"
 
 /**
 * Sets up the torrent info bar.
@@ -34,27 +33,27 @@ GtkTorrentInfoBar::GtkTorrentInfoBar(GtkBox *box, const Glib::RefPtr<Gtk::Builde
 // the user tried to sort the torrents.
 
 /**
-* Updates the torrent info bar.
-*/
+ * Updates the torrent info bar with the information of the torrent passed
+ * Will hide if torrent is null
+ */
 void GtkTorrentInfoBar::updateInfo(std::shared_ptr<gt::Torrent> selected)
 {
 	static std::shared_ptr<gt::Torrent> previous = nullptr;
 	if(selected)
 		set_visible();
-	else
-	{
+	else {
 		set_visible(false);
 		return;
 	}
 
-	if(selected->status().has_metadata) // torrentless torrents (magnet links) can't have pieces
+	if (selected->status().has_metadata) // torrentless torrents (magnet links) can't have pieces
 		m_progress->setBlocks(selected->getPieces());
 
 	m_title->set_text(selected->status().name);
 	m_graph->select(selected);
 	m_peers->select(selected);
 	m_fileview->select(selected);
-	if(previous != selected)
+	if (previous != selected)
 		m_status_box->update(selected);
 	previous = selected;
 	show_all();

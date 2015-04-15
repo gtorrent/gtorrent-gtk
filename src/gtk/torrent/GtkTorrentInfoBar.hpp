@@ -1,10 +1,11 @@
 #pragma once
 
-#include <gtkmm/box.h>
+#include "GtkGraph.hpp"
 #include <gtorrent/Torrent.hpp>
+
+#include <gtkmm/box.h>
 #include <gtkmm/builder.h>
 
-#include "GtkGraph.hpp"
 
 namespace Gtk
 {
