@@ -13,10 +13,12 @@ gt::GuiGtk::GuiGtk(int argc, char **argv)
 
 	m_builder = Gtk::Builder::create();
 	try {
-		m_builder->add_from_resource("/org/gtk/gtorrent/window_main.ui");
-		m_builder->add_from_resource("/org/gtk/gtorrent/dialog_rss.ui");
 		m_builder->add_from_resource("/org/gtk/gtorrent/dialog_association.ui");
-		m_builder->add_from_resource("/org/gtk/gtorrent/panel_info.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/dialog_rss.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/widget_box_rss.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/widget_box_torrent.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/widget_panel_torrent.ui");
+		m_builder->add_from_resource("/org/gtk/gtorrent/window_main.ui");
 	}
 	catch (const Glib::FileError &ex) {
 		std::cerr << "FileError: " << ex.what() << std::endl;

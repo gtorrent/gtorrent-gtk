@@ -58,11 +58,6 @@ public:
 
 	Gtk::ScrolledWindow *scrolledWindow;
 	Gtk::ScrolledWindow *sidebar_scrolledwindow;
-	Gtk::Paned          *m_panel;
-	Gtk::Box            *m_torrentbox;
-	Gtk::SearchBar      *m_searchbar;
-	Gtk::Stack          *m_stack_info;
-	Gtk::Stack          *m_stack_main;
 
 	Gtk::Button         *addTorrentButton;
 	Gtk::MenuButton     *addMagnetButton;

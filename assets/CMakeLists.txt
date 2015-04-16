@@ -6,7 +6,7 @@ ADD_CUSTOM_COMMAND (
 	COMMAND glib-compile-resources ARGS --target=${PROJECT_BINARY_DIR}/resources.c --generate-source resources.xml
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/resources.xml
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/window_main.ui
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/panel_info.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/widget_panel_torrent.ui
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_association.ui
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_settings.ui
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_rss.ui

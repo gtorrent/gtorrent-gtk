@@ -12,8 +12,8 @@
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
 
-#include "../Application.hpp"
-#include "GtkMainWindow.hpp"
+#include "../../Application.hpp"
+#include "../GtkMainWindow.hpp"
 #include "GtkTorrentInfoBar.hpp"
 #include "GtkTorrentTreeView.hpp"
 
