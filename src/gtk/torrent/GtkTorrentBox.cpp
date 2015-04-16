@@ -9,16 +9,16 @@ GtkTorrentBox::GtkTorrentBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBu
 	builder(refBuilder),
 	m_core(Application::getSingleton()->getCore())
 {
+	show_all_children(true);
+
 	builder->get_widget_derived("torrent_infobar", m_infobar);
 	builder->get_widget_derived("treeview_torrent", m_treeview_torrent);
 
 	builder->get_widget("panel", m_panel);
 	builder->get_widget("searchbar", m_searchbar);
-	builder->get_widget("stack_info", m_stack_info);
-	builder->get_widget("stack_main", m_stack_main);
 	builder->get_widget("torrentbox", m_torrentbox);
 
-	show_all_children();
+	m_panel->add(*m_infobar);
 }
 
 void GtkTorrentBox::searchToggle()

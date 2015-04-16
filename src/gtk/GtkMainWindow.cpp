@@ -68,6 +68,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget_derived("box_torrent", m_box_torrent);
 
 	content_stack->add(*m_box_torrent);
+	content_stack->show_all_children();
 
 	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);

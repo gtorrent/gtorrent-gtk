@@ -123,7 +123,6 @@ public:
 	GtkTorrentInfoBar *m_infobar;
 	GtkMainWindow *m_parent;
 
-	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
 	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;
 	Gtk::Popover *m_searchPopover;
