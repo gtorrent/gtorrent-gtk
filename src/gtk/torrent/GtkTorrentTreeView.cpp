@@ -32,7 +32,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
 	rbuilder->get_widget("GtkMainWindow", m_parent); // Nyanpasu: Maybe m_parent isn't even needed since widgets store parents.
-	rbuilder->get_widget("infobar", m_infobar);
+	rbuilder->get_widget("torrent_infobar", m_infobar);
 	m_searchEntry = Gtk::manage(new Gtk::Entry());
 	m_searchPopover = Gtk::manage(new Gtk::Popover());
 
@@ -522,9 +522,9 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 	if(Application::getSingleton()->getCore()->isLink(sel_data))
 	{
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
-		if (t)//Checks if t is not null
+		if (t)
 		{
-			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+			t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 			addCell(t);
 		}
 	}
@@ -543,7 +543,7 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
 			if (t)//Checks if t is not null
 			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+				t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 				addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful

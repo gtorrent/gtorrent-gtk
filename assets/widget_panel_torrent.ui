@@ -9,7 +9,7 @@
 
 <interface>
 	<!-- interface-requires gtk+ 3.10 -->
-	<object class="GtkBox" id="infobar">
+	<object class="GtkBox" id="torrent_infobar">
 		<property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 		<child>
 			<object class="GtkLabel" id="infoBarTitle">

@@ -3,7 +3,7 @@
 #include "GtkMainWindow.hpp"
 #include "GtkSettingsDialog.hpp"
 #include "torrent/GtkTorrentInfoBar.hpp"
-#include "torrent/GtkTorrentSideBar.hpp"
+#include "GtkSideBar.hpp"
 #include "torrent/GtkTorrentTreeView.hpp"
 
 #include <gtorrent/Core.hpp>
@@ -40,21 +40,18 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Show all children first so widgets that should be hidden can hide.
 	show_all_children();
 
-	d = new GtkSettingsDialog(this);
-
-	Gtk::Revealer *revealer;
+	settingsDialog = new GtkSettingsDialog(this);
 
 	// Headerbar widgets
 	builder->get_widget("addTorrentButton", addTorrentButton);
-	builder->get_widget("searchButton", m_searchButton);
 	builder->get_widget("addMagnetButton", addMagnetButton);
+	builder->get_widget("addButtonRss", buttonRss);
 	builder->get_widget("resumeButton", resumeButton);
 	builder->get_widget("pauseButton", pauseButton);
 	builder->get_widget("deleteButton", removeButton);
 	builder->get_widget("preferencesButton", propertiesButton);
-	builder->get_widget("addButtonRss", buttonRss);
 	builder->get_widget("settingsButton", settingsButton);
-	builder->get_widget("scrolledWindow", scrolledWindow);
+	builder->get_widget("searchButton", m_searchButton);
 	builder->get_widget("vSepOne", vSeparatorOne);
 	builder->get_widget("vSepTwo", vSeparatorTwo);
 
@@ -64,34 +61,45 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	builder->get_widget_derived("sidebar", m_sidebar);
 
 	// Content
-	builder->get_widget_derived("treeview_rss", m_treeview_rss);
-	builder->get_widget_derived("rssDialog", m_rss2);
+	builder->get_widget("scrolledWindow", scrolledWindow);
+	builder->get_widget("content_stack", content_stack);
+//	builder->get_widget_derived("treeview_rss", m_treeview_rss);
+//	builder->get_widget_derived("rssDialog", m_rss2);
+	builder->get_widget_derived("box_torrent", m_box_torrent);
+
+	content_stack->add(*m_box_torrent);
 
 	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
 
 	// Set up headerbar buttons
 	addTorrentButton->signal_clicked().connect([this](){onClickAdd();});
-	pauseButton     ->signal_clicked().connect([this](){onClickPause();});
-	resumeButton    ->signal_clicked().connect([this](){onClickResume();});
-	removeButton    ->signal_clicked().connect([this](){onClickRemove();});
-	settingsButton  ->signal_clicked().connect([this](){onClickSettings();});
 	addMagnetButton ->signal_clicked().connect([this](){onClickMagnet();});
 	buttonRss       ->signal_clicked().connect([this](){onClickRss();});
-	m_searchButton  ->signal_clicked().connect([this](){m_box_torrent->searchToggle();});
-	propertiesButton->signal_clicked().connect([revealer](){ revealer->set_reveal_child(!revealer->get_reveal_child());});
+	settingsButton  ->signal_clicked().connect([this](){onClickSettings();});
+	propertiesButton->signal_clicked().connect([this](){revealer->set_reveal_child(!revealer->get_reveal_child());});
 
+	pauseButton     ->signal_clicked().connect([this](){m_box_torrent->onClickPause();});
+	resumeButton    ->signal_clicked().connect([this](){m_box_torrent->onClickResume();});
+	removeButton    ->signal_clicked().connect([this](){m_box_torrent->onClickRemove();});
+	// TODO RSS support
+	m_searchButton  ->signal_clicked().connect([this](){m_box_torrent->searchToggle();});
+
+	// Headerbar popovers
 	magPopover = Gtk::manage(new Gtk::Popover());
 	rssPopover = Gtk::manage(new Gtk::Popover());
-	createPopover(addMagnetButton, magPopover, magEntry);
-	createPopover(buttonRss, rssPopover, rssEntry);
+	createPopover(addMagnetButton, magPopover, &magEntry);
+	createPopover(buttonRss, rssPopover, &rssEntry);
 
 	sidebar_scrolledwindow->set_min_content_width(150);
 	scrolledWindow->get_vscrollbar()->set_child_visible(false);
 
-	for(auto feedg : Application::getSingleton()->getCore()->m_feeds)
+	for(auto tor : m_core->getTorrents())
+		m_box_torrent->torrentAdd(tor);
+
+	for(auto feedg : m_core->m_feeds)
 	{
-		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f)   {
+		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f) {
 		    onRssStateChange(oldstate, f); };
 		feedg->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){
 		    onRssItemAvailable(fi, fg); };
@@ -109,14 +117,14 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 bool GtkMainWindow::onSecTick()
 {
 	// Should do this only if visible
-	m_box_torrent->onSecTick();
-        m_sidebar->updateTorrents();
+	m_box_torrent->updateTorrents();
+	m_sidebar->updateTorrents();
 
 	return true;
 }
 
 /**
-* Open a FileChooserDialog that filters for bittorent files
+* Open a FileChooserDialog that filters for bittorrent files
 */
 void GtkMainWindow::onClickAdd()
 {
@@ -142,10 +150,7 @@ void GtkMainWindow::onClickAdd()
 		{
 			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
 			if (t)
-			{
 				torrentAdd(f);
-			}
-			//TODO Add error dialogue if torrent add is unsuccessful
 		}
 		break;
 	}
@@ -162,12 +167,8 @@ void GtkMainWindow::onClickMagnet()
 	} else {
 		// Popover has been detoggled
 		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
-		if (t) {
-			m_box_torrent->addTorrent(t);
-		} else {
-			// TODO Unobstrusively display "could not add torrent"
-			// Like in Android's toasts?
-		}
+		if (t)
+			m_box_torrent->torrentAdd(t);
 		magEntry->set_text("");
 	}
 }
@@ -183,6 +184,7 @@ void GtkMainWindow::onClickRss()
 		magEntry->set_text("");
 	}
 }
+
 void GtkMainWindow::onClickProperties()
 {
 
@@ -190,7 +192,7 @@ void GtkMainWindow::onClickProperties()
 
 void GtkMainWindow::onClickSettings()
 {
-	d->run();
+	settingsDialog->run();
 }
 
 /**
@@ -225,22 +227,19 @@ void GtkMainWindow::onRssItemAvailable(const libtorrent::feed_item &fi, std::sha
 		{
 			if(notify)
 			{
-				NotifyNotification *rssNotify = notify_notification_new ("New torrent available", std::string(fi.title + " is available.").c_str(), "dialog-information");
+				NotifyNotification *rssNotify = notify_notification_new ("Rss update", std::string(fi.title).c_str(), "dialog-information");
 				notify_notification_show(rssNotify, nullptr);
 				g_object_unref(G_OBJECT(rssNotify));
 			}
 			if(group->autoAddNewItem)
-			{
-				auto tor = m_core->addTorrent(fi.url);
-				m_box_torrent->torrentAdd(tor);
-			}
+				torrentAdd(fi.url);
 		}
-// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
-// if the item passes all the filters of an owner that wants auto-adding, add it here.
+	// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
+	// if the item passes all the filters of an owner that wants auto-adding, add it here.
 }
 
 /**
- * Populates entry with text from the X clipboardif the X clipboard contains a link
+ * Populates entry with text from the X clipboard if the X clipboard contains a link
  * This function can be made standalone as a utility function
  */
 void GtkMainWindow::fillEntryWithLink(Gtk::Entry *entry)
@@ -256,15 +255,15 @@ void GtkMainWindow::fillEntryWithLink(Gtk::Entry *entry)
  * Probably not worth being set into its own function
  * Should be renamed or inlined again.
  */
-void GtkMainWindow::createPopover(Gtk::MenuButton *pButton, Gtk::Popover *pPopover, Gtk::Entry *pEntry)
+void GtkMainWindow::createPopover(Gtk::MenuButton *b, Gtk::Popover *p, Gtk::Entry **e)
 {
-	pPopover->set_relative_to(*addMagnetButton);
-	pPopover->set_position(Gtk::POS_LEFT);
-	magEntry = Gtk::manage(new Gtk::Entry());
-	magEntry->set_visible();
-	magEntry->set_width_chars(75);
-	magPopover->add(*magEntry);
-	addMagnetButton->set_popover(*magPopover);
+	p->set_relative_to(*b);
+	p->set_position(Gtk::POS_LEFT);
+	*e = Gtk::manage(new Gtk::Entry());
+	(*e)->set_visible();
+	(*e)->set_width_chars(75);
+	p->add(**e);
+	b->set_popover(*p);
 }
 
 /**
@@ -289,13 +288,13 @@ void GtkMainWindow::showAssociationDialog()
 
 }
 
-void GtkMainWindow::torrentAdd()
+void GtkMainWindow::torrentAdd(std::shared_ptr<gt::Torrent> t)
 {
-
+	m_box_torrent->torrentAdd(t);
 }
 
-void GtkMainWindow::torrentAdd(gt::Torrent t)
+void GtkMainWindow::torrentAdd(const std::string &f)
 {
-	t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ torrentStateChangedCallback(oldstate, t); };
-	m_treeview_torrent->addCell(t);
+	auto tor = m_core->addTorrent(f);
+	m_box_torrent->torrentAdd(tor);
 }

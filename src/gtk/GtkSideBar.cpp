@@ -2,10 +2,10 @@
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/cssprovider.h>
 
-#include "GtkTorrentSideBar.hpp"
+#include "GtkSideBar.hpp"
 #include "../Application.hpp"
 
-GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder)
+GtkSideBar::GtkSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder)
   : Gtk::TreeView(tree), m_builder(rbuilder)
 {
 	rbuilder->get_widget_derived("GtkMainWindow", m_parent);
@@ -25,7 +25,7 @@ GtkTorrentSideBar::GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::
 	signal_row_activated().connect([this](const Gtk::TreeModel::Path& Path, Gtk::TreeViewColumn *col){ this->onRowClicked(*m_liststore->get_iter(Path)); });
 }
 
-void GtkTorrentSideBar::onRowClicked(Gtk::TreeRow clickedRow)
+void GtkSideBar::onRowClicked(Gtk::TreeRow clickedRow)
 {
 	// TODO Check if onClick is not set
 	auto t = clickedRow.get_value(m_cols.onClick);
@@ -36,7 +36,7 @@ void GtkTorrentSideBar::onRowClicked(Gtk::TreeRow clickedRow)
  * Create a sole column for the sidetree
  * Sets up static rows
  */
-void GtkTorrentSideBar::setupColumns()
+void GtkSideBar::setupColumns()
 {
 	int cid = 0;
 	Gtk::TreeViewColumn     *col = nullptr;
@@ -62,14 +62,14 @@ void GtkTorrentSideBar::setupColumns()
  * Torrent row contains child rows for torrent groups in gt-core
  * RSS row contains child rows for RSS groups
  */
-void GtkTorrentSideBar::setupRows()
+void GtkSideBar::setupRows()
 {
 	// Torrent root row
 	m_row_torrent = *(m_liststore->append());
 	m_row_torrent[m_cols.name] = "Torrents";
 	m_row_torrent[m_cols.editable] = false;
 	m_row_torrent[m_cols.onClick] = [this](){
-	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_torrent);
+//	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_torrent);
 	};
 
 	auto torrent_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-torrent.png");
@@ -81,7 +81,7 @@ void GtkTorrentSideBar::setupRows()
 	m_row_rss[m_cols.name] = "RSS Feeds";
 	m_row_rss[m_cols.editable] = false;
 	m_row_rss [m_cols.onClick] = [this](){
-	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_rss);
+//	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_rss);
 	};
 
 	auto rss_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-rss.png");
@@ -143,7 +143,7 @@ void GtkTorrentSideBar::setupRows()
 	// Maybe migrate settings there
 }
 
-void GtkTorrentSideBar::addedItem(std::string path, std::string name)
+void GtkSideBar::addedItem(std::string path, std::string name)
 {
 	// Depending on the parent, we create a label or an rss group
 	// TreeRows are iterators, so comparison is valid.
@@ -175,7 +175,8 @@ void GtkTorrentSideBar::addedItem(std::string path, std::string name)
 		// TODO: implement RSS dialog and pop it up here
 	}
 }
-void GtkTorrentSideBar::updateTorrents()
+
+void GtkSideBar::updateTorrents()
 {
         for (auto r : m_row_torrent.children())
         {

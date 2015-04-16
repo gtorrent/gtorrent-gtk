@@ -2,6 +2,7 @@
 
 #include "rss/GtkRSSDialog.hpp"
 #include "torrent/GtkTorrentInfoBar.hpp"
+#include "torrent/GtkTorrentBox.hpp"
 
 #include <gtorrent/Core.hpp>
 #include <gtorrent/FeedGroup.hpp>
@@ -23,14 +24,14 @@
 #include <gtkmm/window.h>
 
 class GtkTorrentTreeView;
-class GtkTorrentSideBar;
+class GtkSideBar;
 class GtkSettingsDialog;
 
 class GtkMainWindow : public Gtk::Window
 {
 	const Glib::RefPtr<Gtk::Builder> builder;
 	std::shared_ptr<gt::Core> &m_core;
-	GtkSettingsDialog *d = nullptr;
+	GtkSettingsDialog *settingsDialog = nullptr;
 
 	// Signal Responders
 	bool onKeyPress(GdkEventKey *event);
@@ -39,23 +40,26 @@ class GtkMainWindow : public Gtk::Window
 	void onClickAdd();
 	void onClickMagnet();
 	void onClickPause();
-	void onClickResume();
+	void onClickProperties();
 	void onClickRemove();
+	void onClickResume();
+	void onClickRss();
 	void onClickSettings();
-	void onPropertiesBtnClicked();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	void onPropertiesBtnClicked();
+
+	void createPopover(Gtk::MenuButton *b, Gtk::Popover *p, Gtk::Entry **e);
+	void fillEntryWithLink(Gtk::Entry * entry);
 
 public:
-	void torrentStateChangedCallback(int oldstate, std::shared_ptr<gt::Torrent> t);
-	void feedStateChangedCallback(int oldstate, std::shared_ptr<gt::Feed> fg);
-	void itemAvailableCallback(const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg);
-
-	GtkTorrentTreeView *m_treeview_torrent;
+	Gtk::Revealer      *revealer;
+	GtkSideBar         *m_sidebar;
 	GtkTorrentTreeView *m_treeview_rss;
-	GtkTorrentInfoBar  *m_infobar;
-	GtkTorrentSideBar  *m_sidebar;
+	GtkTorrentTreeView *m_treeview_torrent;
+	GtkTorrentBox      *m_box_torrent;
 	GtkRSSDialog       *m_rss2;
 
+	Gtk::Stack          *content_stack;
 	Gtk::ScrolledWindow *scrolledWindow;
 	Gtk::ScrolledWindow *sidebar_scrolledwindow;
 
@@ -78,10 +82,9 @@ public:
 	GtkMainWindow(GtkWindow*, const Glib::RefPtr<Gtk::Builder>);
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
-
-	void onClickRss();
-
-	void fillEntryWithLink(Gtk::Entry * entry);
-
-	void createPopover(Gtk::MenuButton * pButton, Gtk::Popover * pPopover, Gtk::Entry * pEntry);
+	void onRssItemAvailable(const libtorrent::feed_item &fi, std::shared_ptr<gt::Feed> fg);
+	void onRssStateChange(int oldstate, std::shared_ptr<gt::Feed> fg);
+	void showAssociationDialog();
+	void torrentAdd(std::shared_ptr<gt::Torrent>);
+	void torrentAdd(const std::string &f);
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GtkGraph.hpp"
+#include "../GtkGraph.hpp"
 #include <gtorrent/Torrent.hpp>
 
 #include <gtkmm/box.h>

@@ -15,8 +15,8 @@
 #include <gtkmm/builder.h>
 
 #include "../Application.hpp"
+#include "torrent/GtkTorrentTreeView.hpp"
 #include "GtkMainWindow.hpp"
-#include "GtkTorrentTreeView.hpp"
 
 using namespace std;
 

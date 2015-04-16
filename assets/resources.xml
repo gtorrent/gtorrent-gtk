@@ -4,12 +4,14 @@
     <file>gtorrent.png</file>
     <file>icon-torrent.png</file>
     <file>icon-rss.png</file>
-    <file compressed="true">dialog_settings.ui</file>
-    <file compressed="true">window_main.ui</file>
-    <file compressed="true">panel_info.ui</file>
     <file compressed="true">dialog_association.ui</file>
-    <file compressed="true">dialog_rss.ui</file>
-    <file compressed="true">dialog_generic.ui</file>
     <file compressed="true">dialog_function.ui</file>
+    <file compressed="true">dialog_generic.ui</file>
+    <file compressed="true">dialog_rss.ui</file>
+    <file compressed="true">dialog_settings.ui</file>
+    <file compressed="true">widget_box_rss.ui</file>
+    <file compressed="true">widget_box_torrent.ui</file>
+    <file compressed="true">widget_panel_torrent.ui</file>
+    <file compressed="true">window_main.ui</file>
   </gresource>
 </gresources>

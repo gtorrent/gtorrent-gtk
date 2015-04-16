@@ -42,7 +42,7 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/torrent/GtkPeerTreeView.cpp
 	gtk/torrent/GtkTorrentBox.cpp
 	gtk/torrent/GtkTorrentInfoBar.cpp
-	gtk/torrent/GtkTorrentSideBar.cpp
+	gtk/GtkSideBar.cpp
 	gtk/torrent/GtkTorrentTreeView.cpp
 	gtk/utils/FileTree.cpp
 	main.cpp

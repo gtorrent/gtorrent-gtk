@@ -6,7 +6,7 @@
 
 #include "GtkMainWindow.hpp"
 #include "rss/GtkRSSDialog.hpp"
-#include "GtkTorrentTreeView.hpp"
+#include "torrent/GtkTorrentTreeView.hpp"
 
 class GtkSideBarColumns : public Gtk::TreeModel::ColumnRecord
 {
@@ -40,7 +40,7 @@ public:
 	Gtk::TreeModelColumn<std::vector<std::shared_ptr<gt::Torrent>>*> group_vector;
 };
 
-class GtkTorrentSideBar : public Gtk::TreeView
+class GtkSideBar : public Gtk::TreeView
 {
 	GtkRSSDialog  *m_rss    = nullptr;
 	GtkMainWindow *m_parent = nullptr;
@@ -52,7 +52,7 @@ public:
 	Gtk::TreeModel::Row m_row_torrent;
 	Gtk::TreeModel::Row m_row_rss;
 
-	GtkTorrentSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
+	GtkSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuilder);
 	void addedItem(std::string path, std::string name);
 	void onRowClicked(Gtk::TreeRow);
 	void setupColumns();
