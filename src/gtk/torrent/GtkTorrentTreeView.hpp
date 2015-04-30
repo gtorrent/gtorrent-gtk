@@ -102,9 +102,9 @@ private:
 	/* Event handlers for clicks on the controls */
 	bool                 showMatches(const Gtk::TreeModel::const_iterator& iter);
 	bool                  onKeyPress(GdkEventKey *event);
-	bool         torrentView_onClick(GdkEventButton *event);
-	bool      torrentColumns_onClick(GdkEventButton *event);
-	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
+	bool         onClickTree(GdkEventButton *event);
+	bool      onClickColumns(GdkEventButton *event);
+	bool onReleaseMenu(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
@@ -130,8 +130,10 @@ public:
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
 	void updateCells();
+
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
+
 	void reloadColors();
 	void onSelectionChanged();
 	std::shared_ptr<gt::Torrent> getFirstSelected();
