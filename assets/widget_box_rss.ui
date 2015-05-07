@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <!-- interface-requires gtk+ 3.10 -->
+    <object class="GtkBox" id="box_rss">
+        <child>
+            <object class="GtkScrolledWindow">
+                <child>
+                    <object class="GtkTreeView" id="treeview_rss">
+                        <child>
+                            <object class="GtkTreeViewColumn" id="col_name">
+                                <property name="title" translatable="yes">Name</property>
+                                <property name="fixed_width">512</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkTreeViewColumn" id="col_url">
+                                <property name="title" translatable="yes">URL</property>
+                                <property name="fixed_width">98</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkSearchBar" id="searchbar">
+                <property name="vexpand">False</property>
+                <child>
+                    <object class="GtkSearchEntry" id="searchentry">
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

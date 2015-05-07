@@ -87,22 +87,24 @@ public:
 class GtkTorrentTreeView : public Gtk::TreeView
 {
 private:
-	GtkTorrentColumns m_cols;
-	Gtk::Entry *m_searchEntry;
-
 	Glib::RefPtr<Gtk::ListStore> m_liststore;
+	GtkTorrentColumns m_cols;
+
+	Gtk::Entry *m_searchEntry;
 	Gtk::Menu *m_rcMenu = Gtk::manage(new Gtk::Menu());
 	Gtk::CheckMenuItem *rcmItemSeq;
-	std::map<std::string, std::pair<std::string, std::string>> m_colors; // Associates a state with a background and foreground color.
+	Glib::RefPtr<Gtk::Builder> m_builder;
+	// Associates a state with a background and foreground color.
+	std::map<std::string, std::pair<std::string, std::string>> m_colors;
 
 	void setupColumns();
 
 	/* Event handlers for clicks on the controls */
 	bool                 showMatches(const Gtk::TreeModel::const_iterator& iter);
 	bool                  onKeyPress(GdkEventKey *event);
-	bool         torrentView_onClick(GdkEventButton *event);
-	bool      torrentColumns_onClick(GdkEventButton *event);
-	bool ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
+	bool         onClickTree(GdkEventButton *event);
+	bool      onClickColumns(GdkEventButton *event);
+	bool onReleaseMenu(GdkEventButton *event, Gtk::TreeViewColumn *tvc);
 
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
@@ -121,7 +123,6 @@ public:
 	GtkTorrentInfoBar *m_infobar;
 	GtkMainWindow *m_parent;
 
-	GtkTorrentTreeView(GtkMainWindow *Parent, GtkTorrentInfoBar *InfoBar);
 	Glib::RefPtr<Gtk::TreeModelFilter> m_filter;
 	Glib::RefPtr<Gtk::TreeModelSort> m_filtersort;
 	Gtk::Popover *m_searchPopover;
@@ -129,8 +130,10 @@ public:
 	void addCell(std::shared_ptr<gt::Torrent> &t);
 	void removeCell(unsigned index);
 	void updateCells();
+
 	void setSelectedPaused(bool isPaused);
 	void removeSelected();
+
 	void reloadColors();
 	void onSelectionChanged();
 	std::shared_ptr<gt::Torrent> getFirstSelected();

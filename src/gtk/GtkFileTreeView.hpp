@@ -1,9 +1,11 @@
+#include "utils/FileTree.hpp"
+
 #include <gtorrent/Torrent.hpp>
 
+#include <libtorrent/size_type.hpp>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeview.h>
-#include "utils/FileTree.hpp"
 #include <gtkmm/builder.h>
 #include <glibmm.h>
 

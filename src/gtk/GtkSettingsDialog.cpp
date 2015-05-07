@@ -15,8 +15,8 @@
 #include <gtkmm/builder.h>
 
 #include "../Application.hpp"
+#include "torrent/GtkTorrentTreeView.hpp"
 #include "GtkMainWindow.hpp"
-#include "GtkTorrentTreeView.hpp"
 
 using namespace std;
 
@@ -316,7 +316,7 @@ void GtkSettingsDialog::onForegroundSet()
 	}
 
 	if(parent != nullptr)
-		parent->m_treeview->reloadColors();
+		parent->m_treeview_torrent->reloadColors();
 }
 
 void GtkSettingsDialog::onBackgroundSet()
@@ -360,7 +360,7 @@ void GtkSettingsDialog::onBackgroundSet()
 	}
 
 	if(parent != nullptr)
-		parent->m_treeview->reloadColors();
+		parent->m_treeview_torrent->reloadColors();
 }
 
 void GtkSettingsDialog::onGridColorSet()
@@ -452,7 +452,6 @@ void GtkSettingsDialog::onActivSChanged()
 {
 	gt::Settings::settings["ActiveSeeds"] = activsspin->get_text();
 }
-
 
 void GtkSettingsDialog::onDownFillColorSet()
 {
