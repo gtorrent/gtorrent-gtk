@@ -54,12 +54,12 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	else
 		setupColumns();
 
-        // Set up renderer for progress bar. Exception because setupColumns() only handle text renderers by default.
-        Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_progress"));
-        Gtk::CellRendererProgress *cell = Gtk::manage(new Gtk::CellRendererProgress());
-        col->pack_start(*cell);
-        // Maybe we can just use set_renderer?
-        // Last time I tried I got a cray cray backtrace and stack overflow.
+	// Set up renderer for progress bar. Exception because setupColumns() only handle text renderers by default.
+	Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_progress"));
+	Gtk::CellRendererProgress *cell = Gtk::manage(new Gtk::CellRendererProgress());
+	col->pack_start(*cell);
+	// Maybe we can just use set_renderer?
+	// Last time I tried I got a cray cray backtrace and stack overflow.
 	// TODO Look into that ^
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);

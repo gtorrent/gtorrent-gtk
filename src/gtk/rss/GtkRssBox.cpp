@@ -1,5 +1,10 @@
-//
-// Created by root on 4/30/15.
-//
+#include "GtkRssBox.hpp"
+#include "../../Application.hpp"
 
-#include "GtkRssBox.h"
+GtkRssBox::GtkRssBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBuilder) :
+    Gtk::Box(box),
+    m_builder(refBuilder),
+    m_core(Application::getSingleton()->getCore())
+{
+    show_all_children(true);
+}

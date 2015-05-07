@@ -36,8 +36,9 @@ ADD_EXECUTABLE ( ${PROJECT_NAME}
 	gtk/GtkMainWindow.cpp
 	gtk/GtkSettingsDialog.cpp
 	gtk/GtkStatusBox.cpp
+	gtk/rss/GtkRssBox.cpp
 	gtk/rss/GtkRSSDialog.cpp
-	gtk/rss/GtkRSSTreeView.cpp
+	gtk/rss/GtkRssTreeView.cpp
 	gtk/torrent/GtkBlockBar.cpp
 	gtk/torrent/GtkPeerTreeView.cpp
 	gtk/torrent/GtkTorrentBox.cpp

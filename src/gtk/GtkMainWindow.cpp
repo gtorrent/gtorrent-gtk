@@ -62,13 +62,13 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 
 	// Content
 	builder->get_widget("scrolledWindow", scrolledWindow);
-	builder->get_widget("content_stack", content_stack);
-//	builder->get_widget_derived("treeview_rss", m_treeview_rss);
-//	builder->get_widget_derived("rssDialog", m_rss2);
+	builder->get_widget("content_stack", m_content_stack);
 	builder->get_widget_derived("box_torrent", m_box_torrent);
+	builder->get_widget_derived("box_rss", m_box_rss);
 
-	content_stack->add(*m_box_torrent);
-	content_stack->show_all_children();
+	m_content_stack->add(*m_box_torrent);
+	m_content_stack->add(*m_box_rss);
+	m_content_stack->show_all_children();
 
 	// Apparently can't use lambdas on these two unless doing something awful
 	Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 1);
@@ -144,14 +144,10 @@ void GtkMainWindow::onClickAdd()
 
 	int result = fc.run();
 
-	switch (result)
-	{
+	switch (result) {
 	case Gtk::RESPONSE_OK:
-		for (auto & f : fc.get_filenames())
-		{
-			std::shared_ptr<gt::Torrent> t = m_core->addTorrent(f);
-			if (t)
-				torrentAdd(f);
+		for (auto & f : fc.get_filenames()) {
+			torrentAdd(f);
 		}
 		break;
 	}

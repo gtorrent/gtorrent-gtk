@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rss/GtkRSSDialog.hpp"
+#include "rss/GtkRssBox.hpp"
 #include "torrent/GtkTorrentInfoBar.hpp"
 #include "torrent/GtkTorrentBox.hpp"
 
@@ -57,9 +58,10 @@ public:
 	GtkTorrentTreeView *m_treeview_rss;
 	GtkTorrentTreeView *m_treeview_torrent;
 	GtkTorrentBox      *m_box_torrent;
+	GtkRssBox          *m_box_rss;
 	GtkRSSDialog       *m_rss2;
 
-	Gtk::Stack          *content_stack;
+	Gtk::Stack          *m_content_stack;
 	Gtk::ScrolledWindow *scrolledWindow;
 	Gtk::ScrolledWindow *sidebar_scrolledwindow;
 

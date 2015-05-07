@@ -27,9 +27,9 @@ GtkSideBar::GtkSideBar(GtkTreeView *tree, const Glib::RefPtr<Gtk::Builder> rbuil
 
 void GtkSideBar::onRowClicked(Gtk::TreeRow clickedRow)
 {
-	// TODO Check if onClick is not set
 	auto t = clickedRow.get_value(m_cols.onClick);
-	t();
+	if (t)
+		t();
 }
 
 /**
@@ -69,7 +69,7 @@ void GtkSideBar::setupRows()
 	m_row_torrent[m_cols.name] = "Torrents";
 	m_row_torrent[m_cols.editable] = false;
 	m_row_torrent[m_cols.onClick] = [this](){
-//	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_torrent);
+	    m_parent->m_content_stack->set_visible_child(*m_parent->m_box_torrent);
 	};
 
 	auto torrent_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-torrent.png");
@@ -81,7 +81,7 @@ void GtkSideBar::setupRows()
 	m_row_rss[m_cols.name] = "RSS Feeds";
 	m_row_rss[m_cols.editable] = false;
 	m_row_rss [m_cols.onClick] = [this](){
-//	    m_parent->m_stack_main->set_visible_child(*m_parent->m_treeview_rss);
+	    m_parent->m_content_stack->set_visible_child(*m_parent->m_box_rss);
 	};
 
 	auto rss_icon = Gdk::Pixbuf::create_from_resource("/org/gtk/gtorrent/icon-rss.png");
@@ -89,9 +89,8 @@ void GtkSideBar::setupRows()
 	m_row_rss[m_cols.icon] = rss_icon_scaled;
 
 	// Torrent child rows
-        // XXX TMP WILL REMOVE AND REPLACE WITH PROPER FUNCTION
-        // Yes this is horrible. Bear with it for now.
-        auto g = Application::getSingleton()->getCore()->getAllTorrents();
+	// TODO Move these to a resource file
+	auto g = Application::getSingleton()->getCore()->getAllTorrents();
 	Gtk::TreeModel::Row row = *(m_liststore->append(m_row_torrent.children()));
 	row[m_cols.name] = "All";
 	row[m_cols.title] = "All";
@@ -102,28 +101,28 @@ void GtkSideBar::setupRows()
 	row2[m_cols.name] = "Downloading";
 	row2[m_cols.title] = "Downloading";
 	row2[m_cols.group_vector] = &g->m_torrents_downloading;
-        row2 = *(m_liststore->append(row.children()));
-        row2[m_cols.name] = "Seeding";
-        row2[m_cols.title] = "Seeding";
-        row2[m_cols.group_vector] = &g->m_torrents_seeding;
-        row2 = *(m_liststore->append(row.children()));
-        row2[m_cols.name] = "Checking";
-        row2[m_cols.title] = "Checking";
-        row2[m_cols.group_vector] = &g->m_torrents_checking;
-        row2 = *(m_liststore->append(row.children()));
-        row2[m_cols.name] = "Finished";
-        row2[m_cols.title] = "Finished";
-        row2[m_cols.group_vector] = &g->m_torrents_finished;
-        row2 = *(m_liststore->append(row.children()));
-        row2[m_cols.name] = "Stopped";
-        row2[m_cols.title] = "Stopped";
-        row2[m_cols.group_vector] = &g->m_torrents_stopped;
-        row2 = *(m_liststore->append(row.children()));
-        row2[m_cols.name] = "Paused";
-        row2[m_cols.title] = "Paused";
-        row2[m_cols.group_vector] = &g->m_torrents_paused;
-        // End of new horrible code
-        // Old horrible code
+	row2 = *(m_liststore->append(row.children()));
+	row2[m_cols.name] = "Seeding";
+	row2[m_cols.title] = "Seeding";
+	row2[m_cols.group_vector] = &g->m_torrents_seeding;
+	row2 = *(m_liststore->append(row.children()));
+	row2[m_cols.name] = "Checking";
+	row2[m_cols.title] = "Checking";
+	row2[m_cols.group_vector] = &g->m_torrents_checking;
+	row2 = *(m_liststore->append(row.children()));
+	row2[m_cols.name] = "Finished";
+	row2[m_cols.title] = "Finished";
+	row2[m_cols.group_vector] = &g->m_torrents_finished;
+	row2 = *(m_liststore->append(row.children()));
+	row2[m_cols.name] = "Stopped";
+	row2[m_cols.title] = "Stopped";
+	row2[m_cols.group_vector] = &g->m_torrents_stopped;
+	row2 = *(m_liststore->append(row.children()));
+	row2[m_cols.name] = "Paused";
+	row2[m_cols.title] = "Paused";
+	row2[m_cols.group_vector] = &g->m_torrents_paused;
+	// End of new horrible code
+	// Old horrible code
 	//row = *(m_liststore->append(m_torrent_row.children()));
 	//row[m_cols.name] = "Add a label";
 	//row[m_cols.editable] = true;

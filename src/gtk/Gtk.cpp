@@ -64,5 +64,5 @@ int gt::GuiGtk::run()
 
 	m_app->run(*mainWindow);
 
-	return 1;
+	return 0;
 }
