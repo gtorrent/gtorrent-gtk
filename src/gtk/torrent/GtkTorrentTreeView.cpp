@@ -198,7 +198,6 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_clickable();
 		c->set_resizable();
 		c->set_reorderable();
-		c->set_fixed_width(120);
 
 		Gtk::CellRendererText *r = dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell());
 		if (!r)

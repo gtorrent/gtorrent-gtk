@@ -2,7 +2,7 @@
 
 #include <gtkmm/treeview.h>
 
-class GtkRSSTreeView  : Gtk::TreeView
+class GtkRssTreeView : Gtk::TreeView
 {
 
 };
