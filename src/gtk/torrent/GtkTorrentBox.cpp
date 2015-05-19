@@ -12,11 +12,11 @@ GtkTorrentBox::GtkTorrentBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBu
 	show_all_children(true);
 
 	builder->get_widget_derived("torrent_infobar", m_infobar);
-	builder->get_widget_derived("treeview_torrent", m_treeview_torrent);
+	builder->get_widget_derived("torrent_treeview", m_treeview_torrent);
 
-	builder->get_widget("panel", m_panel);
-	builder->get_widget("searchbar", m_searchbar);
-	builder->get_widget("torrentbox", m_torrentbox);
+	builder->get_widget("torrent_panel", m_panel);
+	builder->get_widget("torrent_searchbar", m_searchbar);
+	builder->get_widget("torrent_content", m_torrentbox);
 
 	m_panel->add(*m_infobar);
 }

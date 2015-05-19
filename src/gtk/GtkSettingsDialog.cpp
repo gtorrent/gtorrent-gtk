@@ -20,6 +20,11 @@
 
 using namespace std;
 
+// TODO Needs some refactoring
+// - Creates many threads on start
+// - Has own builder
+// - No resource file
+
 GtkSettingsDialog::GtkSettingsDialog(GtkMainWindow *Parent) : parent(Parent)
 {
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_resource("/org/gtk/gtorrent/dialog_settings.ui");

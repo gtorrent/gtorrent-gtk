@@ -3,9 +3,7 @@
 		 of each frame consistent: by setting the first row of a column to a
 		 specific width-request-request, making all the other rows follow fit. It doesn't
 		 *have* to be the first column. This is simply so it makes it easy to find
-		 and tweak.  This value is set to 200 at time of writing. Sorry, it's a
-		 magic number and XML FUCKING SUCKS
--->
+		 and tweak. XML FUCKING SUCKS -->
 
 <interface>
 	<!-- interface-requires gtk+ 3.10 -->

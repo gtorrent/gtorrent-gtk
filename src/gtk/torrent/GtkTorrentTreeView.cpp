@@ -29,7 +29,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
 	rbuilder->get_widget("GtkMainWindow", m_parent); // Nyanpasu: Maybe m_parent isn't even needed since widgets store parents.
-	rbuilder->get_widget("torrent_infobar", m_infobar);
+	rbuilder->get_widget_derived("torrent_infobar", m_infobar);
 	m_searchEntry = Gtk::manage(new Gtk::Entry());
 	m_searchPopover = Gtk::manage(new Gtk::Popover());
 
@@ -37,17 +37,17 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
 
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_queue"))     ->pack_start(m_cols.m_col_queue);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_name"))      ->pack_start(m_cols.m_col_name);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_eta"))       ->pack_start(m_cols.m_col_eta);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_age"))       ->pack_start(m_cols.m_col_age);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_seeders"))   ->pack_start(m_cols.m_col_seeders);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_leechers"))  ->pack_start(m_cols.m_col_leechers);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_download"))  ->pack_start(m_cols.m_col_dl_speed);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_size"))      ->pack_start(m_cols.m_col_size);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_remaining")) ->pack_start(m_cols.m_col_remaining);
-	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_queue"))     ->pack_start(m_cols.m_col_queue);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_name"))      ->pack_start(m_cols.m_col_name);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_eta"))       ->pack_start(m_cols.m_col_eta);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_age"))       ->pack_start(m_cols.m_col_age);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_seeders"))   ->pack_start(m_cols.m_col_seeders);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_leechers"))  ->pack_start(m_cols.m_col_leechers);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_download"))  ->pack_start(m_cols.m_col_dl_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_size"))      ->pack_start(m_cols.m_col_size);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_remaining")) ->pack_start(m_cols.m_col_remaining);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
 
 	if(gt::Settings::settings["ColumnsProperties"] != "")
 		loadColumns();
@@ -55,7 +55,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 		setupColumns();
 
 	// Set up renderer for progress bar. Exception because setupColumns() only handle text renderers by default.
-	Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("col_progress"));
+	Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_progress"));
 	Gtk::CellRendererProgress *cell = Gtk::manage(new Gtk::CellRendererProgress());
 	col->pack_start(*cell);
 	// Maybe we can just use set_renderer?
@@ -78,8 +78,6 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	//set_model(m_filtersort);
 	set_model(m_liststore);
 
-	set_hexpand();
-	set_vexpand();
 	reloadColors();
 
         // Set drag targets

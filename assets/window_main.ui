@@ -194,6 +194,8 @@
 		</child>
 		<child>
 			<object class="GtkBox" id="content">
+				<property name="vexpand">true</property>
+				<property name="hexpand">true</property>
 				<child>
 					<object class="GtkRevealer" id="sidebarRev">
 						<property name="transition_type">slide-right</property>
@@ -213,6 +215,8 @@
 				</child>
 				<child>
 					<object class="GtkStack" id="content_stack">
+						<property name="vexpand">true</property>
+						<property name="hexpand">true</property>
 					</object>
 				</child>
 			</object>

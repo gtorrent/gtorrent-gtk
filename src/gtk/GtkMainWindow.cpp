@@ -35,6 +35,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
   builder(rbuilder),
   m_core(Application::getSingleton()->getCore())
 {
+	// TODO Move this to GtkApplication
 	notify_init("gTorrent");
 
 	// Show all children first so widgets that should be hidden can hide.
@@ -63,8 +64,8 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Content
 	builder->get_widget("scrolledWindow", scrolledWindow);
 	builder->get_widget("content_stack", m_content_stack);
-	builder->get_widget_derived("box_torrent", m_box_torrent);
-	builder->get_widget_derived("box_rss", m_box_rss);
+	builder->get_widget_derived("rss_box", m_box_rss);
+	builder->get_widget_derived("torrent_box", m_box_torrent);
 
 	m_content_stack->add(*m_box_torrent);
 	m_content_stack->add(*m_box_rss);
@@ -121,6 +122,8 @@ bool GtkMainWindow::onSecTick()
 	m_box_torrent->updateTorrents();
 	m_sidebar->updateTorrents();
 
+	printf("R H: %d, W: %d\n", m_content_stack->get_height(), m_content_stack->get_width());
+	printf("visible? %d\n", m_content_stack->get_child_visible());
 	return true;
 }
 
