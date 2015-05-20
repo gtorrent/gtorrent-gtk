@@ -6,8 +6,7 @@ GtkRssBox::GtkRssBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBuilder)
   m_builder(refBuilder),
   m_core(Application::getSingleton()->getCore())
 {
-	Gtk::Label *label;
-
+	m_builder->get_widget_derived("rss_treeview", m_rss_treeview);
 	show_all_children();
 }
 

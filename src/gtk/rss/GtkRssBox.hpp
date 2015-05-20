@@ -11,5 +11,6 @@ class GtkRssBox : public Gtk::Box
 	std::shared_ptr<gt::Core> &m_core;
 
 public:
+	GtkRssTreeView *m_rss_treeview;
 	GtkRssBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBuilder);
 };

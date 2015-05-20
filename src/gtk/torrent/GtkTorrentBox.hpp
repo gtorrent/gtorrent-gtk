@@ -38,5 +38,5 @@ public:
 
 	void saveColumns();
 
-	void onTorrentStateChange(int oldstate, std::shared_ptr <gt::Torrent> t);
+	void onTorrentStateChange(int oldstate, gt::Torrent *t);
 };

@@ -112,18 +112,18 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
  * Update interface
  * Updates torrent cells
  * Hide vertical scrollbar
- * nyanpasu: I really want to deprecate this. Rather than update per second, I want the values to be more flexible.
- * Don't update by a timer, rather, update the view onChange, with a timeout. Similar but some things may override it, for example.
- * I'll have to experiment with how intensive refreshing real time is.
+ *
+ * TODO Deprecate onSecTick, in favour of polling
+ * Don't update by timer, rather, update the view after libtorrent::session informs of one, with a timeout.
+ * Use session::wait_for_alert()
+ * Similar but some things can override it, for example.
  */
 bool GtkMainWindow::onSecTick()
 {
-	// Should do this only if visible
+	// TODO Should do this only if visible
 	m_box_torrent->updateTorrents();
 	m_sidebar->updateTorrents();
 
-	printf("R H: %d, W: %d\n", m_content_stack->get_height(), m_content_stack->get_width());
-	printf("visible? %d\n", m_content_stack->get_child_visible());
 	return true;
 }
 

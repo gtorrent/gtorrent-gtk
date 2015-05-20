@@ -26,20 +26,23 @@ void GtkTorrentBox::searchToggle()
 	m_searchbar->set_search_mode(!m_searchbar->get_search_mode());
 }
 
+/**
+ * Updates core, which handles any alearts, then renders the changes appropriately
+ */
 void GtkTorrentBox::updateTorrents()
 {
+	// TODO Handle all torrents from m_core->update. For some reason we're only doing one at a time, per second.
+	std::shared_ptr<gt::Torrent> t = m_core->update();
+	if (t) torrentAdd(t);
+
 	// Update the gooey
 	m_treeview_torrent->updateCells();
 	m_infobar->updateState(m_treeview_torrent->getFirstSelected());
-
-	// TODO Handle all torrents from m_core->update
-	std::shared_ptr<gt::Torrent> t = m_core->update();
-	if (t) torrentAdd(t);
 }
 
 void GtkTorrentBox::torrentAdd(std::shared_ptr<gt::Torrent> t)
 {
-	t->onStateChanged = [this](int oldstate, std::shared_ptr<gt::Torrent> t){ onTorrentStateChange(oldstate, t); };
+	t->onStateChanged = [this](int oldstate, gt::Torrent *tp){ onTorrentStateChange(oldstate, tp); };
 	m_treeview_torrent->addCell(t);
 }
 
@@ -67,7 +70,7 @@ void GtkTorrentBox::saveColumns()
        m_treeview_torrent->saveColumns();
 }
 
-void GtkTorrentBox::onTorrentStateChange(int oldstate, std::shared_ptr<gt::Torrent> t)
+void GtkTorrentBox::onTorrentStateChange(int oldstate, gt::Torrent *t)
 {
 	NotifyNotification *tNotify = nullptr;
 
@@ -79,7 +82,7 @@ void GtkTorrentBox::onTorrentStateChange(int oldstate, std::shared_ptr<gt::Torre
 		oldstate == libtorrent::torrent_status::downloading_metadata)
 		tNotify = notify_notification_new (t->status().name.c_str(), std::string(t->status().name + " has started downloading.").c_str(), "dialog-information");
 	else
-		return; //:^)
+		return;
 
 	notify_notification_show (tNotify, NULL);
 	g_object_unref(G_OBJECT(tNotify));

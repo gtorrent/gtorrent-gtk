@@ -80,7 +80,7 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 
 	reloadColors();
 
-        // Set drag targets
+	// Set drag targets
 	std::vector<Gtk::TargetEntry> listTargets = 
 		{
 			Gtk::TargetEntry("STRING"),
@@ -450,7 +450,7 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->vSeparatorOne->set_visible();
 }
 
-/*
+/**
  * Save column properties to settings
  *
  * columns are saved in a single settings, looking like this:
@@ -556,6 +556,7 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 	}
 
 }
+
 bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
 {
 	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered
