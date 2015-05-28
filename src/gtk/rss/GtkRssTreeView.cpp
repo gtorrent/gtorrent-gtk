@@ -4,7 +4,7 @@
 GtkRssTreeView::GtkRssTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder)
  : Gtk::TreeView(treeview)
 {
-	auto list_store = Gtk::ListStore::create(m_cols);
+	list_store = Gtk::ListStore::create(m_cols);
 
 	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("rss_col_name"))    ->pack_start(m_cols.m_col_name);
 	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("rss_col_url"))     ->pack_start(m_cols.m_col_url);
@@ -24,3 +24,9 @@ GtkRssTreeView::GtkRssTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Bu
 	show_all_children();
 }
 
+void GtkRssTreeView::feedAdd(std::shared_ptr<gt::Feed> feed)
+{
+	Gtk::TreeModel::Row r = *(list_store->append());
+	r[m_cols.m_col_name] = feed->get_feed_status().title;
+	r[m_cols.m_col_url] = feed->get_feed_status().url;
+}

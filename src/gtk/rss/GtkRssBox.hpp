@@ -13,4 +13,6 @@ class GtkRssBox : public Gtk::Box
 public:
 	GtkRssTreeView *m_rss_treeview;
 	GtkRssBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBuilder);
+
+	void feedAdd(std::shared_ptr < gt::Feed > param);
 };

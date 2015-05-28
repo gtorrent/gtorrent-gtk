@@ -129,14 +129,13 @@ void GtkSideBar::setupRows()
 	//row[m_cols.icon] = Gtk::IconTheme::get_default()->lookup_icon("list-add-symbolic", 16, Gtk::ICON_LOOKUP_USE_BUILTIN).load_icon();
 	//row[m_cols.onClick] = [row](){};
 
-	for(auto fg : Application::getSingleton()->getCore()->m_feeds)
+	for(auto f : Application::getSingleton()->getCore()->m_feeds)
 	{
 		row = *(m_liststore->append(m_row_rss.children()));
-		row[m_cols.name] = fg->name;
+		row[m_cols.name] = f->get_feed_status().title;
 		row[m_cols.editable] = false;
 		// TODO change icon to some sort of generic RSS icon
-		row[m_cols.onClick] = [this, fg](){m_rss->run(fg->name);m_rss->hide();};
-
+		row[m_cols.onClick] = [this, f](){m_rss->run(f->get_feed_status().title);m_rss->hide();};
 	}
 
 	// Maybe migrate settings there
@@ -169,8 +168,8 @@ void GtkSideBar::addedItem(std::string path, std::string name)
 		m_rss->set_default_response(1);
 		int code = m_rss->run(name);
 		m_rss->hide();
-		if(code == 1)
-			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->m_feedgroups);
+//		if(code == 1)
+//			Application::getSingleton()->getCore()->m_feeds.push_back(m_rss->m_feedgroups);
 		// TODO: implement RSS dialog and pop it up here
 	}
 }

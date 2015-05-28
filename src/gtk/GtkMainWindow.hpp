@@ -70,7 +70,7 @@ public:
 	Gtk::Button         *resumeButton;
 	Gtk::Button         *pauseButton;
 	Gtk::Button         *removeButton;
-	Gtk::MenuButton     *buttonRss;
+	Gtk::MenuButton     *addRssButton;
 	Gtk::Button         *propertiesButton;
 	Gtk::Button         *settingsButton;
 	Gtk::Button         *m_searchButton;
@@ -85,8 +85,14 @@ public:
 	bool onDestroy(GdkEventAny *event);
 	bool onSecTick();
 	void onRssItemAvailable(const libtorrent::feed_item &fi, std::shared_ptr<gt::Feed> fg);
-	void onRssStateChange(int oldstate, std::shared_ptr<gt::Feed> fg);
+	void onRssStateChange(int oldstate, gt::Feed* fg);
 	void showAssociationDialog();
 	void torrentAdd(std::shared_ptr<gt::Torrent>);
 	void torrentAdd(const std::string &f);
+
+	void feedAdd(std::string feed);
+
+	// Temp hack because gtk's animation don't set the visibility field until after an animation is complete.
+	bool magPopoverOn;
+	bool rssPopoverOn;
 };

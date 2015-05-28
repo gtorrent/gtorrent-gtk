@@ -216,7 +216,7 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	if (!t)
 		return;
 
-	Gtk::TreeModel::Row row      = *(m_liststore->append());
+	Gtk::TreeModel::Row row = *(m_liststore->append());
 	row[m_cols.m_col_torrent] = t;
 }
 
@@ -526,9 +526,9 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 	std::string sel_data = selection_data.get_data_as_string();
 	if(Application::getSingleton()->getCore()->isLink(sel_data))
 	{
+		// TODO Use GtkTorrentTreeView::addTorrent. addTorrent might have to be updated to store the onStateChanged listener
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
-		if (t)
-		{
+		if (t) {
 			t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 			addCell(t);
 		}
@@ -545,10 +545,10 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
 		{
+			// TODO Use GtkTorrentTreeView::addTorrent. addTorrent might have to be updated to store the onStateChanged listener
 			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
-			if (t)//Checks if t is not null
-			{
-				t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
+			if (t) {
+//				t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 				addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful

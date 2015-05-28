@@ -31,10 +31,6 @@ void GtkTorrentBox::searchToggle()
  */
 void GtkTorrentBox::updateTorrents()
 {
-	// TODO Handle all torrents from m_core->update. For some reason we're only doing one at a time, per second.
-	std::shared_ptr<gt::Torrent> t = m_core->update();
-	if (t) torrentAdd(t);
-
 	// Update the gooey
 	m_treeview_torrent->updateCells();
 	m_infobar->updateState(m_treeview_torrent->getFirstSelected());

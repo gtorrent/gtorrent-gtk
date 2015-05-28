@@ -25,7 +25,7 @@ int GtkRSSDialog::run(std::string fName)
 {
 	// If run is called with a valid parameter, then we edit the passed feed, else we create a new
 	// Returns a pointer to existing one if one with same name exists
-	m_feedgroups = m_core->addFeedGroup(fName);
+//	m_feedgroups = m_core->addFeedGroup(fName);
 
 	set_title(fName);
 

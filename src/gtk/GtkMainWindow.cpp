@@ -46,7 +46,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Headerbar widgets
 	builder->get_widget("addTorrentButton", addTorrentButton);
 	builder->get_widget("addMagnetButton", addMagnetButton);
-	builder->get_widget("addButtonRss", buttonRss);
+	builder->get_widget("addButtonRss", addRssButton);
 	builder->get_widget("resumeButton", resumeButton);
 	builder->get_widget("pauseButton", pauseButton);
 	builder->get_widget("deleteButton", removeButton);
@@ -77,7 +77,7 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	// Set up headerbar buttons
 	addTorrentButton->signal_clicked().connect([this](){onClickAdd();});
 	addMagnetButton ->signal_clicked().connect([this](){onClickMagnet();});
-	buttonRss       ->signal_clicked().connect([this](){onClickRss();});
+	addRssButton    ->signal_clicked().connect([this](){onClickRss();});
 	settingsButton  ->signal_clicked().connect([this](){onClickSettings();});
 	propertiesButton->signal_clicked().connect([this](){revealer->set_reveal_child(!revealer->get_reveal_child());});
 
@@ -89,9 +89,11 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 
 	// Headerbar popovers
 	magPopover = Gtk::manage(new Gtk::Popover());
+	magPopoverOn = false;
 	rssPopover = Gtk::manage(new Gtk::Popover());
+	rssPopoverOn = false;
 	createPopover(addMagnetButton, magPopover, &magEntry);
-	createPopover(buttonRss, rssPopover, &rssEntry);
+	createPopover(addRssButton, rssPopover, &rssEntry);
 
 	sidebar_scrolledwindow->set_min_content_width(150);
 	scrolledWindow->get_vscrollbar()->set_child_visible(false);
@@ -99,11 +101,11 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
 	for(auto tor : m_core->getTorrents())
 		m_box_torrent->torrentAdd(tor);
 
-	for(auto feedg : m_core->m_feeds)
+	for(auto feed : m_core->m_feeds)
 	{
-		feedg->onStateChanged     = [this](int oldstate, std::shared_ptr<gt::Feed> f) {
+		feed->onStateChanged     = [this](int oldstate, gt::Feed* f) {
 		    onRssStateChange(oldstate, f); };
-		feedg->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){
+		feed->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){
 		    onRssItemAvailable(fi, fg); };
 	}
 }
@@ -120,6 +122,11 @@ GtkMainWindow::GtkMainWindow(GtkWindow *win, const Glib::RefPtr<Gtk::Builder> rb
  */
 bool GtkMainWindow::onSecTick()
 {
+	m_core->update();
+	std::vector<std::shared_ptr<gt::Torrent>> pending_torrents = m_core->getPendingTorrents();
+	for (auto t : pending_torrents)
+		if (t) torrentAdd(t);
+
 	// TODO Should do this only if visible
 	m_box_torrent->updateTorrents();
 	m_sidebar->updateTorrents();
@@ -161,27 +168,27 @@ void GtkMainWindow::onClickAdd()
 */
 void GtkMainWindow::onClickMagnet()
 {
-	if(magPopover->get_visible()) {
+	magPopoverOn = !magPopoverOn;
+	if(magPopoverOn) {
 		// Popover has been toggled
 		fillEntryWithLink(magEntry);
 	} else {
 		// Popover has been detoggled
-		std::shared_ptr<gt::Torrent> t = m_core->addTorrent(magEntry->get_text());
-		if (t)
-			m_box_torrent->torrentAdd(t);
+		torrentAdd(magEntry->get_text());
 		magEntry->set_text("");
 	}
 }
 
 void GtkMainWindow::onClickRss()
 {
-	if(rssPopover->get_visible()) {
+	rssPopoverOn = !rssPopoverOn;
+	if(rssPopoverOn) {
 		// Popover has been toggled
 		fillEntryWithLink(rssEntry);
 	} else {
 		// Popover has been detoggled
-		std::shared_ptr<gt::Feed> f = m_core->addFeed(rssEntry->get_text());
-		magEntry->set_text("");
+		feedAdd(rssEntry->get_text());
+		rssEntry->set_text("");
 	}
 }
 
@@ -213,27 +220,26 @@ bool GtkMainWindow::onKeyPress(GdkEventKey *event)
 	return false;
 }
 
-void GtkMainWindow::onRssStateChange(int oldstate, std::shared_ptr<gt::Feed> fg)
+void GtkMainWindow::onRssStateChange(int oldstate, gt::Feed* fg)
 {
 // TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
 // if the item passes all the filters of an owner that wants auto-adding, add it here.
 }
 
-void GtkMainWindow::onRssItemAvailable(const libtorrent::feed_item &fi, std::shared_ptr<gt::Feed> fg)
+void GtkMainWindow::onRssItemAvailable(const libtorrent::feed_item &fi, std::shared_ptr<gt::Feed> f)
 {
 	bool notify = gt::Settings::settings["RSSNotify"] == "Yes";
-	for(auto group : fg->owners)
-		if(group->passFilters(fi))
-		{
-			if(notify)
-			{
-				NotifyNotification *rssNotify = notify_notification_new ("Rss update", std::string(fi.title).c_str(), "dialog-information");
-				notify_notification_show(rssNotify, nullptr);
-				g_object_unref(G_OBJECT(rssNotify));
-			}
-			if(group->autoAddNewItem)
-				torrentAdd(fi.url);
-		}
+//	if(group->passFilters(fi))
+//	{
+	if(notify)
+	{
+		NotifyNotification *rssNotify = notify_notification_new ("Rss update", std::string(fi.title).c_str(), "dialog-information");
+		notify_notification_show(rssNotify, nullptr);
+		g_object_unref(G_OBJECT(rssNotify));
+	}
+	// Shouldn't be needed if libtorrent::feed can add torrents automatically by themselves
+//	if(f->autoAddNewItem)
+//		torrentAdd(fi.url);
 	// TODO: if user want to be notified, if the item passes a filter of any of its owner, show a notification, and
 	// if the item passes all the filters of an owner that wants auto-adding, add it here.
 }
@@ -296,5 +302,19 @@ void GtkMainWindow::torrentAdd(std::shared_ptr<gt::Torrent> t)
 void GtkMainWindow::torrentAdd(const std::string &f)
 {
 	auto tor = m_core->addTorrent(f);
-	m_box_torrent->torrentAdd(tor);
+	if (tor)
+		torrentAdd(tor);
+}
+
+void GtkMainWindow::feedAdd(std::string feed)
+{
+	auto fp = m_core->addFeed(feed);
+	if (fp) {
+//		fp->onStateChanged = std::bind(&GtkMainWindow::onRssStateChange, this, std::placeholders::_1, std::placeholders::_2);
+//		fp->onNewItemAvailable = std::bind(&GtkMainWindow::onRssItemAvailable, this, std::placeholders::_1, std::placeholders::_2);
+		fp->onStateChanged = [this](int oldstate, gt::Feed* f) { onRssStateChange(oldstate, f); };
+		fp->onNewItemAvailable = [this](const libtorrent::feed_item& fi, std::shared_ptr<gt::Feed> fg){
+		    onRssItemAvailable(fi, fg); };
+		m_box_rss->feedAdd(fp);
+	}
 }

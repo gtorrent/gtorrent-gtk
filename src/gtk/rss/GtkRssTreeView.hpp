@@ -3,6 +3,12 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/builder.h>
 
+#include <Feed.hpp>
+
+namespace Gtk {
+    class ListStore;
+}
+
 class GtkRssColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
@@ -23,4 +29,8 @@ class GtkRssTreeView : public Gtk::TreeView
 public:
 	GtkRssColumns m_cols;
 	GtkRssTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder);
+
+	void feedAdd(std::shared_ptr <gt::Feed> feed);
+
+	Glib::RefPtr<Gtk::ListStore> list_store;
 };

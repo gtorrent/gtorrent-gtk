@@ -10,3 +10,7 @@ GtkRssBox::GtkRssBox(GtkBox *box, const Glib::RefPtr<Gtk::Builder> refBuilder)
 	show_all_children();
 }
 
+void GtkRssBox::feedAdd(std::shared_ptr<gt::Feed> param)
+{
+	m_rss_treeview->feedAdd(param);
+}
