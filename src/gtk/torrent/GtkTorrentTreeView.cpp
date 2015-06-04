@@ -4,7 +4,6 @@
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/checkmenuitem.h>
-#include <gtkmm/menuitem.h>
 #include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/separatormenuitem.h>
 
@@ -12,18 +11,17 @@
 #include <gtorrent/Settings.hpp>
 #include <gtorrent/Platform.hpp>
 
-#include "../Application.hpp"
-#include "GtkMainWindow.hpp"
-#include "GtkTorrentInfoBar.hpp"
-#include "GtkTorrentTreeView.hpp"
+#include "../../Application.hpp"
+#include "../GtkMainWindow.hpp"
 
 /**
 * Sets up the tree view containing torrent information.
 */
 GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr<Gtk::Builder> rbuilder) :
-	Gtk::TreeView(treeview)
+	Gtk::TreeView(treeview),
+	m_builder(rbuilder)
 {
-  	m_liststore = Gtk::ListStore::create(m_cols);
+	m_liststore = Gtk::ListStore::create(m_cols);
 	m_filter = Gtk::TreeModelFilter::create(m_liststore);
 	m_filtersort = Gtk::TreeModelSort::create(m_filter);
 	m_filter->set_visible_func(sigc::mem_fun(*this, &GtkTorrentTreeView::showMatches));
@@ -31,39 +29,42 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
 	rbuilder->get_widget("GtkMainWindow", m_parent); // Nyanpasu: Maybe m_parent isn't even needed since widgets store parents.
-	rbuilder->get_widget("infobar", m_infobar);
+	rbuilder->get_widget_derived("torrent_infobar", m_infobar);
 	m_searchEntry = Gtk::manage(new Gtk::Entry());
 	m_searchPopover = Gtk::manage(new Gtk::Popover());
 
-	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentView_onClick), false);
+	signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onClickTree), false);
 	signal_cursor_changed().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onSelectionChanged), false);
 	signal_key_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onKeyPress), false);
-        // Set up columns
-        // TODO set up the sort columns as well.
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_queue"))     ->pack_start(m_cols.m_col_queue);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_name"))      ->pack_start(m_cols.m_col_name);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_eta"))       ->pack_start(m_cols.m_col_eta);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_age"))       ->pack_start(m_cols.m_col_age);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_seeders"))   ->pack_start(m_cols.m_col_seeders);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_leechers"))  ->pack_start(m_cols.m_col_leechers);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_download"))  ->pack_start(m_cols.m_col_dl_speed);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_size"))      ->pack_start(m_cols.m_col_size);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_remaining")) ->pack_start(m_cols.m_col_remaining);
-        Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
 
-        // Set up renderer for progress bar
-        Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(rbuilder->get_object("col_progress"));
-        Gtk::CellRendererProgress *cell = Gtk::manage(new Gtk::CellRendererProgress());
-        col->pack_start(*cell);
-        // Maybe we can just use set_renderer?
-        // Last time I tried I got a cray cray backtrace and stack overflow.
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_queue"))     ->pack_start(m_cols.m_col_queue);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_name"))      ->pack_start(m_cols.m_col_name);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_eta"))       ->pack_start(m_cols.m_col_eta);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_age"))       ->pack_start(m_cols.m_col_age);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_seeders"))   ->pack_start(m_cols.m_col_seeders);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_leechers"))  ->pack_start(m_cols.m_col_leechers);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_upload"))    ->pack_start(m_cols.m_col_ul_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_download"))  ->pack_start(m_cols.m_col_dl_speed);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_size"))      ->pack_start(m_cols.m_col_size);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_remaining")) ->pack_start(m_cols.m_col_remaining);
+	Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_ratio"))     ->pack_start(m_cols.m_col_dl_ratio);
+
+	if(gt::Settings::settings["ColumnsProperties"] != "")
+		loadColumns();
+	else
+		setupColumns();
+
+	// Set up renderer for progress bar. Exception because setupColumns() only handle text renderers by default.
+	Glib::RefPtr<Gtk::TreeViewColumn> col = Glib::RefPtr<Gtk::TreeViewColumn>::cast_static(m_builder->get_object("torrent_col_progress"));
+	Gtk::CellRendererProgress *cell = Gtk::manage(new Gtk::CellRendererProgress());
+	col->pack_start(*cell);
+	// Maybe we can just use set_renderer?
+	// Last time I tried I got a cray cray backtrace and stack overflow.
+	// TODO Look into that ^
 	col->add_attribute(cell->property_value(), m_cols.m_col_percent);
 	col->add_attribute(cell->property_text(), m_cols.m_col_percent_text);
 	col->add_attribute(cell->property_cell_background(), m_cols.m_col_background);
 	col->set_sort_column(m_cols.m_col_percent);
-
-	setupColumns(); // TODO Deprecate
 
 	set_enable_search();
 	set_search_entry(*m_searchEntry);
@@ -77,11 +78,9 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 	//set_model(m_filtersort);
 	set_model(m_liststore);
 
-	set_hexpand();
-	set_vexpand();
 	reloadColors();
 
-        // Set drag targets
+	// Set drag targets
 	std::vector<Gtk::TargetEntry> listTargets = 
 		{
 			Gtk::TargetEntry("STRING"),
@@ -97,9 +96,9 @@ GtkTorrentTreeView::GtkTorrentTreeView(GtkTreeView *treeview, const Glib::RefPtr
 }
 
 /**
-* Sets up the actions for when tree view is clicked.
-*/
-bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
+ * Sets up the actions for when tree view is clicked.
+ */
+bool GtkTorrentTreeView::onClickTree(GdkEventButton *event)
 {
 	Gtk::TreeView::on_button_press_event(event);
 	if(event->type == 5 && event->button == 1) //if double left click
@@ -154,16 +153,16 @@ bool GtkTorrentTreeView::torrentView_onClick(GdkEventButton *event)
 }
 
 /**
-* Sets up the action for when a mouse click is released on the torrent tree view.
-*/
-bool GtkTorrentTreeView::ColumnContextMenu_onRelease(GdkEventButton *event, Gtk::TreeViewColumn *tvc)
+ * Hide context menu
+ */
+bool GtkTorrentTreeView::onReleaseMenu(GdkEventButton *event, Gtk::TreeViewColumn *tvc)
 {
 	tvc->set_visible(!tvc->get_visible());
 	m_rcMenu->hide();
 	return true;
 }
 
-bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
+bool GtkTorrentTreeView::onClickColumns(GdkEventButton *event)
 {
 	if(event->button == 3)
 	{
@@ -172,7 +171,8 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 		{
 			Gtk::CheckMenuItem *rcmItem1 = Gtk::manage(new Gtk::CheckMenuItem(c->get_title()));
 			rcmItem1->set_active(c->get_visible());
-			rcmItem1->signal_button_release_event().connect(sigc::bind<1>(sigc::mem_fun(*this, &GtkTorrentTreeView::ColumnContextMenu_onRelease), c));
+			rcmItem1->signal_button_release_event().connect(sigc::bind<1>(
+				sigc::mem_fun(*this, &GtkTorrentTreeView::onReleaseMenu), c));
 			m_rcMenu->add(*rcmItem1);
 		}
 
@@ -183,13 +183,12 @@ bool GtkTorrentTreeView::torrentColumns_onClick(GdkEventButton *event)
 }
 
 /**
-* Sets up the columns in the torrent tree view.
-*/
+ * Iterate through every column and set default settings for the column
+ * TODO Consider setting these properties for each column in there resource files
+ *      Find out if it's posssible to set the renderers in the resources too
+ */
 void GtkTorrentTreeView::setupColumns()
 {
-	if(gt::Settings::settings["ColumnsProperties"] != "")
-		loadColumns();
-
 	for (auto &c : this->get_columns())
 	{
 		c->set_sizing(Gtk::TreeViewColumnSizing::TREE_VIEW_COLUMN_FIXED);
@@ -198,17 +197,14 @@ void GtkTorrentTreeView::setupColumns()
 		c->set_resizable();
 		c->set_reorderable();
 
-		if(gt::Settings::settings["ColumnsProperties"] == "")
-			c->set_fixed_width(120);
-
-                Gtk::CellRendererText *r = dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell()); // This won't get CellRendererProgress!
-                if (!r)
-                        continue;
+		Gtk::CellRendererText *r = dynamic_cast<Gtk::CellRendererText *>(c->get_first_cell());
+		if (!r)
+			continue;
 		c->add_attribute(r->property_background(), m_cols.m_col_background);
 		c->add_attribute(r->property_foreground(), m_cols.m_col_foreground);
 
 		Gtk::Button *butt = c->get_button();
-		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::torrentColumns_onClick));
+		butt->signal_button_press_event().connect(sigc::mem_fun(*this, &GtkTorrentTreeView::onClickColumns));
 	}
 }
 
@@ -220,7 +216,7 @@ void GtkTorrentTreeView::addCell(std::shared_ptr<gt::Torrent> &t)
 	if (!t)
 		return;
 
-	Gtk::TreeModel::Row row      = *(m_liststore->append());
+	Gtk::TreeModel::Row row = *(m_liststore->append());
 	row[m_cols.m_col_torrent] = t;
 }
 
@@ -243,7 +239,8 @@ void GtkTorrentTreeView::updateCells()
 	{
 		std::shared_ptr<gt::Torrent> t = c[m_cols.m_col_torrent];
 
-                // if there's a % in the state std::string, then the torrent is downloading // 10/10 logic
+		// if there's a % in the state std::string, then the torrent is downloading
+		// 10/10 logic
 		std::string fgbg = t->getTextState().find('%') == std::string::npos ? t->getTextState() : "Downloading";
 
 		c[m_cols.m_col_bremaining ] = t->status().total_wanted - t->status().total_download;
@@ -453,14 +450,18 @@ void GtkTorrentTreeView::onSelectionChanged(/*const Gtk::TreeModel::Path &path, 
 	m_parent->vSeparatorOne->set_visible();
 }
 
-// columns are saved in a single settings, looking like this:
-// ColumnsProperties = #|48|h,Age|120|v,Up Speed|120|v,
-// Each element will be added from right to left.
-// the list is formatted in that way:
-// [Column0][Column1][Column...][ColumnN]
-// Each column is formatted that way:
-// [sTitle]|[iWidth]|[h],
-// If the title is unknown, the whole element is ignored.
+/**
+ * Save column properties to settings
+ *
+ * columns are saved in a single settings, looking like this:
+ * ColumnsProperties = #|48|h,Age|120|v,Up Speed|120|v,
+ * Each element will be added from right to left.
+ * the list is formatted in that way:
+ * [Column0][Column1][Column...][ColumnN]
+ * Each column is formatted that way:
+ * [sTitle]|[iWidth]|[h],
+ * If the title is unknown, the whole element is ignored.
+ */
 void GtkTorrentTreeView::saveColumns()
 {
 	std::string cStates;
@@ -469,48 +470,22 @@ void GtkTorrentTreeView::saveColumns()
 	gt::Settings::settings["ColumnsProperties"] = cStates;
 }
 
-// This is where it gets tricky/ugly.
-// TODO Modify so that it hides columns instead of not loading them at all.
-// TODO I realized we don't even need all this boilerplate because we already
-// have all the column names stored in ... wait for it... the fucking columns.
+/**
+ * Load column properties from settings
+ * TODO Modify so that it hides columns instead of not loading them at all.
+ * TODO Refactor and enable. Currently disabled and delegates to setupColumns() instead
+ *
+ */
 void GtkTorrentTreeView::loadColumns()
 {
-        return;
-	std::vector<std::string> titles = { "#", "Age", "ETA", "Name", "Seed", "Leech", "Up Speed", "Down Speed", "Size", "Remains", "Ratio" };
-	std::vector<Gtk::TreeModelColumnBase*> cols
-	{
-		&m_cols.m_col_queue,
-		&m_cols.m_col_age,
-		&m_cols.m_col_eta,
-		&m_cols.m_col_name,
-		&m_cols.m_col_seeders,
-		&m_cols.m_col_leechers,
-		&m_cols.m_col_ul_speed,
-		&m_cols.m_col_dl_speed,
-		&m_cols.m_col_size,
-		&m_cols.m_col_remaining,
-		&m_cols.m_col_dl_ratio
-	};
-
-	std::vector<Gtk::TreeModelColumnBase*> scols
-	{
-		&m_cols.m_col_queue,
-		&m_cols.m_col_bage,
-		&m_cols.m_col_beta,
-		&m_cols.m_col_name,
-		&m_cols.m_col_seeders,
-		&m_cols.m_col_leechers,
-		&m_cols.m_col_bul_speed,
-		&m_cols.m_col_bdl_speed,
-		&m_cols.m_col_bsize,
-		&m_cols.m_col_bremaining,
-		&m_cols.m_col_dl_ratio
-	};
-
+	setupColumns();
+	return;
+/*
 	std::string tmp = gt::Settings::settings["ColumnsProperties"];
 	if (tmp == "")
 		tmp = "#|20|h,Age|50|h,ETA|90|v,Name|250|v,Seed|45|v,Leech|45|v,Up Speed|95|v,Down Speed|95|v,Size|75|v,Remains|75|h,Ratio|55|h,Progress|160|v,";
 
+	// TODO Refactor
 	do
 	{
 		std::string title = tmp.substr(0, tmp.find('|'));
@@ -532,13 +507,14 @@ void GtkTorrentTreeView::loadColumns()
 		}
 	}
 	while (tmp != "");
+ */
 }
 
 bool GtkTorrentTreeView::onKeyPress(GdkEventKey *event)
 {
 	short arrowkeys[] = { 80, 88, 83, 85, 111, 114, 113, 116 };
 	if(std::find(arrowkeys, arrowkeys + 8, event->hardware_keycode) == arrowkeys + 8) return false;
-	m_infobar->updateInfo(getFirstSelected());	
+	m_infobar->updateInfo(getFirstSelected());
 	if(event->send_event) return true;
 	event->send_event = true;
 	Gdk::Event((GdkEvent*)event).put();
@@ -550,10 +526,10 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 	std::string sel_data = selection_data.get_data_as_string();
 	if(Application::getSingleton()->getCore()->isLink(sel_data))
 	{
+		// TODO Use GtkTorrentTreeView::addTorrent. addTorrent might have to be updated to store the onStateChanged listener
 		std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(sel_data);
-		if (t)//Checks if t is not null
-		{
-			t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+		if (t) {
+			t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 			addCell(t);
 		}
 	}
@@ -569,10 +545,10 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 		std::string content_type = Gio::content_type_guess(fn, sel_data, want_uncertain);
 		if(content_type == "application/x-bittorrent" || content_type == ".torrent")
 		{
+			// TODO Use GtkTorrentTreeView::addTorrent. addTorrent might have to be updated to store the onStateChanged listener
 			std::shared_ptr<gt::Torrent> t = Application::getSingleton()->getCore()->addTorrent(fn);
-			if (t)//Checks if t is not null
-			{
-				t->onStateChanged = std::bind(&GtkMainWindow::torrentStateChangedCallback, m_parent, std::placeholders::_1, std::placeholders::_2);
+			if (t) {
+//				t->onStateChanged = std::bind(&GtkTorrentBox::onTorrentStateChange, m_parent->m_box_torrent, std::placeholders::_1, std::placeholders::_2);
 				addCell(t);
 			}
 			//TODO Add error dialogue if torrent add is unsuccessful
@@ -580,6 +556,7 @@ void GtkTorrentTreeView::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& con
 	}
 
 }
+
 bool GtkTorrentTreeView::showMatches(const Gtk::TreeModel::const_iterator& iter)
 {
 	if(!get_search_entry() || get_search_entry()->get_text() == "") return true; //show every rows if no text has been entered

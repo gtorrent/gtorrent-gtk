@@ -1,8 +1,11 @@
 #pragma once
 
-#include <gtkmm/button.h>
+#include <gtorrent/Torrent.hpp>
+
 #include <queue>
 #include <cmath>
+
+#include <gtkmm/button.h>
 #include <gtkmm/builder.h>
 
 class GtkGraph : public Gtk::Button

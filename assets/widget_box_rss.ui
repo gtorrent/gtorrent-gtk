@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <!-- interface-requires gtk+ 3.10 -->
+    <object class="GtkBox" id="rss_box">
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <child>
+            <object class="GtkScrolledWindow">
+                <child>
+                    <object class="GtkTreeView" id="rss_treeview">
+                        <property name="vexpand">true</property>
+                        <property name="hexpand">true</property>
+                        <child>
+                            <object class="GtkTreeViewColumn" id="rss_col_name">
+                                <property name="title" translatable="yes">Name</property>
+                                <property name="fixed_width">512</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkTreeViewColumn" id="rss_col_url">
+                                <property name="title" translatable="yes">URL</property>
+                                <property name="fixed_width">98</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

@@ -5,13 +5,15 @@ ADD_CUSTOM_COMMAND (
 	COMMENT "Generating resources.c..."
 	COMMAND glib-compile-resources ARGS --target=${PROJECT_BINARY_DIR}/resources.c --generate-source resources.xml
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/resources.xml
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/window_main.ui
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/panel_info.ui
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_association.ui
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_settings.ui
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_rss.ui
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_generic.ui
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_function.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_generic.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_rss.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dialog_settings.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/widget_box_rss.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/widget_box_torrent.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/widget_panel_torrent.ui
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/window_main.ui
 	)
 
 ADD_CUSTOM_COMMAND (
